@@ -1,6 +1,8 @@
 # Overview
 Test script for RPi camera module, using PRE API.
 
+We're using the python package [picamera2](https://github.com/raspberrypi/picamera2).
+
 ## Testing Locally (on RPi)
 
 ## Testing Locally (on PC)
@@ -78,7 +80,7 @@ conda env create -f environment.yml
 conda activate camera-test-py
 ```
 
-**Steps below in case you run into errors installing? not sure if this actually worked?**
+**Steps below in case you run into errors installing? not sure if this actually works?**
 
 Since picamera2 also depends on [libcamera](https://github.com/raspberrypi/libcamera), you'll need to follow the steps and install that too.
 
