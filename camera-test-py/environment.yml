@@ -6,4 +6,5 @@ dependencies:
   - pip
   - pip:
     - picamera2
+    - keyboard
   - requests==2.28.1
