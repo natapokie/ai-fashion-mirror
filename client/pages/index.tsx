@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google'
 import { useEffect, useRef, useState } from 'react'
 import { io } from 'socket.io-client';
 import { socket } from './socket';
+import { Likes } from '@/components/likes';
+import { Comments } from '@/components/comments';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -10,7 +12,7 @@ const Home = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null); // test timer
 
   // state to determine if we're displaying stuff (true) or not (false)
-  const [display, setDisplay] = useState('');
+  const [display, setDisplay] = useState('TESTNG...');
 
   useEffect(() => {
     console.log("Connecting Socket");
@@ -50,16 +52,25 @@ const Home = () => {
     };
   }, []); // run once on init
 
-  // useEffect(() => {
-  //   // runs every time displayState changes
-  //   console.log('display changed', display);
+  useEffect(() => {
+    // runs every time displayState changes
+    console.log('display changed', display);
 
-  // }, [display])
+  }, [display])
+
+  const commentTest = [
+    {username: 'user1', comment: 'omg you look so cool!!'},
+    {username: 'user2', comment: 'SLAYYY'},
+  ];
+  const likes = 1234;
 
   return (
     <>
-    HELLO!
-    <div>{display}</div>
+      <div className='w-screen h-screen p-1 flex flex-col justify-between items-center'>
+        <Likes likes={likes}></Likes>
+        { display }
+        <Comments comments={commentTest}></Comments>
+      </div>
     </>
   )
 };
