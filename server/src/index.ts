@@ -5,6 +5,7 @@ import axios, { AxiosResponse } from "axios";
 import { Server, Socket } from "socket.io";
 import cors from "cors";
 import http from "http";
+import path from "path";
 
 // BIG TODO: separate the send api, camera stuff into their own files
 
@@ -29,7 +30,8 @@ const io = new Server(server, {
 const PORT = 8080;
 
 app.get('/', (req, res) => {
-    res.send('Hello from the backend (Typescript + Express)!');
+    // res.send('Hello from the backend (Typescript + Express)!');
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 io.on('connection', (socket: Socket) => {
@@ -95,9 +97,18 @@ io.on('connection', (socket: Socket) => {
     
         const image = await stillCamera.takeImage();
     
+        // send the image to the localhost:8080 so we can display the img we just took
+        // socket.emit("send_photo", );
+
         await sendToApi(image);
     
         fs.writeFileSync(`still-image_${photosTaken}.jpg`, image);
+
+        // TODO: want to display all the photos onto post:8080
+        // socket is connecting and ids are matching up, but callback on send_photo event is not running
+        const encodedImg = image.toString('base64');
+        socket.emit("send_photo", encodedImg);
+
         console.log('saved image');
         photosTaken++;
     }
