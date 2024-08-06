@@ -1,19 +1,24 @@
 ## Description
 
+**Fixes # (issue)**
+
 Please include a summary of the changes and the related issue. Please also include relevant motivation and context. List any dependencies that are required for this change.
 
-Fixes # (issue)
+## Documentation Used
 
-## Type of change
+Please list any documentation or resources that were referenced while making these changes.
 
-Please delete options that are not relevant.
+- [ ] Documentation A
+- [ ] Documentation B
 
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] This change requires a documentation update
+## Issues Faced and Resolutions
 
-## How To Tested?
+Please describe any issues you encountered during development and how you resolved them.
+
+- Issue: Description of the issue
+    - Resolution: Steps taken to resolve the issue
+
+## How To Test?
 
 Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. Please also list any relevant details for your test configuration.
 
