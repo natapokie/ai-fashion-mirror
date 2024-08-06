@@ -7,6 +7,18 @@ import cors from "cors";
 import http from "http";
 import path from "path";
 
+// use the following for testing on your local laptop
+const NodeWebcam = require( "node-webcam" );
+const opts = {
+    width: 450,
+    height: 900,
+    quality: 100,
+    output: "jpeg",
+    device: false,
+    callbackReturn: "buffer",
+    verbose: false
+};
+
 // BIG TODO: separate the send api, camera stuff into their own files
 
 const app: Express = express();
@@ -94,23 +106,37 @@ io.on('connection', (socket: Socket) => {
             width: 450,
             height: 900,
         });
-    
-        const image = await stillCamera.takeImage();
-    
-        // send the image to the localhost:8080 so we can display the img we just took
-        // socket.emit("send_photo", );
 
-        await sendToApi(image);
-    
-        fs.writeFileSync(`still-image_${photosTaken}.jpg`, image);
+        try {
+            const image = await stillCamera.takeImage();
+            await sendToApi(image);
+            fs.writeFileSync(`still-image-${photosTaken}.jpg`, image);
 
-        // TODO: want to display all the photos onto post:8080
-        // socket is connecting and ids are matching up, but callback on send_photo event is not running
-        const encodedImg = image.toString('base64');
-        socket.emit("send_photo", encodedImg);
+            // TODO: want to display all the photos onto post:8080
+            // socket is connecting and ids are matching up, but callback on send_photo event is not running
+            const encodedImg = image.toString('base64');
+            socket.emit("send_photo", encodedImg);
 
-        console.log('saved image');
-        photosTaken++;
+            console.log('saved image');
+            photosTaken++;
+        } catch (err) {
+            console.error('Error with RPi Camera, using Webcam...');
+            // https://www.npmjs.com/package/node-webcam?activeTab=readme
+            NodeWebcam.capture( "test_picture", opts, async ( err: any, data: Buffer ) => {
+                console.log('Captured picture using webcam', data);
+                const localImage = data;
+                await sendToApi(localImage);
+
+                if (data && !err) {
+                    fs.writeFileSync(`local-still-image-${photosTaken}.jpg`, localImage);
+                    console.log('saved local image');
+                    photosTaken++;
+                } else {
+                    console.error(err);
+                    console.error('data from webcam undefined')
+                }
+            });
+        }
     }
 
     socket.on("take_photo", testCamera)
