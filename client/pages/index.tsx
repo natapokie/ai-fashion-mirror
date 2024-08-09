@@ -19,8 +19,8 @@ const Home = () => {
     socket.on('connect', () => {
       console.log(`Connected with socket ${socket.id}`);
     });
-    socket.on('photo', (data: any) => {
-      console.log('Received photo data from socket');
+    socket.on('api_response', (data: any) => {
+      console.log('Received api response from socket');
       setDisplay(data);
     })
 
@@ -38,7 +38,7 @@ const Home = () => {
     intervalRef.current = setInterval(() => {
       takePhoto();
       setTimeout(donePhoto, 2*60*1000);
-    }, 2*60*1000);
+    }, 1*60*1000);
 
     return () => {
       console.log("Unmounting Component")
