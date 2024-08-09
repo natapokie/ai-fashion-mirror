@@ -13,7 +13,7 @@ npm i
 ```
 
 ## Running the Code
-Currently, you'll have the run with frontend and backend in two different terminals.
+Currently, you will have the run with frontend and backend in two different terminals.
 
 *Note: if you notice that there is 1 high vulnerability after installing dependencies on the the client side, it's because we needed to downgrade to Next v13 as Next v14 is not working on the raspberry pi*
 
