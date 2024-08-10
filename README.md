@@ -28,3 +28,39 @@ npm run dev
 cd server
 npm run dev
 ```
+
+## Camera
+
+### Testing with the RPi Camera Module
+A forked version of the [pi-camera-connect](https://www.npmjs.com/package/pi-camera-connect) package is used to connect the server with the Raspberry Pi Camera Module.
+
+The forked version supports `rpicam-still` and `rpicam-vid`. See [here](https://projects.raspberrypi.org/en/projects/getting-started-with-picamera/3) for more info on the RPi Camera Module.
+
+
+### Testing without the RPi Camera Module
+The [node-wecam](https://www.npmjs.com/package/node-webcam) package is used to connect the server to your local device's camera, if you're not on the Raspberry Pi.
+
+Installation steps can be found on the link above.
+
+#### More Detailed Steps for Windows
+1. Install [Visual Studio](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation?view=msvc-170) with C/C++ support in order to run the Makefile. Make sure to select the workload, **Desktop development with C++**
+2. Install [Cygwin](https://cygwin.com/install.html). Follow the steps [here](https://github.com/lakelse/videos/tree/90d2e365e07b365795852fcd679eb93be5d8b6f7/01-install-cygwin-on-windows-youtube) for a detailed installation guide. Once the installer prompts you to Select Pacakges, select the [**make**](https://earthly.dev/blog/makefiles-on-windows/#:~:text=make%20%2Dv.-,Cygwin,-Historically%2C%20one%20of) package.
+3. Run the [**vcvarsall.bat**](https://learn.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-170) file with your specified architecutre. This file is found in your Program Files, e.g., `C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build`
+    ```shell
+    # cd into the directory that the .bat file is located, and run with your architecutre
+    .\vcvarsall.bat amd64
+    ```
+4. Open the Cygwin terminal
+    ```shell
+    # verify that make has been installed
+    make --version
+
+    # navigate to your device's root directory
+    cd /cygdrive/c
+
+    # cd to the repo containing node-webcam, e.g.
+    cd ai-fashion-mirror/server/node_modules/node-webcam/src/bindings/CommandCam
+
+    # run make
+    make
+    ```
