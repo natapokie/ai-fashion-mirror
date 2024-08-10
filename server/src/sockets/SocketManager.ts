@@ -44,14 +44,15 @@ export class SocketManager {
 
             console.log('Received data', data)
 
+            // emit event to all connected sockets
             if (data?.apiResponse) {
                 console.log('Recived API Response')
-                socket.emit("api_response", JSON.stringify(data.apiResponse));
+                this.io.emit("api_response", JSON.stringify(data.apiResponse));
             }
 
             if (data?.encodedImg) {
                 console.log('Received encoded Img')
-                socket.emit("send_photo", data.encodedImg);
+                this.io.emit("send_photo", data.encodedImg);
             }
         });
     }

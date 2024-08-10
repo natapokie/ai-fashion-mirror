@@ -16,13 +16,17 @@ const Home = () => {
 
   useEffect(() => {
     console.log("Connecting Socket");
-    socket.on('connect', () => {
+    socket.on("connect", () => {
       console.log(`Connected with socket ${socket.id}`);
     });
     socket.on('api_response', (data: any) => {
       console.log('Received api response from socket');
       setDisplay(data);
     })
+
+    socket.on('send_photo', (data: string) => {
+      console.log('Received image data:');
+  });
 
     const takePhoto = () => {
       console.log("Taking a photo...");
