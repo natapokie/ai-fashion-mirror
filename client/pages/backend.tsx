@@ -5,20 +5,30 @@ const Backend = () => {
     const [img, setImg] = useState<string>('');
 
     useEffect(() => {
-        socket.on("connect", () => {
+        const onConnect = () => {
             console.log(`Connected with socket ${socket.id}`);
-        });
+        };
 
-        socket.on('send_photo', (data: string) => {
-            console.log('Received image data:', data);
+        const onSendPhoto = (data: string) => {
+            console.log('Received image data');
             setImg(`data:image/jpeg;base64,${data}`)
-        });
+        };
 
-        socket.on('api_response', (data: any) => {
+        const onApiResonse = (data: any) => {
             console.log('/backend Received api response from socket');
             console.log(data);
-        })
+        }
 
+        socket.on("connect", onConnect);
+        socket.on('send_photo', onSendPhoto);
+        socket.on('api_response', onApiResonse);
+
+        return () => {
+            // cleanup socket event listeners
+            socket.off("connect", onConnect);
+            socket.off('send_photo', onSendPhoto);
+            socket.off('api_response', onApiResonse);
+        }
     }, []);
 
     return (
