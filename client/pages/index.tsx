@@ -73,7 +73,7 @@ const Home = () => {
 
   return (
     <>
-      <div className='w-screen h-screen p-1 flex flex-col justify-between items-center'>
+      <div className='w-screen h-screen flex flex-col justify-between items-center bg-cover bg-center h-screen' style={{backgroundImage: `url(https://picsum.photos/1000/500)`}}>
         <Likes likes={likes}></Likes>
         { display }
         <Comments comments={commentTest}></Comments>
