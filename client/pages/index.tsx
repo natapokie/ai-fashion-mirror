@@ -16,13 +16,19 @@ const Home = () => {
 
   useEffect(() => {
     console.log("Connecting Socket");
-    socket.on('connect', () => {
+    
+    const onConnect = () => {
       console.log(`Connected with socket ${socket.id}`);
-    });
-    socket.on('photo', (data: any) => {
-      console.log('Received photo data from socket');
+    }
+
+    // TODO: add type
+    const onApiResonse = (data: any) => {
+      console.log('Received api response from socket');
       setDisplay(data);
-    })
+    } 
+
+    socket.on("connect", onConnect);
+    socket.on('api_response', onApiResonse);
 
     const takePhoto = () => {
       console.log("Taking a photo...");
@@ -38,13 +44,14 @@ const Home = () => {
     intervalRef.current = setInterval(() => {
       takePhoto();
       setTimeout(donePhoto, 2*60*1000);
-    }, 2*60*1000);
+    }, 1*60*1000);
 
     return () => {
       console.log("Unmounting Component")
-      // TODO: component seems to be unmounting on each refresh?
-      // console.log('Disconnecting Socket');
-      // socket.disconnect();
+
+      // clean up socket event listeners
+      socket.off("connect", onConnect);
+      socket.off('api_response', onApiResonse);
 
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
