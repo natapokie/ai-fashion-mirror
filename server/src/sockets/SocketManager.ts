@@ -1,5 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { CameraService } from "../services/cameraService";
+import { parseResponse } from "../parseResponse";
 
 export class SocketManager {
 
@@ -44,10 +45,13 @@ export class SocketManager {
 
             console.log('Received data', data)
 
-            // emit event to all connected sockets
-            if (data?.apiResponse) {
-                console.log('Recived API Response')
-                this.io.emit("api_response", JSON.stringify(data.apiResponse));
+            // Parse the response data and emit event to all connected sockets
+            if (data?.apiResponse === 'Person not found!') {
+                this.io.emit("api_response", "Person not found!");
+            } else if (data?.apiResponse) {
+                const parsedResponse = parseResponse(data.apiResponse);
+                console.log('Received API Response and parsed');
+                this.io.emit("api_response", JSON.stringify(parsedResponse));
             }
 
             if (data?.encodedImg) {
