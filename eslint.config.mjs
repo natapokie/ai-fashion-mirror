@@ -19,6 +19,6 @@ export default [
     },
   },
   {
-    ignores: ['*.md', 'node_modules/*'],
+    ignores: ['*.md', 'node_modules/*', '.husky/*'],
   },
 ];
