@@ -18,8 +18,11 @@ This project uses [Prettier](https://prettier.io/) and [ESLint](eslint.org) for 
 
 Make sure to configure your [editor](https://prettier.io/docs/en/editors) to allow Prettier/ESLint on save.
 
-1. On VSCode install the Prettier extention.
-2. Integrate with editor:
+1. On VSCode install the Prettier and ESLint extention. Once installed and enabled, you may need to restart VSCode.
+2. Set the **Prettier: Config Path**
+    1. Open Settings using shortcut `Ctrl / Cmd + ,`
+    2. Right click on `.prettierrc` and click Copy Path, Set **Prettier: Config Path** to that path, e.g. `/home/user/ai-fashion-mirror/.prettierrc`
+3. Integrate with editor:
     1. File > Preferences > Settings
     2. Search for 'formatter'
     3. Set **Default Formatter** to **Prettier - Code formatter**
