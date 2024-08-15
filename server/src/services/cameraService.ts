@@ -19,7 +19,7 @@ const OPTS: WebcamOptions = {
 };
 
 interface PhotoData {
-    apiResponse: SocialMediaComments;
+    apiResponse: SocialMediaComments | 'Person not found!';
     encodedImg: string;
 }
 
