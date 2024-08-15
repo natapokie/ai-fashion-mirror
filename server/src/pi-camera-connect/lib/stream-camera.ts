@@ -171,7 +171,7 @@ class StreamCamera extends EventEmitter {
 
         // Listen for image data events and parse MJPEG frames if codec is MJPEG
         this.childProcess.stdout.on('data', (data: Buffer) => {
-          this.streams.forEach(stream => stream.push(data));
+          this.streams.forEach((stream) => stream.push(data));
 
           if (this.options.codec !== Codec.MJPEG) return;
 
@@ -200,9 +200,11 @@ class StreamCamera extends EventEmitter {
         });
 
         // Listen for error events
-        this.childProcess.stdout.on('error', err => this.emit('error', err));
-        this.childProcess.stderr.on('data', data => this.emit('error', new Error(data.toString())));
-        this.childProcess.stderr.on('error', err => this.emit('error', err));
+        this.childProcess.stdout.on('error', (err) => this.emit('error', err));
+        this.childProcess.stderr.on('data', (data) =>
+          this.emit('error', new Error(data.toString())),
+        );
+        this.childProcess.stderr.on('error', (err) => this.emit('error', err));
 
         // Listen for close events
         this.childProcess.stdout.on('close', () => this.emit('close'));
@@ -219,7 +221,7 @@ class StreamCamera extends EventEmitter {
 
     // Push null to each stream to indicate EOF
     // tslint:disable-next-line no-null-keyword
-    this.streams.forEach(stream => stream.push(null));
+    this.streams.forEach((stream) => stream.push(null));
 
     this.streams = [];
   }
@@ -237,7 +239,7 @@ class StreamCamera extends EventEmitter {
   takeImage() {
     if (this.options.codec !== Codec.MJPEG) throw new Error("Codec must be 'MJPEG' to take image");
 
-    return new Promise<Buffer>(resolve => this.once('frame', data => resolve(data)));
+    return new Promise<Buffer>((resolve) => this.once('frame', (data) => resolve(data)));
   }
 }
 

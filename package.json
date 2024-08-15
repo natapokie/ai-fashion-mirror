@@ -4,7 +4,8 @@
   "description": "## Getting started This project uses the node v20.16.0 (LTS) and npm 10.8.1.",
   "main": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss}\""
   },
   "keywords": [],
   "author": "",
