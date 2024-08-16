@@ -1,4 +1,3 @@
-import { Socket } from 'socket.io';
 import StillCamera from '../pi-camera-connect/lib/still-camera';
 import NodeWebcam, { WebcamOptions } from 'node-webcam';
 import { sendToApi } from './apiService';
@@ -34,7 +33,7 @@ export class CameraService {
 
   initCamera = () => {};
 
-  takePhoto = async (socket: Socket) => {
+  takePhoto = async () => {
     console.log('Taking a photo...');
     try {
       const photo = await this.rpiCamera.takeImage();
@@ -42,6 +41,7 @@ export class CameraService {
 
       return await this.photoHandler(photo);
     } catch (err) {
+      console.log(err);
       console.error('RPi Camera Error, using Node Webcam');
       return new Promise<PhotoData | void>((resolve, reject) => {
         this.localCamera.capture('test', async (err, data) => {
