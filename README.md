@@ -18,7 +18,7 @@ This project uses [Prettier](https://prettier.io/) and [ESLint](eslint.org) for 
 
 Make sure to configure your [editor](https://prettier.io/docs/en/editors) to allow Prettier/ESLint on save.
 
-1. On VSCode install the Prettier and ESLint extention. Once installed and enabled, you may need to restart VSCode.
+1. On VSCode install the **Prettier - Code formatter** extension and **ESLint** extention. Once installed and enabled, you may need to restart VSCode.
 2. Set the **Prettier: Config Path**
     1. Open Settings using shortcut `Ctrl / Cmd + ,`
     2. Right click on `.prettierrc` and click Copy Path, Set **Prettier: Config Path** to that path, e.g. `/home/user/ai-fashion-mirror/.prettierrc`
@@ -37,7 +37,7 @@ _Note: if you notice that there is 1 high vulnerability after installing depende
 ```shell
 # in one terminal start the client
 cd client
-npm run dev
+npm run dev>>
 ```
 
 ```shell
