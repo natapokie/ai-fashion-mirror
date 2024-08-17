@@ -17,29 +17,23 @@ export const spawnPromise = (command: string, args?: Array<string>, options?: Sp
 
     childProcess.once('error', (err: Error) => reject(err));
 
-    childProcess.stdout.on(
-      'data',
-      (data: Buffer) => {
-        // console.log('stdout data', data)
-        stdoutData = Buffer.concat([stdoutData, data])
-    },
-    );
+    childProcess.stdout.on('data', (data: Buffer) => {
+      // console.log('stdout data', data)
+      stdoutData = Buffer.concat([stdoutData, data]);
+    });
     childProcess.stdout.once('error', (err: Error) => reject(err));
 
-    childProcess.stderr.on(
-      'data',
-      (data: Buffer) => {
-        // console.log('stderr data', data.toString())
-        stderrData = Buffer.concat([stderrData, data])
-    },
-    );
+    childProcess.stderr.on('data', (data: Buffer) => {
+      // console.log('stderr data', data.toString())
+      stderrData = Buffer.concat([stderrData, data]);
+    });
     childProcess.stderr.once('error', (err: Error) => reject(err));
 
     childProcess.stdout.on('close', () => {
-        // console.log('stderrData', stderrData);
+      // console.log('stderrData', stderrData);
 
-        // TODO: stderrData returns from logging not an error -- need to rewrite this
-    //   if (stderrData.length > 0) return reject(new Error(stderrData.toString()));
+      // TODO: stderrData returns from logging not an error -- need to rewrite this
+      //   if (stderrData.length > 0) return reject(new Error(stderrData.toString()));
 
       return resolve(stdoutData);
     });
