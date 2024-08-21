@@ -2,19 +2,5 @@
   <head> </head>
   <body>
     <div>Welcome to the backend!</div>
-    <img id="image" />
-    <script src="http://localhost:8080/socket.io/socket.io.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
-    <script>
-      const socket = io.connect('http://localhost:8080', { transports: ['websocket', 'polling'] });
-      socket.on('connect', () => {
-        console.log(`Socket ${socket.id} connected`);
-      });
-      socket.on('send_photo', (image) => {
-        console.log('Received image data:', image);
-        const imageElm = document.getElementById('image');
-        imageElm.src = `data:image/jpeg;base64,${image}`;
-      });
-    </script>
   </body>
 </html>

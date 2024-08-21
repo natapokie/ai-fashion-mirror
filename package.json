@@ -18,5 +18,8 @@
     "globals": "^15.9.0",
     "prettier": "3.3.3",
     "typescript-eslint": "^8.1.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
   }
 }
