@@ -1,21 +1,26 @@
 name: Client
-on: push
+on: 
+  push:
+    # only trigger Client build if files in client folder have changed
+    - client/**
 
 jobs:
   build:
     runs-on: ubuntu-latest
     
     steps:
-      # checkout repo to host
+      # checkout repo so workspace can access it
       - uses: actions/checkout@v4
 
+      # set up node
       - uses: actions/setup-node@v4
         with:
           node-version: 20.16.0
 
       # caching node modules to prevent installing each time
+      # checks if package-lock.json has changed before running npm ci
       - name: Cache Dependencies
-        id: cache-npm
+        id: cache
         uses: actions/cache@v4
         env:
           cache-name: cache-node-modules
@@ -29,7 +34,7 @@ jobs:
 
       # install dep. if cache miss
       - name: Install Dependencies
-        if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
         working-directory: ./client
         run: npm ci
 
