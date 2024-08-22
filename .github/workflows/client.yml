@@ -1,8 +1,12 @@
 name: Client
 on: 
   push:
+    # trigger on pull requests
+    pull_request:
+      branches: [ "main" ]
     # only trigger build for specific paths
     paths:
+      - .github/workflows/client.yml
       - client/**
 
 jobs:
