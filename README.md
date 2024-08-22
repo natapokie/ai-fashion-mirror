@@ -37,7 +37,7 @@ _Note: if you notice that there is 1 high vulnerability after installing depende
 ```shell
 # in one terminal start the client
 cd client
-npm run dev
+npm run dev>>
 ```
 
 ```shell
