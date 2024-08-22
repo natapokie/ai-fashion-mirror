@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { Inter } from 'next/font/google';
 import { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
-import { socket } from './socket';
+import { socket } from '../utils/socket';
 import { Likes } from '@/components/likes/likes';
 import { Comments } from '@/components/comments';
 
