@@ -1,8 +1,9 @@
 name: Client
 on: 
   push:
-    # only trigger Client build if files in client folder have changed
-    - client/**
+    # only trigger build for specific paths
+    paths:
+      - client/**
 
 jobs:
   build:
