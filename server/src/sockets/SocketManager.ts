@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
 import { CameraService } from '../services/cameraService';
-import { parseResponse } from '../parseResponse';
+import { parseResponse } from '../utils/parseResponse';
 
 export class SocketManager {
   io: Server;
