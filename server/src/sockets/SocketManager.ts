@@ -40,7 +40,7 @@ export class SocketManager {
     console.log('Register socket events');
     // handle all socket events
     socket.on('take_photo', async () => {
-      const data = await this.cameraService.takePhoto(socket);
+      const data = await this.cameraService.takePhoto();
 
       console.log('Received data', data);
 
