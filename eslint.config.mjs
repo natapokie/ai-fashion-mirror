@@ -21,4 +21,14 @@ export default [
   {
     ignores: ['*.md', 'node_modules/*'],
   },
+  {
+    overrides: [
+      {
+        files: ['*/tests/**/*'],
+        env: {
+          jest: true,
+        },
+      },
+    ],
+  },
 ];
