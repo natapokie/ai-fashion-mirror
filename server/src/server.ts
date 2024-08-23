@@ -1,15 +1,20 @@
 import http from 'http';
 import app from './app';
+import dotenv from 'dotenv';
+import path from 'path';
 import { Server } from 'socket.io';
 import { SocketManager } from './sockets/SocketManager';
 
-const PORT = process.env.PORT || 8080;
+// configure .env file to root
+dotenv.config({
+  path: path.resolve(__dirname, '../../.env'),
+});
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: process.env.CLIENT_BASE_URL,
   },
   transports: ['websocket', 'polling'],
 });
@@ -17,6 +22,6 @@ const io = new Server(server, {
 // create socket manager
 new SocketManager(io);
 
-server.listen(PORT, () => {
-  console.log(`Server started on port: ${PORT}`);
+server.listen(process.env.SERVER_PORT || 8080, () => {
+  console.log(`Server started on port: ${process.env.SERVER_PORT}`);
 });
