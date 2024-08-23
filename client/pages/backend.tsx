@@ -14,6 +14,7 @@ const Backend = () => {
       setImg(`data:image/jpeg;base64,${data}`);
     };
 
+    // TODO: replace with proper type
     const onApiResonse = (data: any) => {
       console.log('/backend Received api response from socket');
       console.log(data);

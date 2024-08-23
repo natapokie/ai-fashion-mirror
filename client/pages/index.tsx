@@ -18,7 +18,7 @@ const Home = () => {
     console.log('Connecting Socket');
 
     const onConnect = () => {
-      console.log(`Connected with socket ${socket.id}`);
+      console.log(`Connected with socket ${socket.id} on server ${process.env.SERVER_BASE_URL}`);
     };
 
     // TODO: add type

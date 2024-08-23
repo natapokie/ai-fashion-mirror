@@ -1,8 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { SocialMediaComments } from '../utils/types';
 
-const URL = 'https://pre.cm/scribe.php';
-
 export const sendToApi = async (buffer: Buffer): Promise<SocialMediaComments> => {
   try {
     console.log('sending to API');
@@ -17,7 +15,7 @@ export const sendToApi = async (buffer: Buffer): Promise<SocialMediaComments> =>
     form.append('submit', 'submit');
 
     console.log('Waiting for response...');
-    const response: AxiosResponse = await axios.post(URL, form, {
+    const response: AxiosResponse = await axios.post(`${process.env.PREAPI_URL}`, form, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
