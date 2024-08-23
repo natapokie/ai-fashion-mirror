@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { SocialMediaComments } from '../utils/types';
+import { SocialMediaComments } from '../../../shared/types';
 
 const URL = 'https://pre.cm/scribe.php';
 

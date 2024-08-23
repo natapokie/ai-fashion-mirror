@@ -1,4 +1,4 @@
-import { ResponseData, SocialMediaComments } from './types';
+import { ResponseData, SocialMediaComments } from '../../../shared/types';
 import { WORDS_PER_MS, MIN_DISPLAY_TIME } from './constants';
 
 const calculateDisplayTime = (text: string): number => {

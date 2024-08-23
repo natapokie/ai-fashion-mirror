@@ -2,7 +2,7 @@ import StillCamera from '../pi-camera-connect/lib/still-camera';
 import NodeWebcam, { WebcamOptions } from 'node-webcam';
 import { sendToApi } from './apiService';
 import fs from 'fs';
-import { SocialMediaComments } from '../utils/types';
+import { SocialMediaComments } from '../../../shared/types';
 
 const PHOTO_WIDTH = 450;
 const PHOTO_HEIGHT = 900;
