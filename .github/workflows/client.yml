@@ -3,7 +3,11 @@ on:
   push:
     # trigger on pull requests
     pull_request:
-      branches: [ "main" ]
+      branches: 
+        - main
+      path:
+        - .github/workflows/client.yml
+        - client/**
     # only trigger build for specific paths
     paths:
       - .github/workflows/client.yml
