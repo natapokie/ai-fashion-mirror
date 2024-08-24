@@ -1,28 +1,23 @@
-import Image from 'next/image';
-import { Inter } from 'next/font/google';
 import { useEffect, useRef, useState } from 'react';
-import { io } from 'socket.io-client';
 import { socket } from '../utils/socket';
 import { Likes } from '@/components/likes/likes';
 import { Comments } from '@/components/comments';
-
-const inter = Inter({ subsets: ['latin'] });
+import { ResponseData } from '../../shared/types';
 
 const Home = () => {
-  const intervalRef = useRef<NodeJS.Timeout | null>(null); // test timer
+  const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
 
   // state to determine if we're displaying stuff (true) or not (false)
-  const [display, setDisplay] = useState('TESTNG...');
+  const [display, setDisplay] = useState<ResponseData | string>('TESTNG...');
 
   useEffect(() => {
     console.log('Connecting Socket');
 
     const onConnect = () => {
-      console.log(`Connected with socket ${socket.id}`);
+      console.log(`Connected with socket ${socket.id} on server ${process.env.SERVER_BASE_URL}`);
     };
 
-    // TODO: add type
-    const onApiResonse = (data: any) => {
+    const onApiResonse = (data: ResponseData) => {
       console.log('Received api response from socket');
       setDisplay(data);
     };
@@ -80,7 +75,31 @@ const Home = () => {
         style={{ backgroundImage: `url(https://picsum.photos/1000/500)` }}
       >
         <Likes likes={likes}></Likes>
-        {display}
+
+        {typeof display === 'string' ? (
+          <p>{display}</p>
+        ) : (
+          <div>
+            <p>Likes: {display.likes}</p>
+            <p>Views: {display.views}</p>
+            <p>Comments Count: {display.commentsCount}</p>
+
+            {/* Render the comments */}
+            <div>
+              <h3>Comments:</h3>
+              {display.comments.length > 0 ? (
+                display.comments.map((comment, index) => (
+                  <div key={index}>
+                    <p>{comment.text}</p>
+                  </div>
+                ))
+              ) : (
+                <p>No comments available.</p>
+              )}
+            </div>
+          </div>
+        )}
+
         <Comments comments={commentTest}></Comments>
       </div>
     </>
