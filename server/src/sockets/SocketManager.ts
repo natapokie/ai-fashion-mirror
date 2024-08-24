@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
 import { CameraService } from '../services/cameraService';
-import { parseResponse } from '../parseResponse';
+import { parseResponse } from '../utils/parseResponse';
 
 export class SocketManager {
   io: Server;
@@ -40,7 +40,7 @@ export class SocketManager {
     console.log('Register socket events');
     // handle all socket events
     socket.on('take_photo', async () => {
-      const data = await this.cameraService.takePhoto(socket);
+      const data = await this.cameraService.takePhoto();
 
       console.log('Received data', data);
 
@@ -50,7 +50,7 @@ export class SocketManager {
       } else if (data?.apiResponse) {
         const parsedResponse = parseResponse(data.apiResponse);
         console.log('Received API Response and parsed');
-        this.io.emit('api_response', JSON.stringify(parsedResponse));
+        this.io.emit('api_response', parsedResponse);
       }
 
       if (data?.encodedImg) {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { socket } from './socket';
+import { ResponseData } from '../../shared/types';
 
 const Backend = () => {
   const [img, setImg] = useState<string>('');
@@ -14,8 +15,7 @@ const Backend = () => {
       setImg(`data:image/jpeg;base64,${data}`);
     };
 
-    // TODO: replace with proper type
-    const onApiResonse = (data: any) => {
+    const onApiResonse = (data: ResponseData | string) => {
       console.log('/backend Received api response from socket');
       console.log(data);
     };

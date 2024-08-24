@@ -1,5 +1,5 @@
-import { ResponseData, SocialMediaComments } from './utils/types';
-import { WORDS_PER_MS, MIN_DISPLAY_TIME } from './utils/constants';
+import { ResponseData, SocialMediaComments } from '../../../shared/types';
+import { WORDS_PER_MS, MIN_DISPLAY_TIME } from './constants';
 
 const calculateDisplayTime = (text: string): number => {
   // Ensure text is a string and not empty or undefined
