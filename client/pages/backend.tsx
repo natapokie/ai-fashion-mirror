@@ -15,7 +15,7 @@ const Backend = () => {
       setImg(`data:image/jpeg;base64,${data}`);
     };
 
-    const onApiResonse = (data: ResponseData) => {
+    const onApiResonse = (data: ResponseData | string) => {
       console.log('/backend Received api response from socket');
       console.log(data);
     };
