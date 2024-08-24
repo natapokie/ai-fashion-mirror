@@ -4,7 +4,7 @@
   "main": "src/server.ts",
   "scripts": {
     "build": "npx tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/server.ts",
     "dev": "nodemon src/server.ts",
     "test": "jest"
   },

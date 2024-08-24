@@ -5,7 +5,14 @@
   "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss}\""
+    "prepare": "husky install",
+    "pre-commit": "lint-staged",
+    "lint": "eslint . --fix --max-warnings=0",
+    "format": "prettier . --write"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "eslint --fix --max-warnings=0",
+    "*.{js,jsx,ts,tsx,css,scss,html,json}": "prettier --write"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +23,12 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.35.0",
     "globals": "^15.9.0",
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.9",
     "prettier": "3.3.3",
     "typescript-eslint": "^8.1.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
   }
 }

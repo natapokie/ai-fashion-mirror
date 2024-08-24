@@ -1,10 +1,10 @@
-name: camera-test-py  # Replace with your desired environment name
+name: camera-test-py # Replace with your desired environment name
 channels:
   - conda-forge
 dependencies:
   - python=3.11.2
   - pip
   - pip:
-    - picamera2
-    - keyboard
+      - picamera2
+      - keyboard
   - requests==2.28.1

@@ -4,6 +4,8 @@
 
 This project uses the node v20.16.0 (LTS) and npm 10.8.1.
 
+### Installing Dependencies
+
 First, we'll need to install frontend, backend dependencies and root dependencies.
 
 ```shell
@@ -13,6 +15,8 @@ npm i
 cd ../server
 npm i
 ```
+
+### Setting up IDE
 
 This project uses [Prettier](https://prettier.io/) and [ESLint](eslint.org) for automatic formatting and fixing.
 
@@ -28,6 +32,12 @@ Make sure to configure your [editor](https://prettier.io/docs/en/editors) to all
     3. Set **Default Formatter** to **Prettier - Code formatter**
     4. Check **Editor: Format On Save**
 
+### Environment Variables
+
+This project uses an `.env` file to store environment variables along with [dotenv](https://www.npmjs.com/package/dotenv) package to load these variables.
+
+The `.env` file is placed at the root. It is configured on the server in `server.ts` and configured on the client in `next.config.js`.
+
 ## Running the Code
 
 Currently, you will have the run with frontend and backend in two different terminals.
@@ -37,7 +47,7 @@ _Note: if you notice that there is 1 high vulnerability after installing depende
 ```shell
 # in one terminal start the client
 cd client
-npm run dev
+npm run dev>>
 ```
 
 ```shell
