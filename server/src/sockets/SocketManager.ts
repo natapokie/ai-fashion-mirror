@@ -50,7 +50,7 @@ export class SocketManager {
       } else if (data?.apiResponse) {
         const parsedResponse = parseResponse(data.apiResponse);
         console.log('Received API Response and parsed');
-        this.io.emit('api_response', JSON.stringify(parsedResponse));
+        this.io.emit('api_response', parsedResponse);
       }
 
       if (data?.encodedImg) {
