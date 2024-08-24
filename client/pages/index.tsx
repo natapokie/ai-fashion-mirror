@@ -4,8 +4,6 @@ import { Likes } from '@/components/likes/likes';
 import CommentFeed from '@/components/comments/commentFeed';
 import { ResponseData } from '../../shared/types';
 
-const inter = Inter({ subsets: ['latin'] });
-
 const mockResponseData: ResponseData = {
   comments : [
       { user: 'user1', text: 'comment1', displayTime: 1 },
