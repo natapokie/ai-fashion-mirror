@@ -10,9 +10,9 @@ interface CommentProps {
 const Comment: React.FC<CommentProps> = ({ comment }) => {
   return (
     <motion.div
-      className="bg-white text-black p-3 rounded-md shadow-md mb-2 absolute bottom-0"
+      className="bg-slate-950/70 text-white p-3 rounded-t-md rounded-r-md shadow-md mb-2 absolute bottom-0"
       initial={{ opacity: 0, y: 0 }}
-      animate={{ opacity: 1, y: -150, transition: { duration: 2 } }}
+      animate={{ opacity: 1, y: -50, transition: { duration: 2 } }}
       exit={{ opacity: 0, y: -300, transition: { duration: 5 } }}
     >
       <>

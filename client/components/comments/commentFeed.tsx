@@ -25,7 +25,6 @@ const CommentFeed: React.FC<CommentFeedProps> = ({ comments }) => {
   useEffect(() => {
     setDisplayedComments(() => {
       const updatedComments = comments.slice(commentsIndex, commentsIndex + 1);
-      console.log('eri' + commentsIndex, updatedComments);
       return updatedComments;
     });
   }, [commentsIndex]);

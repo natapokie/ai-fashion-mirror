@@ -67,11 +67,6 @@ const Home = () => {
     console.log('display changed', display);
   }, [display]);
 
-  const commentTest = [
-    { username: 'user1', text: 'omg you look so cool!!' },
-    { username: 'user2', text: '2' },
-    { username: 'user3', text: '3' },
-  ];
   const likes = 1234;
 
   return (
