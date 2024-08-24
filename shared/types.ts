@@ -5,14 +5,14 @@ export interface SocialMediaComments {
   comments: number;
 }
 
-export interface Comment {
+export interface CommentType {
   user: string;
   text: string;
   displayTime: number; // time in seconds
 }
 
 export interface ResponseData {
-  comments: Comment[];
+  comments: CommentType[];
   likes: number;
   views: number;
   commentsCount: number;
