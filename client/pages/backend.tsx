@@ -36,7 +36,7 @@ const Backend = () => {
   return (
     <>
       <div>Welcome to the backend ui!</div>
-      {img && <Image id="image" alt="Received image" src={img} />}
+      {img && <Image id="image" alt="Received image" src={img} width={500} height={500} />}
     </>
   );
 };
