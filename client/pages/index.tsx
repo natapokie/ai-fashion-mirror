@@ -9,6 +9,18 @@ import { ResponseData } from '../../shared/types';
 
 const inter = Inter({ subsets: ['latin'] });
 
+const mockResponseData: ResponseData = {
+  comments : [
+      { user: 'user1', text: 'comment1', displayTime: 1 },
+      { user: 'user2', text: 'comment2', displayTime: 2 },
+      { user: 'user3', text: 'comment3', displayTime: 3 },
+      { user: 'user4', text: 'comment4', displayTime: 4 },
+  ],
+  likes: 100,
+  views: 1000,
+  commentsCount: 4,
+};
+
 const Home = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null); // test timer
 
