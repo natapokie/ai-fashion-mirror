@@ -1,7 +1,72 @@
-export const Likes = ({ likes }: { likes: number }) => {
-  return (
-    <>
-      <div className="w-full h-32 bg-gray-800">Likes works</div>
-    </>
-  );
+import { useEffect, useState } from 'react';
+import { LIKES_INCREMENT_STEP, LIKES_INCREMENT_DELAY } from '../../../server/src/utils/constants';
+import { LikesDisplay } from './likesDisplay';
+
+interface LikesProps {
+  finalLikes: number;
+}
+
+export const Likes = ({ finalLikes }: LikesProps) => {
+  const [animatedLikes, setAnimatedLikes] = useState<number>(0);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+
+  useEffect(() => {
+    let incrementTimeoutId: ReturnType<typeof setTimeout>;
+    let pauseTimeoutId: ReturnType<typeof setTimeout>;
+    let isIncrementing = true;
+
+    const randomDelay = (min: number, max: number) => Math.random() * (max - min) + min;
+    const animationDuration = randomDelay(500, 1000); // random duration (ms) to continue animation for
+    const pauseDuration = randomDelay(400, 1200); // random duration (ms) to puase animation for
+
+    const incrementLikes = () => {
+      if (isIncrementing) {
+        setIsAnimating(true);
+        incrementTimeoutId = setInterval(() => {
+          setAnimatedLikes((prevLikes) => {
+            const newLikes = prevLikes + LIKES_INCREMENT_STEP;
+            if (newLikes >= finalLikes) {
+              clearInterval(incrementTimeoutId);
+              setIsAnimating(false); // stop animation when finalLikes is reached (heart stops pulsing)
+              return finalLikes;
+            } else {
+              return newLikes;
+            }
+          });
+        }, LIKES_INCREMENT_DELAY); // increase displayed likes by LIKES_INCREMENT_STEP every 15 ms
+
+        pauseTimeoutId = setTimeout(
+          () => {
+            clearInterval(incrementTimeoutId);
+            isIncrementing = false;
+            setIsAnimating(false);
+            incrementLikes(); // call again to pause animation
+          },
+          animationDuration, // continues animation for a random duration
+        );
+      } else {
+        // Pause for a random duration
+        pauseTimeoutId = setTimeout(
+          () => {
+            clearInterval(incrementTimeoutId);
+            isIncrementing = true;
+            setIsAnimating(true);
+            incrementLikes(); // call again to continue animation
+          },
+          pauseDuration, // pauses animation for a random duration
+        );
+      }
+    };
+
+    setAnimatedLikes(0); // reset to displayed likes to 0 every time finalLikes is updated
+    setIsAnimating(true);
+    incrementLikes();
+
+    return () => {
+      clearInterval(incrementTimeoutId);
+      clearTimeout(pauseTimeoutId);
+    };
+  }, [finalLikes]); // reset when finalLikes is updated
+
+  return <LikesDisplay animatedLikes={animatedLikes} isAnimating={isAnimating} />;
 };
