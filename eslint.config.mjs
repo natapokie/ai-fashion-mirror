@@ -21,4 +21,12 @@ export default [
   {
     ignores: ['*.md', 'node_modules/*', '.husky/*'],
   },
+  {
+    files: ['*/tests/**/*'],
+    languageOptions: {
+      env: {
+        jest: true,
+      },
+    },
+  },
 ];

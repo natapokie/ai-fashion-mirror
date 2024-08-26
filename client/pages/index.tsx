@@ -1,8 +1,5 @@
-import Image from 'next/image';
-import { Inter } from 'next/font/google';
 import { useEffect, useRef, useState } from 'react';
-import { io } from 'socket.io-client';
-import { socket } from './socket';
+import { socket } from '../utils/socket';
 import { Likes } from '@/components/likes/likes';
 import CommentFeed from '@/components/comments/commentFeed';
 import { ResponseData } from '../../shared/types';
@@ -22,7 +19,7 @@ const mockResponseData: ResponseData = {
 };
 
 const Home = () => {
-  const intervalRef = useRef<NodeJS.Timeout | null>(null); // test timer
+  const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
 
   // state to determine if we're displaying stuff (true) or not (false)
   const [display, setDisplay] = useState<ResponseData | string>('TESTNG...');

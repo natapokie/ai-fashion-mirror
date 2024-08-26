@@ -23,18 +23,16 @@ export const parseResponse = (jsonResponse: SocialMediaComments): ResponseData =
   };
 
   for (const key in jsonResponse) {
-    if (jsonResponse.hasOwnProperty(key)) {
-      if (key === 'likes') {
-        responseData.likes = jsonResponse.likes;
-      } else if (key === 'views') {
-        responseData.views = jsonResponse.views;
-      } else if (key === 'comments') {
-        responseData.commentsCount = jsonResponse.comments;
-      } else {
-        const [user, text] = jsonResponse[key].split(': ');
-        const displayTime = calculateDisplayTime(text);
-        responseData.comments.push({ user, text, displayTime });
-      }
+    if (key === 'likes') {
+      responseData.likes = jsonResponse.likes;
+    } else if (key === 'views') {
+      responseData.views = jsonResponse.views;
+    } else if (key === 'comments') {
+      responseData.commentsCount = jsonResponse.comments;
+    } else {
+      const [user, text] = jsonResponse[key].split(': ');
+      const displayTime = calculateDisplayTime(text);
+      responseData.comments.push({ user, text, displayTime });
     }
   }
 
