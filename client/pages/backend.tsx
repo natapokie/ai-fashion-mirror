@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { socket } from './socket';
+import { socket } from '../utils/socket';
 import { ResponseData } from '../../shared/types';
+import Image from 'next/image';
 
 const Backend = () => {
   const [img, setImg] = useState<string>('');
@@ -35,7 +36,7 @@ const Backend = () => {
   return (
     <>
       <div>Welcome to the backend ui!</div>
-      {img && <img id="image" alt="Received image" src={img}></img>}
+      {img && <Image id="image" alt="Received image" src={img} width={500} height={500} />}
     </>
   );
 };

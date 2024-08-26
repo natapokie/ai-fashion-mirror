@@ -1,16 +1,11 @@
-import Image from 'next/image';
-import { Inter } from 'next/font/google';
 import { useEffect, useRef, useState } from 'react';
-import { io } from 'socket.io-client';
-import { socket } from './socket';
+import { socket } from '../utils/socket';
 import { Likes } from '@/components/likes/likes';
 import { Comments } from '@/components/comments';
 import { ResponseData } from '../../shared/types';
 
-const inter = Inter({ subsets: ['latin'] });
-
 const Home = () => {
-  const intervalRef = useRef<NodeJS.Timeout | null>(null); // test timer
+  const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
 
   // state to determine if we're displaying stuff (true) or not (false)
   const [display, setDisplay] = useState<ResponseData | string>('TESTNG...');
@@ -80,31 +75,31 @@ const Home = () => {
         style={{ backgroundImage: `url(https://picsum.photos/1000/500)` }}
       >
         <Likes likes={likes}></Likes>
-        
-        {typeof display === 'string' ? (
-        <p>{display}</p>
-      ) : (
-        <div>
-          <p>Likes: {display.likes}</p>
-          <p>Views: {display.views}</p>
-          <p>Comments Count: {display.commentsCount}</p>
 
-          {/* Render the comments */}
+        {typeof display === 'string' ? (
+          <p>{display}</p>
+        ) : (
           <div>
-            <h3>Comments:</h3>
-            {display.comments.length > 0 ? (
-              display.comments.map((comment, index) => (
-                <div key={index}>
-                  <p>{comment.text}</p>
-                </div>
-              ))
-            ) : (
-              <p>No comments available.</p>
-            )}
+            <p>Likes: {display.likes}</p>
+            <p>Views: {display.views}</p>
+            <p>Comments Count: {display.commentsCount}</p>
+
+            {/* Render the comments */}
+            <div>
+              <h3>Comments:</h3>
+              {display.comments.length > 0 ? (
+                display.comments.map((comment, index) => (
+                  <div key={index}>
+                    <p>{comment.text}</p>
+                  </div>
+                ))
+              ) : (
+                <p>No comments available.</p>
+              )}
+            </div>
           </div>
-        </div>
-      )}
-        
+        )}
+
         <Comments comments={commentTest}></Comments>
       </div>
     </>
