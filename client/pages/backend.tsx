@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import { socket } from '../utils/socket';
 import { ResponseData } from '../../shared/types';
 import Image from 'next/image';

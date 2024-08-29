@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+
 import { socket } from '../utils/socket';
 import { Likes } from '@/components/likes/likes';
 import CommentFeed from '@/components/comments/commentFeed';
@@ -21,6 +22,8 @@ const Home = () => {
 
   // state to determine if we're displaying stuff (true) or not (false)
   const [display, setDisplay] = useState<ResponseData | string>('TESTNG...');
+  const [finalLikes, setFinalLikes] = useState<number>(0);
+
 
   useEffect(() => {
     console.log('Connecting Socket');
@@ -32,6 +35,9 @@ const Home = () => {
     const onApiResonse = (data: ResponseData) => {
       console.log('Received api response from socket');
       setDisplay(data);
+      if (data.likes !== undefined) {
+        setFinalLikes(data.likes);
+      }
     };
 
     socket.on('connect', onConnect);
@@ -51,9 +57,9 @@ const Home = () => {
     intervalRef.current = setInterval(
       () => {
         takePhoto();
-        setTimeout(donePhoto, 2 * 60 * 1000);
+        setTimeout(donePhoto, 2 * 1 * 1000);
       },
-      1 * 60 * 1000,
+      1 * 20 * 1000,
     );
 
     return () => {
@@ -74,15 +80,14 @@ const Home = () => {
     console.log('display changed', display);
   }, [display]);
 
-  const likes = 1234;
-
   return (
     <>
       <div
         className="w-screen h-screen flex flex-col justify-between items-center bg-cover bg-center h-screen"
         style={{ backgroundImage: `url(https://picsum.photos/1000/500)` }}
       >
-        <Likes likes={likes}></Likes>
+        <Likes finalLikes={finalLikes}></Likes>
+
 
         {typeof display === 'string' ? (
           <p>{display}</p>
