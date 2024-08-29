@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { socket } from './socket';
+
+import { socket } from '../utils/socket';
 import { Likes } from '@/components/likes/likes';
 import { Comments } from '@/components/comments';
 import { ResponseData } from '../../shared/types';
@@ -10,6 +11,7 @@ const Home = () => {
   // state to determine if we're displaying stuff (true) or not (false)
   const [display, setDisplay] = useState<ResponseData | string>('TESTNG...');
   const [finalLikes, setFinalLikes] = useState<number>(0);
+
 
   useEffect(() => {
     console.log('Connecting Socket');
@@ -78,6 +80,7 @@ const Home = () => {
         style={{ backgroundImage: `url(https://picsum.photos/1000/500)` }}
       >
         <Likes finalLikes={finalLikes}></Likes>
+
 
         {typeof display === 'string' ? (
           <p>{display}</p>
