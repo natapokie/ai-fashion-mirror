@@ -2,8 +2,20 @@ import { useEffect, useRef, useState } from 'react';
 
 import { socket } from '../utils/socket';
 import { Likes } from '@/components/likes/likes';
-import { Comments } from '@/components/comments';
+import CommentFeed from '@/components/comments/commentFeed';
 import { ResponseData } from '../../shared/types';
+
+const mockResponseData: ResponseData = {
+  comments : [
+      { user: 'user1', text: 'comment1', displayTime: 1 },
+      { user: 'user2', text: 'comment2', displayTime: 2 },
+      { user: 'user3', text: 'comment3', displayTime: 3 },
+      { user: 'user4', text: 'comment4', displayTime: 4 },
+  ],
+  likes: 100,
+  views: 1000,
+  commentsCount: 4,
+};
 
 const Home = () => {
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
@@ -68,11 +80,6 @@ const Home = () => {
     console.log('display changed', display);
   }, [display]);
 
-  const commentTest = [
-    { username: 'user1', comment: 'omg you look so cool!!' },
-    { username: 'user2', comment: 'SLAYYY' },
-  ];
-
   return (
     <>
       <div
@@ -103,10 +110,9 @@ const Home = () => {
                 <p>No comments available.</p>
               )}
             </div>
+            <CommentFeed comments={display.comments}></CommentFeed>
           </div>
         )}
-
-        <Comments comments={commentTest}></Comments>
       </div>
     </>
   );
