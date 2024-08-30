@@ -5,25 +5,12 @@ import { Likes } from '@/components/likes/likes';
 import CommentFeed from '@/components/comments/commentFeed';
 import { ResponseData } from '../../shared/types';
 
-const mockResponseData: ResponseData = {
-  comments : [
-      { user: 'user1', text: 'comment1', displayTime: 1 },
-      { user: 'user2', text: 'comment2', displayTime: 2 },
-      { user: 'user3', text: 'comment3', displayTime: 3 },
-      { user: 'user4', text: 'comment4', displayTime: 4 },
-  ],
-  likes: 100,
-  views: 1000,
-  commentsCount: 4,
-};
-
 const Home = () => {
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
 
   // state to determine if we're displaying stuff (true) or not (false)
-  const [display, setDisplay] = useState<ResponseData | string>('TESTNG...');
+  const [display, setDisplay] = useState<ResponseData | undefined>();
   const [finalLikes, setFinalLikes] = useState<number>(0);
-
 
   useEffect(() => {
     console.log('Connecting Socket');
@@ -82,36 +69,14 @@ const Home = () => {
 
   return (
     <>
-      <div
-        className="w-screen h-screen flex flex-col justify-between items-center bg-cover bg-center h-screen"
-        style={{ backgroundImage: `url(https://picsum.photos/1000/500)` }}
-      >
-        <Likes finalLikes={finalLikes}></Likes>
-
-
-        {typeof display === 'string' ? (
-          <p>{display}</p>
-        ) : (
-          <div>
-            <p>Likes: {display.likes}</p>
-            <p>Views: {display.views}</p>
-            <p>Comments Count: {display.commentsCount}</p>
-
-            {/* Render the comments */}
-            <div>
-              <h3>Comments:</h3>
-              {display.comments.length > 0 ? (
-                display.comments.map((comment, index) => (
-                  <div key={index}>
-                    <p>{comment.text}</p>
-                  </div>
-                ))
-              ) : (
-                <p>No comments available.</p>
-              )}
-            </div>
+      <div className="w-screen h-screen flex flex-col justify-between items-center bg-cover bg-center h-screen">
+        {display ? (
+          <>
+            <Likes finalLikes={finalLikes}></Likes>
             <CommentFeed comments={display.comments}></CommentFeed>
-          </div>
+          </>
+        ) : (
+          <></>
         )}
       </div>
     </>
