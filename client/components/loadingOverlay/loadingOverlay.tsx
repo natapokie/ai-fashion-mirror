@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
+import { Spinner } from '../spinner/spinner';
 
 export const LoadingOverlay = () => {
   const [isCounting, setIsCounting] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(3);
+
+  const [showSpinner, setShowSpinner] = useState<boolean>(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -18,6 +21,9 @@ export const LoadingOverlay = () => {
       interval = setInterval(() => {
         if (countdown > 0) {
           setCountdown((countdown) => (countdown > 0 ? countdown - 1 : countdown));
+        } else {
+          setIsCounting(false);
+          setShowSpinner(true);
         }
       }, 1000);
     }
@@ -34,11 +40,17 @@ export const LoadingOverlay = () => {
   return (
     <>
       <div className="h-full w-full flex flex-row justify-center items-center">
-        <div className="flex flex-col gap-3 text-center">
-          <h1 className="smile-text">Smile!</h1>
-          <h2>Taking your photo in...</h2>
-          <h1>{countdown}</h1>
-        </div>
+        {showSpinner ? (
+          <Spinner></Spinner>
+        ) : (
+          <>
+            <div className="flex flex-col gap-3 text-center">
+              <h1 className="smile-text">Smile!</h1>
+              <h2>Taking your photo in...</h2>
+              <h1>{countdown}</h1>
+            </div>
+          </>
+        )}
       </div>
     </>
   );

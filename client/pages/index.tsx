@@ -4,7 +4,7 @@ import { socket } from '../utils/socket';
 import { Likes } from '@/components/likes/likes';
 import CommentFeed from '@/components/comments/commentFeed';
 import { ResponseData } from '../../shared/types';
-import { LoadingOverlay } from '@/components/loading/loadingOverlay';
+import { LoadingOverlay } from '@/components/loadingOverlay/loadingOverlay';
 
 const Home = () => {
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
