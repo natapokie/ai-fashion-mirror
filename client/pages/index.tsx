@@ -10,7 +10,7 @@ const Home = () => {
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
 
   // state to determine if we're displaying stuff (true) or not (false)
-  const [display, setDisplay] = useState<ResponseData | void>();
+  const [display, setDisplay] = useState<ResponseData | string | void>();
   const [finalLikes, setFinalLikes] = useState<number>(0);
 
   // state variables to indicate completed animations
@@ -24,11 +24,18 @@ const Home = () => {
       console.log(`Connected with socket ${socket.id} on server ${process.env.SERVER_BASE_URL}`);
     };
 
-    const onApiResonse = (data: ResponseData) => {
+    const onApiResonse = (data: ResponseData | string) => {
       console.log('Received api response from socket');
-      setDisplay(data);
-      if (data.likes !== undefined) {
-        setFinalLikes(data.likes);
+
+      if (typeof data === 'string') {
+        // when data is a string (i.e., person not found), take a new photo
+        console.error(data);
+        takePhoto();
+      } else {
+        setDisplay(data);
+        if (data.likes !== undefined) {
+          setFinalLikes(data.likes);
+        }
       }
     };
 
