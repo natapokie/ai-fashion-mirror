@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { PREAPIResponse } from '../../../shared/types';
+import { mockData } from '../utils/mockData';
 
 export const sendToApi = async (buffer: Buffer): Promise<PREAPIResponse> => {
   try {
@@ -30,7 +31,13 @@ export const sendToApi = async (buffer: Buffer): Promise<PREAPIResponse> => {
     if (axios.isAxiosError(err)) {
       console.error(`Axios error: ${err.message}`);
       console.error(`Response status: ${err.response?.status}`);
-      throw `${err.message}\n${err.response?.data}`;
+
+      if (process.env.USE_MOCK_DATA) {
+        console.log('Using mock data');
+        return mockData;
+      } else {
+        throw `${err.message}\n${err.response?.data}`;
+      }
     } else {
       console.error(`Unexpected error: ${err}`);
       throw err;

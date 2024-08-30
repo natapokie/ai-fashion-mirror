@@ -1,0 +1,27 @@
+import { PREAPIResponse } from '../../../shared/types';
+
+export const mockData: PREAPIResponse = {
+  '0': '@fabuloumiss: Maybe add a pop of color with a bright cushion or blanket.',
+  '1': '@runwayace: Loving the chic and simple hairstyle, very elegant! ❤️',
+  '2': '@fascinfan: The blinds look super modern and sleek. ✨',
+  '3': '@luxuart: A small plant could add a bit of life to the decor.',
+  '4': '@awesoguru: The understated colors are really soothing to look at. 😍😍',
+  '5': '@impsist: The subtle shadows create a relaxed atmosphere. ✨❤️😍',
+  '6': '@fancyguru: Darker hair contrasts nicely with the lighter background. 😍',
+  '7': '@luxlady: Minimalist decor is always a win in my book. ️👍️👍',
+  '8': '@desigexp: The lamp in the background adds a warm and cozy vibe. ❤️',
+  '9': '@fascinaarti: The subtle use of light and shadow is on point. ️👍',
+  '10': '@extraormiss: The way the light hits the room is just perfect.',
+  '11': "@wondesiste: Loving the casual and focused vibe you're giving off. ️👍",
+  '12': '@fashionsiste: The neutral color of the walls really makes the whole scene calm and inviting. 😍',
+  '13': '@captace: The balance between the light and darker elements is perfect. ✨',
+  '14': '@imprelover: The room has a lovely serene ambiance.',
+  '15': '@runmiss: The blinds have a super modern and clean look to them! ❤️✨',
+  '16': '@splensis: Sturdy bookshelves in the back? Yes, please! ❤️',
+  '17': '@elaborguru: That lampshade looks super stylish! ️👍️👍',
+  '18': "@grandace: Neat and clean desk, you're killing it! ✨😍✨",
+  '19': '@exqulove: The partially visible shelves add a lot of character. ️👍',
+  likes: 23291,
+  views: 443810,
+  comments: 20,
+};

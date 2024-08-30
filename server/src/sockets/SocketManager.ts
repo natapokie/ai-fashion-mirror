@@ -42,7 +42,7 @@ export class SocketManager {
     socket.on('take_photo', async () => {
       const data = await this.cameraService.takePhoto();
 
-      console.log('Received data', data);
+      // console.log('Received data', data);
 
       // Parse the response data and emit event to all connected sockets
       if (data.errorMsg) {
