@@ -29,7 +29,7 @@ export const parseResponse = (jsonResponse: PREAPIResponse): ResponseData => {
       responseData.views = jsonResponse.views;
     } else if (key === 'comments') {
       responseData.commentsCount = jsonResponse.comments;
-    } else {
+    } else if (+key >= 0 && +key < 20) {
       const [user, text] = jsonResponse[key].split(': ');
       const displayTime = calculateDisplayTime(text);
       responseData.comments.push({ user, text, displayTime });
