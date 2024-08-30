@@ -17,32 +17,6 @@ const Home = () => {
   const [likesComplete, setLikesComplete] = useState<boolean>(false);
   const [commentsComplete, setCommentsComplete] = useState<boolean>(false);
 
-  const takePhoto = () => {
-    console.log('Taking a photo...');
-    socket.emit('take_photo');
-  };
-
-  const donePhoto = () => {
-    console.log('Completed displaying all comments and likes');
-    console.log('Clearing display');
-    setDisplay();
-
-    setTimeout(() => {
-      console.log('5s passed taking a new photo');
-      takePhoto();
-      // TODO: declare this as a const, e.g., WAIT_TIME or better name
-      // time we want to wait/stall after the last photo is taken
-    }, 5000);
-  };
-
-  const onLikesComplete = () => {
-    setLikesComplete(true);
-  };
-
-  const onCommentsComplete = () => {
-    setCommentsComplete(true);
-  };
-
   useEffect(() => {
     console.log('Connecting Socket');
 
@@ -99,6 +73,34 @@ const Home = () => {
     }
     // fire useEffect when either state vars change
   }, [likesComplete, commentsComplete]);
+
+  // TODO: need to ensure that the photo is taken once countdown on loading overlay completes
+  // idea: pass this function as a prop to loading overlay, call fuction once the countdownn reaches 0
+  const takePhoto = () => {
+    console.log('Taking a photo...');
+    socket.emit('take_photo');
+  };
+
+  const donePhoto = () => {
+    console.log('Completed displaying all comments and likes');
+    console.log('Clearing display');
+    setDisplay();
+
+    setTimeout(() => {
+      console.log('5s passed taking a new photo');
+      takePhoto();
+      // TODO: declare this as a const, e.g., WAIT_TIME or better name
+      // time we want to wait/stall after the last photo is taken
+    }, 5000);
+  };
+
+  const onLikesComplete = () => {
+    setLikesComplete(true);
+  };
+
+  const onCommentsComplete = () => {
+    setCommentsComplete(true);
+  };
 
   return (
     <>

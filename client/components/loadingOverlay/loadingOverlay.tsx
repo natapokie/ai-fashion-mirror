@@ -37,6 +37,7 @@ export const LoadingOverlay = () => {
 
   // TODO: adjust animations...
   // idea: smile, then taking your photo in, then countdown (countdown, scale up and then fade out)
+  // TODO: adjust font size
   return (
     <>
       <div className="h-full w-full flex flex-row justify-center items-center">
