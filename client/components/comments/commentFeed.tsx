@@ -16,14 +16,16 @@ const CommentFeed: React.FC<CommentFeedProps> = ({ comments, onComplete }) => {
   useEffect(() => {
     // TODO: remove setTimeout and call this in the right place after all comments have been previewed and faded off the screen
     // idea: check the comments index
-    setTimeout(() => {
-      console.log('Comments animations complete');
-      onComplete();
-    }, 15_000);
-
+    // done by Vicky
     const interval = setInterval(() => {
       setCommentsIndex((prevCommentsIndex) => {
-        return prevCommentsIndex + 1;
+        const nextIndex = prevCommentsIndex + 1;
+        // Check if the next index is equal to the length of the comments array
+        if (nextIndex > comments.length) {
+          clearInterval(interval);
+          onComplete();
+        }
+        return nextIndex;
       });
     }, 2000);
 
