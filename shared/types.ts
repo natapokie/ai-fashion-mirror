@@ -1,4 +1,4 @@
-export interface SocialMediaComments {
+export interface PREAPIResponse {
   [key: number]: string;
   likes: number;
   views: number;
@@ -16,4 +16,10 @@ export interface ResponseData {
   likes: number;
   views: number;
   commentsCount: number;
+}
+
+export interface PhotoData {
+  apiResponse?: PREAPIResponse | 'Person not found!';
+  encodedImg: string;
+  errorMsg?: string;
 }

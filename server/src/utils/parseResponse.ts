@@ -1,4 +1,4 @@
-import { ResponseData, SocialMediaComments } from '../../../shared/types';
+import { PREAPIResponse, ResponseData } from '../../../shared/types';
 import { WORDS_PER_MS, MIN_DISPLAY_TIME } from './constants';
 
 const calculateDisplayTime = (text: string): number => {
@@ -14,7 +14,7 @@ const calculateDisplayTime = (text: string): number => {
   return Math.max(millisecToRead, MIN_DISPLAY_TIME);
 };
 
-export const parseResponse = (jsonResponse: SocialMediaComments): ResponseData => {
+export const parseResponse = (jsonResponse: PREAPIResponse): ResponseData => {
   const responseData: ResponseData = {
     comments: [],
     likes: 0,

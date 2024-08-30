@@ -45,7 +45,9 @@ export class SocketManager {
       console.log('Received data', data);
 
       // Parse the response data and emit event to all connected sockets
-      if (data?.apiResponse === 'Person not found!') {
+      if (data.errorMsg) {
+        this.io.emit('err_msg', data.errorMsg);
+      } else if (data?.apiResponse === 'Person not found!') {
         this.io.emit('api_response', 'Person not found!');
       } else if (data?.apiResponse) {
         const parsedResponse = parseResponse(data.apiResponse);

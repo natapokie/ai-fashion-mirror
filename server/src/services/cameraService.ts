@@ -2,7 +2,7 @@ import StillCamera from '../pi-camera-connect/lib/still-camera';
 import NodeWebcam, { WebcamOptions } from 'node-webcam';
 import { sendToApi } from './apiService';
 import fs from 'fs';
-import { SocialMediaComments } from '../../../shared/types';
+import { PhotoData } from '../../../shared/types';
 
 const PHOTO_WIDTH = 450;
 const PHOTO_HEIGHT = 900;
@@ -16,11 +16,6 @@ const OPTS: WebcamOptions = {
   callbackReturn: 'buffer',
   verbose: false,
 };
-
-interface PhotoData {
-  apiResponse: SocialMediaComments | 'Person not found!';
-  encodedImg: string;
-}
 
 export class CameraService {
   photosTaken: number = 0;
@@ -43,7 +38,7 @@ export class CameraService {
     } catch (err) {
       console.log(err);
       console.error('RPi Camera Error, using Node Webcam');
-      return new Promise<PhotoData | void>((resolve, reject) => {
+      return new Promise<PhotoData>((resolve, reject) => {
         this.localCamera.capture('test', async (err, data) => {
           console.log('Captured photo using webcam');
 
@@ -83,10 +78,17 @@ export class CameraService {
       console.error(err);
     }
 
-    // return api response
-    return {
-      apiResponse: await sendToApi(photo),
-      encodedImg: encodedImg,
-    };
+    const resp = {} as PhotoData;
+
+    try {
+      resp.apiResponse = await sendToApi(photo);
+      resp.encodedImg = encodedImg;
+    } catch (err) {
+      console.error('Error creating PhotoData object.');
+      resp.errorMsg = `${err}`;
+      resp.encodedImg = encodedImg;
+    }
+
+    return resp;
   };
 }
