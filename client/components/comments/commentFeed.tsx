@@ -14,9 +14,6 @@ const CommentFeed: React.FC<CommentFeedProps> = ({ comments, onComplete }) => {
   const [commentsIndex, setCommentsIndex] = useState(0);
 
   useEffect(() => {
-    // TODO: remove setTimeout and call this in the right place after all comments have been previewed and faded off the screen
-    // idea: check the comments index
-    // done by Vicky
     const interval = setInterval(() => {
       setCommentsIndex((prevCommentsIndex) => {
         const nextIndex = prevCommentsIndex + 1;
