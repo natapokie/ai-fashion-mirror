@@ -4,11 +4,21 @@ import { LikesDisplay } from './likesDisplay';
 
 interface LikesProps {
   finalLikes: number;
+  onComplete: () => void;
 }
 
-export const Likes = ({ finalLikes }: LikesProps) => {
+export const Likes = ({ finalLikes, onComplete }: LikesProps) => {
   const [animatedLikes, setAnimatedLikes] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
+
+  useEffect(() => {
+    // TODO: remove setTimeout and call this in the right place after countdown has completed
+    // idea: probably add this when the animated likes has reached final likes
+    setTimeout(() => {
+      console.log('Likes animations complete');
+      onComplete();
+    }, 8_000);
+  }, []);
 
   useEffect(() => {
     let incrementTimeoutId: ReturnType<typeof setTimeout>;
