@@ -10,7 +10,7 @@ const Home = () => {
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
 
   // state to determine if we're displaying stuff (true) or not (false)
-  const [display, setDisplay] = useState<ResponseData | string | void>();
+  const [display, setDisplay] = useState<ResponseData | void>();
   const [finalLikes, setFinalLikes] = useState<number>(0);
 
   // state variables to indicate completed animations
@@ -42,6 +42,8 @@ const Home = () => {
     const onErrorMessage = (msg: string) => {
       // on error take a new photo
       console.error(msg);
+
+      // TODO: refacor so we see entire loading screen whenever there are errors / no person found
       takePhoto();
     };
 
