@@ -27,3 +27,46 @@ body {
     )
     rgb(var(--background-start-rgb)); */
 }
+
+/* LOADING OVERLAY */
+
+.smile-text {
+  stroke-dasharray: 500;
+  stroke-dashoffset: 500;
+  animation:
+    dash-stoke 3500ms ease-in-out forwards,
+    fill-end 3500ms ease-in forwards;
+  animation-delay: 9500ms;
+  stroke: var(--frosh-group-stroke);
+  stroke-linecap: round;
+  font-size: 240px;
+  height: 300px;
+  width: 100%;
+  margin-bottom: 0px;
+  fill-opacity: 0;
+  margin-bottom: -10px;
+}
+
+@keyframes dash-stoke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fill-end {
+  0% {
+    fill: var(--black);
+    fill-opacity: 0;
+    stroke-width: 8px;
+  }
+  95% {
+    fill: var(--black);
+    fill-opacity: 0;
+    stroke-width: 8px;
+  }
+  100% {
+    fill: var(--black);
+    fill-opacity: 1;
+    stroke-width: 0;
+  }
+}

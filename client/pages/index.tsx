@@ -4,6 +4,7 @@ import { socket } from '../utils/socket';
 import { Likes } from '@/components/likes/likes';
 import CommentFeed from '@/components/comments/commentFeed';
 import { ResponseData } from '../../shared/types';
+import { LoadingOverlay } from '@/components/loading/loadingOverlay';
 
 const Home = () => {
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
@@ -57,8 +58,15 @@ const Home = () => {
       }
     };
 
+    const onErrorMessage = (msg: string) => {
+      // on error take a new photo
+      console.error(msg);
+      takePhoto();
+    };
+
     socket.on('connect', onConnect);
     socket.on('api_response', onApiResonse);
+    socket.on('err_msg', onErrorMessage);
 
     // take the first photo
     takePhoto();
@@ -94,14 +102,16 @@ const Home = () => {
 
   return (
     <>
-      <div className="w-screen h-screen flex flex-col justify-between items-center bg-cover bg-center h-screen">
+      <div className="w-screen h-screen flex flex-col justify-between items-center">
         {display ? (
           <>
             <Likes finalLikes={finalLikes} onComplete={onLikesComplete}></Likes>
             <CommentFeed comments={display.comments} onComplete={onCommentsComplete}></CommentFeed>
           </>
         ) : (
-          <></>
+          <>
+            <LoadingOverlay></LoadingOverlay>
+          </>
         )}
       </div>
     </>
