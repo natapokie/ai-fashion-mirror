@@ -5,7 +5,7 @@ import { Likes } from '@/components/likes/likes';
 import CommentFeed from '@/components/comments/commentFeed';
 import { ResponseData } from '../../shared/types';
 import { LoadingOverlay } from '@/components/loadingOverlay/loadingOverlay';
-import { BlackScreen } from '@/components/blackScreen/blackScreen';
+import { EndingOverlay } from '@/components/endingOverlay/endingOverlay';
 
 const Home = () => {
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
@@ -130,9 +130,7 @@ const Home = () => {
                 <LoadingOverlay></LoadingOverlay>
               </>
             ) : (
-              <>
-                <BlackScreen></BlackScreen>
-              </>
+              <EndingOverlay></EndingOverlay>
             )}
           </>
         )}
