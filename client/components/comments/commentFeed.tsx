@@ -29,6 +29,20 @@ const CommentFeed: React.FC<CommentFeedProps> = ({ comments, onComplete }) => {
     return () => clearInterval(interval);
   }, []);
 
+  // useEffect(() => {
+  //   // Set a timeout based on the current comment's displayTime
+  //   const timeout = setTimeout(() => {
+  //     setCommentsIndex((prevCommentsIndex) => {
+  //       const nextIndex = prevCommentsIndex + 1;
+  //       if (nextIndex > comments.length) {
+  //         onComplete();
+  //       }
+  //       return nextIndex;
+  //     });
+  //   }, comments[commentsIndex]?.displayTime);
+  //   return () => clearTimeout(timeout); // Cleanup timeout on unmount
+  // }, [comments, commentsIndex, onComplete]);
+
   useEffect(() => {
     setDisplayedComments(() => {
       const updatedComments = comments.slice(commentsIndex, commentsIndex + 1);
