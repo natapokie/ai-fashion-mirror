@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Spinner } from '../spinner/spinner';
 
-export const LoadingOverlay = () => {
+interface LoadingOverlayProps {
+  takePhoto: () => void;
+}
+
+export const LoadingOverlay = ({ takePhoto }: LoadingOverlayProps) => {
   const [isCounting, setIsCounting] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(3);
 
@@ -10,8 +14,7 @@ export const LoadingOverlay = () => {
   useEffect(() => {
     setTimeout(() => {
       startCountdown();
-      // TODO: wait for the other animations to complete
-      // adjust this 3000ms so it's the sum of the smile animation and the taking your photo in..
+      // wait for the other animations to complete
     }, 3000);
   }, []);
 
@@ -24,6 +27,8 @@ export const LoadingOverlay = () => {
         } else {
           console.log('Counter done, taking photo.');
           setIsCounting(false);
+          // take photo once loading overlay completes
+          takePhoto();
           setShowSpinner(true);
         }
       }, 1500);
@@ -36,8 +41,6 @@ export const LoadingOverlay = () => {
     setIsCounting(true);
   };
 
-  // TODO: adjust animations...
-  // idea: smile, then taking your photo in, then countdown (countdown, scale up and then fade out)
   // TODO: adjust font size
   return (
     <>

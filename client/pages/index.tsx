@@ -5,7 +5,6 @@ import { Likes } from '@/components/likes/likes';
 import CommentFeed from '@/components/comments/commentFeed';
 import { ResponseData } from '../../shared/types';
 import { LoadingOverlay } from '@/components/loadingOverlay/loadingOverlay';
-import { BlackScreen } from '@/components/blackScreen/blackScreen';
 
 const Home = () => {
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
@@ -17,8 +16,6 @@ const Home = () => {
   // state variables to indicate completed animations
   const [likesComplete, setLikesComplete] = useState<boolean>(false);
   const [commentsComplete, setCommentsComplete] = useState<boolean>(false);
-
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     console.log('Connecting Socket');
@@ -33,7 +30,7 @@ const Home = () => {
       if (typeof data === 'string') {
         // when data is a string (i.e., person not found), take a new photo
         console.error(data);
-        takePhoto();
+        // TODO: handle this
       } else {
         setDisplay(data);
         if (data.likes !== undefined) {
@@ -51,9 +48,6 @@ const Home = () => {
     socket.on('connect', onConnect);
     socket.on('api_response', onApiResonse);
     socket.on('err_msg', onErrorMessage);
-
-    // take the first photo
-    takePhoto();
 
     return () => {
       console.log('Unmounting Component');
@@ -96,14 +90,12 @@ const Home = () => {
     console.log('Clearing display');
     setDisplay();
 
-    setIsLoading(false);
     setTimeout(() => {
       console.log('5s passed taking a new photo');
-      takePhoto();
       // TODO: declare this as a const, e.g., WAIT_TIME or better name
       // time we want to wait/stall after the last photo is taken
 
-      setIsLoading(true);
+      // TODO: here set isLoading is true
     }, 5000);
   };
 
@@ -125,15 +117,7 @@ const Home = () => {
           </>
         ) : (
           <>
-            {isLoading ? (
-              <>
-                <LoadingOverlay></LoadingOverlay>
-              </>
-            ) : (
-              <>
-                <BlackScreen></BlackScreen>
-              </>
-            )}
+            <LoadingOverlay takePhoto={takePhoto}></LoadingOverlay>
           </>
         )}
       </div>
