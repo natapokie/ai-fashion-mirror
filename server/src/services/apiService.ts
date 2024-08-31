@@ -1,7 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
-import { SocialMediaComments } from '../../../shared/types';
+import { PREAPIResponse } from '../../../shared/types';
+import { mockData } from '../utils/mockData';
 
-export const sendToApi = async (buffer: Buffer): Promise<SocialMediaComments> => {
+export const sendToApi = async (buffer: Buffer): Promise<PREAPIResponse> => {
   try {
     console.log('sending to API');
     // format http body
@@ -22,12 +23,24 @@ export const sendToApi = async (buffer: Buffer): Promise<SocialMediaComments> =>
     });
     console.log('response', response);
     if (response.status === 200) {
-      return response.data as SocialMediaComments;
+      return response.data as PREAPIResponse;
     } else {
       throw new Error(`Upload failed. Status code: ${response.status}`);
     }
   } catch (err) {
-    console.error(`Error sending request to API`);
-    throw err;
+    if (axios.isAxiosError(err)) {
+      console.error(`Axios error: ${err.message}`);
+      console.error(`Response status: ${err.response?.status}`);
+
+      if (process.env.USE_MOCK_DATA) {
+        console.log('Using mock data');
+        return mockData;
+      } else {
+        throw `${err.message}\n${err.response?.data}`;
+      }
+    } else {
+      console.error(`Unexpected error: ${err}`);
+      throw err;
+    }
   }
 };

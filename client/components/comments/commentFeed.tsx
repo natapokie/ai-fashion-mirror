@@ -1,26 +1,47 @@
 // src/components/CommentFeed.tsx
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import Comment from '@/components/comments/comment';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CommentType } from '../../../shared/types';
 
 interface CommentFeedProps {
   comments: CommentType[];
+  onComplete: () => void;
 }
 
-const CommentFeed: React.FC<CommentFeedProps> = ({ comments }) => {
+const CommentFeed: React.FC<CommentFeedProps> = ({ comments, onComplete }) => {
   const [displayedComments, setDisplayedComments] = useState<CommentType[]>([]);
   const [commentsIndex, setCommentsIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCommentsIndex((prevCommentsIndex) => {
-        return prevCommentsIndex + 1;
+        const nextIndex = prevCommentsIndex + 1;
+        // Check if the next index is equal to the length of the comments array
+        if (nextIndex > comments.length) {
+          clearInterval(interval);
+          onComplete();
+        }
+        return nextIndex;
       });
     }, 2000);
 
     return () => clearInterval(interval);
   }, []);
+
+  // useEffect(() => {
+  //   // Set a timeout based on the current comment's displayTime
+  //   const timeout = setTimeout(() => {
+  //     setCommentsIndex((prevCommentsIndex) => {
+  //       const nextIndex = prevCommentsIndex + 1;
+  //       if (nextIndex > comments.length) {
+  //         onComplete();
+  //       }
+  //       return nextIndex;
+  //     });
+  //   }, comments[commentsIndex]?.displayTime);
+  //   return () => clearTimeout(timeout); // Cleanup timeout on unmount
+  // }, [comments, commentsIndex, onComplete]);
 
   useEffect(() => {
     setDisplayedComments(() => {

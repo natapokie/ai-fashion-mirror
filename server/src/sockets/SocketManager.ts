@@ -42,11 +42,14 @@ export class SocketManager {
     socket.on('take_photo', async () => {
       const data = await this.cameraService.takePhoto();
 
-      console.log('Received data', data);
+      // console.log('Received data', data);
 
       // Parse the response data and emit event to all connected sockets
-      if (data?.apiResponse === 'Person not found!') {
-        this.io.emit('api_response', 'Person not found!');
+      if (data.errorMsg) {
+        this.io.emit('err_msg', data.errorMsg);
+        // TODO: make person not found into a constant in /shared
+      } else if (data?.apiResponse === 'Person not found!') {
+        this.io.emit('api_response', data.apiResponse);
       } else if (data?.apiResponse) {
         const parsedResponse = parseResponse(data.apiResponse);
         console.log('Received API Response and parsed');

@@ -1,29 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
-
 import { socket } from '../utils/socket';
 import { Likes } from '@/components/likes/likes';
 import CommentFeed from '@/components/comments/commentFeed';
 import { ResponseData } from '../../shared/types';
-
-const mockResponseData: ResponseData = {
-  comments : [
-      { user: 'user1', text: 'comment1', displayTime: 1 },
-      { user: 'user2', text: 'comment2', displayTime: 2 },
-      { user: 'user3', text: 'comment3', displayTime: 3 },
-      { user: 'user4', text: 'comment4', displayTime: 4 },
-  ],
-  likes: 100,
-  views: 1000,
-  commentsCount: 4,
-};
+import { LoadingOverlay } from '@/components/loadingOverlay/loadingOverlay';
+import { EndingOverlay } from '@/components/endingOverlay/endingOverlay';
 
 const Home = () => {
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
 
   // state to determine if we're displaying stuff (true) or not (false)
-  const [display, setDisplay] = useState<ResponseData | string>('TESTNG...');
+  const [display, setDisplay] = useState<ResponseData | void>();
   const [finalLikes, setFinalLikes] = useState<number>(0);
 
+  // state variables to indicate completed animations
+  const [likesComplete, setLikesComplete] = useState<boolean>(false);
+  const [commentsComplete, setCommentsComplete] = useState<boolean>(false);
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     console.log('Connecting Socket');
@@ -32,35 +26,36 @@ const Home = () => {
       console.log(`Connected with socket ${socket.id} on server ${process.env.SERVER_BASE_URL}`);
     };
 
-    const onApiResonse = (data: ResponseData) => {
+    const onApiResonse = (data: ResponseData | string) => {
       console.log('Received api response from socket');
-      setDisplay(data);
-      if (data.likes !== undefined) {
-        setFinalLikes(data.likes);
+
+      if (typeof data === 'string') {
+        // when data is a string (i.e., person not found), stop the loading overlay
+        // TODO: maybe display a message? ask prof
+        console.error(data);
+        setIsLoading(false);
+
+        // wait for a few seconds, and go back to loading screen
+        setTimeout(() => {
+          setIsLoading(true);
+        }, 2000);
+      } else {
+        setDisplay(data);
+        if (data.likes !== undefined) {
+          setFinalLikes(data.likes);
+        }
       }
+    };
+
+    const onErrorMessage = (msg: string) => {
+      // on error take a new photo
+      console.error(msg);
+      takePhoto();
     };
 
     socket.on('connect', onConnect);
     socket.on('api_response', onApiResonse);
-
-    const takePhoto = () => {
-      console.log('Taking a photo...');
-      socket.emit('take_photo');
-    };
-
-    const donePhoto = () => {
-      console.log('Completed displaying all comments and likes');
-      // setDisplayState(false);
-    };
-
-    // set timer -> used for testing (comments/likes process should take two mins)
-    intervalRef.current = setInterval(
-      () => {
-        takePhoto();
-        setTimeout(donePhoto, 2 * 1 * 1000);
-      },
-      1 * 20 * 1000,
-    );
+    socket.on('err_msg', onErrorMessage);
 
     return () => {
       console.log('Unmounting Component');
@@ -77,41 +72,66 @@ const Home = () => {
 
   useEffect(() => {
     // runs every time displayState changes
-    console.log('display changed', display);
+    // console.log('display changed', display);
   }, [display]);
+
+  useEffect(() => {
+    if (likesComplete && commentsComplete) {
+      console.log('Likes and comments animation completed');
+      setLikesComplete(false);
+      setCommentsComplete(false);
+
+      donePhoto();
+    }
+    // fire useEffect when either state vars change
+  }, [likesComplete, commentsComplete]);
+
+  const takePhoto = () => {
+    console.log('Taking a photo...');
+    socket.emit('take_photo');
+  };
+
+  const donePhoto = () => {
+    console.log('Completed displaying all comments and likes');
+    console.log('Clearing display');
+    setDisplay();
+    setIsLoading(false);
+
+    setTimeout(() => {
+      console.log('5s passed taking a new photo');
+      // TODO: declare this as a const, e.g., WAIT_TIME or better name
+      // time we want to wait/stall after the last photo is taken
+
+      setIsLoading(true);
+    }, 5000);
+  };
+
+  const onLikesComplete = () => {
+    setLikesComplete(true);
+  };
+
+  const onCommentsComplete = () => {
+    setCommentsComplete(true);
+  };
 
   return (
     <>
-      <div
-        className="w-screen h-screen flex flex-col justify-between items-center bg-cover bg-center h-screen"
-        style={{ backgroundImage: `url(https://picsum.photos/1000/500)` }}
-      >
-        <Likes finalLikes={finalLikes}></Likes>
-
-
-        {typeof display === 'string' ? (
-          <p>{display}</p>
+      <div className="w-screen h-screen flex flex-col justify-between items-center">
+        {display ? (
+          <>
+            <Likes finalLikes={finalLikes} onComplete={onLikesComplete}></Likes>
+            <CommentFeed comments={display.comments} onComplete={onCommentsComplete}></CommentFeed>
+          </>
         ) : (
-          <div>
-            <p>Likes: {display.likes}</p>
-            <p>Views: {display.views}</p>
-            <p>Comments Count: {display.commentsCount}</p>
-
-            {/* Render the comments */}
-            <div>
-              <h3>Comments:</h3>
-              {display.comments.length > 0 ? (
-                display.comments.map((comment, index) => (
-                  <div key={index}>
-                    <p>{comment.text}</p>
-                  </div>
-                ))
-              ) : (
-                <p>No comments available.</p>
-              )}
-            </div>
-            <CommentFeed comments={display.comments}></CommentFeed>
-          </div>
+          <>
+            {isLoading ? (
+              <>
+                <LoadingOverlay takePhoto={takePhoto}></LoadingOverlay>
+              </>
+            ) : (
+              <EndingOverlay></EndingOverlay>
+            )}
+          </>
         )}
       </div>
     </>

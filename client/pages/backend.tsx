@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-
 import { socket } from '../utils/socket';
 import { ResponseData } from '../../shared/types';
 import Image from 'next/image';
@@ -22,9 +21,14 @@ const Backend = () => {
       console.log(data);
     };
 
+    const onErrorMessage = (data: string) => {
+      console.error(data);
+    };
+
     socket.on('connect', onConnect);
     socket.on('send_photo', onSendPhoto);
     socket.on('api_response', onApiResonse);
+    socket.on('err_msg', onErrorMessage);
 
     return () => {
       // cleanup socket event listeners

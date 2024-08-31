@@ -7,7 +7,7 @@ interface LikesDisplayProps {
 
 export const LikesDisplay: React.FC<LikesDisplayProps> = ({ animatedLikes, isAnimating }) => {
   return (
-    <div className="w-full h-16 bg-gray-800 flex items-center justify-center">
+    <div className="w-full h-16 flex items-center justify-center">
       <div className="flex items-center">
         <span className={`text-4xl font-bold ${isAnimating ? 'animate-pulse' : ''}`}>❤️</span>
         <span className="text-4xl font-bold ml-2 w-20 text-left">{animatedLikes}</span>
