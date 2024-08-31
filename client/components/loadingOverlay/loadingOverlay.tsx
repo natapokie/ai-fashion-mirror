@@ -22,10 +22,11 @@ export const LoadingOverlay = () => {
         if (countdown > 0) {
           setCountdown((countdown) => (countdown > 0 ? countdown - 1 : countdown));
         } else {
+          console.log('Counter done, taking photo.');
           setIsCounting(false);
           setShowSpinner(true);
         }
-      }, 1000);
+      }, 1500);
     }
 
     return () => clearInterval(interval);
@@ -46,9 +47,9 @@ export const LoadingOverlay = () => {
         ) : (
           <>
             <div className="flex flex-col gap-3 text-center">
-              <h1 className="smile-text">Smile!</h1>
-              <h2>Taking your photo in...</h2>
-              <h1>{countdown}</h1>
+              <h1 className="loading-title">Smile!</h1>
+              <h2 className="loading-subtitle">Taking your photo in...</h2>
+              <h1 className="loading-countdown">{countdown}</h1>
             </div>
           </>
         )}

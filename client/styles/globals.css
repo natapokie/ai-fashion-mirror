@@ -30,45 +30,20 @@ body {
 
 /* LOADING OVERLAY */
 
-.smile-text {
-  stroke-dasharray: 500;
-  stroke-dashoffset: 500;
-  animation:
-    dash-stoke 3500ms ease-in-out forwards,
-    fill-end 3500ms ease-in forwards;
-  animation-delay: 9500ms;
-  stroke: var(--frosh-group-stroke);
-  stroke-linecap: round;
+.loading-title {
   font-size: 240px;
-  height: 300px;
-  width: 100%;
-  margin-bottom: 0px;
-  fill-opacity: 0;
-  margin-bottom: -10px;
+  position: relative;
+  animation: 2s linear fade-in-from-top;
 }
 
-@keyframes dash-stoke {
-  100% {
-    stroke-dashoffset: 0;
-  }
+.loading-subtitle {
+  position: relative;
+  animation: 2s linear fade-in-from-top-delay;
 }
 
-@keyframes fill-end {
-  0% {
-    fill: var(--black);
-    fill-opacity: 0;
-    stroke-width: 8px;
-  }
-  95% {
-    fill: var(--black);
-    fill-opacity: 0;
-    stroke-width: 8px;
-  }
-  100% {
-    fill: var(--black);
-    fill-opacity: 1;
-    stroke-width: 0;
-  }
+.loading-countdown {
+  opacity: 0;
+  animation: countdown-pulse 1500ms ease-in-out 3 3s;
 }
 
 .black-screen {
@@ -79,4 +54,43 @@ body {
   top: 0;
   left: 0;
   z-index: 1000;
+}
+
+@keyframes fade-in-from-top {
+  0% {
+    opacity: 0;
+    top: -20px;
+  }
+  25%,
+  100% {
+    opacity: 1;
+    top: 0px;
+  }
+}
+
+@keyframes fade-in-from-top-delay {
+  0%,
+  50% {
+    opacity: 0;
+    top: -20px;
+  }
+  100% {
+    opacity: 1;
+    top: 0px;
+  }
+}
+
+@keyframes countdown-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  25% {
+    transform: scale(1.5);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
