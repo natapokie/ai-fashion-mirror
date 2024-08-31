@@ -70,3 +70,13 @@ body {
     stroke-width: 0;
   }
 }
+
+.black-screen {
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}

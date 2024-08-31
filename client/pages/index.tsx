@@ -5,6 +5,7 @@ import { Likes } from '@/components/likes/likes';
 import CommentFeed from '@/components/comments/commentFeed';
 import { ResponseData } from '../../shared/types';
 import { LoadingOverlay } from '@/components/loadingOverlay/loadingOverlay';
+import { BlackScreen } from '@/components/blackScreen/blackScreen';
 
 const Home = () => {
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
@@ -17,9 +18,7 @@ const Home = () => {
   const [likesComplete, setLikesComplete] = useState<boolean>(false);
   const [commentsComplete, setCommentsComplete] = useState<boolean>(false);
 
-  // TODO: add another state to indicate loading -> isLoading/setIsLoading
-  // we don't want to display the loading overlay immediately after the photo is done,
-  // lets have like a 5s stall time before we show the loading overlay
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     console.log('Connecting Socket');
@@ -97,15 +96,14 @@ const Home = () => {
     console.log('Clearing display');
     setDisplay();
 
-    // TODO: here make sure isLoading is false
-
+    setIsLoading(false);
     setTimeout(() => {
       console.log('5s passed taking a new photo');
       takePhoto();
       // TODO: declare this as a const, e.g., WAIT_TIME or better name
       // time we want to wait/stall after the last photo is taken
 
-      // TODO: here set isLoading is true
+      setIsLoading(true);
     }, 5000);
   };
 
@@ -127,8 +125,15 @@ const Home = () => {
           </>
         ) : (
           <>
-            {/* TODO: add a ternary operator for isLoading, display LoadingOverlay if true, otherwise display nothing */}
-            <LoadingOverlay></LoadingOverlay>
+            {isLoading ? (
+              <>
+                <LoadingOverlay></LoadingOverlay>
+              </>
+            ) : (
+              <>
+                <BlackScreen></BlackScreen>
+              </>
+            )}
           </>
         )}
       </div>
