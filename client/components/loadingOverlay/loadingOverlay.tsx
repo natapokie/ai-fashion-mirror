@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Spinner } from '../spinner/spinner';
 
-export const LoadingOverlay = () => {
+interface LoadingOverlayProps {
+  takePhoto: () => void;
+}
+
+export const LoadingOverlay = ({ takePhoto }: LoadingOverlayProps) => {
   const [isCounting, setIsCounting] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(3);
 
@@ -10,8 +14,7 @@ export const LoadingOverlay = () => {
   useEffect(() => {
     setTimeout(() => {
       startCountdown();
-      // TODO: wait for the other animations to complete
-      // adjust this 3000ms so it's the sum of the smile animation and the taking your photo in..
+      // wait for the other animations to complete
     }, 3000);
   }, []);
 
@@ -22,10 +25,13 @@ export const LoadingOverlay = () => {
         if (countdown > 0) {
           setCountdown((countdown) => (countdown > 0 ? countdown - 1 : countdown));
         } else {
+          console.log('Counter done, taking photo.');
           setIsCounting(false);
+          // take photo once loading overlay completes
+          takePhoto();
           setShowSpinner(true);
         }
-      }, 1000);
+      }, 1500);
     }
 
     return () => clearInterval(interval);
@@ -35,8 +41,6 @@ export const LoadingOverlay = () => {
     setIsCounting(true);
   };
 
-  // TODO: adjust animations...
-  // idea: smile, then taking your photo in, then countdown (countdown, scale up and then fade out)
   // TODO: adjust font size
   return (
     <>
@@ -46,9 +50,9 @@ export const LoadingOverlay = () => {
         ) : (
           <>
             <div className="flex flex-col gap-3 text-center">
-              <h1 className="smile-text">Smile!</h1>
-              <h2>Taking your photo in...</h2>
-              <h1>{countdown}</h1>
+              <h1 className="loading-title">Smile!</h1>
+              <h2 className="loading-subtitle">Taking your photo in...</h2>
+              <h1 className="loading-countdown">{countdown}</h1>
             </div>
           </>
         )}

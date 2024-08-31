@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-
 import { socket } from '../utils/socket';
 import { Likes } from '@/components/likes/likes';
 import CommentFeed from '@/components/comments/commentFeed';
@@ -31,9 +30,15 @@ const Home = () => {
       console.log('Received api response from socket');
 
       if (typeof data === 'string') {
-        // when data is a string (i.e., person not found), take a new photo
+        // when data is a string (i.e., person not found), stop the loading overlay
+        // TODO: maybe display a message? ask prof
         console.error(data);
-        takePhoto();
+        setIsLoading(false);
+
+        // wait for a few seconds, and go back to loading screen
+        setTimeout(() => {
+          setIsLoading(true);
+        }, 2000);
       } else {
         setDisplay(data);
         if (data.likes !== undefined) {
@@ -51,9 +56,6 @@ const Home = () => {
     socket.on('connect', onConnect);
     socket.on('api_response', onApiResonse);
     socket.on('err_msg', onErrorMessage);
-
-    // take the first photo
-    takePhoto();
 
     return () => {
       console.log('Unmounting Component');
@@ -84,8 +86,6 @@ const Home = () => {
     // fire useEffect when either state vars change
   }, [likesComplete, commentsComplete]);
 
-  // TODO: need to ensure that the photo is taken once countdown on loading overlay completes
-  // idea: pass this function as a prop to loading overlay, call fuction once the countdownn reaches 0
   const takePhoto = () => {
     console.log('Taking a photo...');
     socket.emit('take_photo');
@@ -95,11 +95,10 @@ const Home = () => {
     console.log('Completed displaying all comments and likes');
     console.log('Clearing display');
     setDisplay();
-
     setIsLoading(false);
+
     setTimeout(() => {
       console.log('5s passed taking a new photo');
-      takePhoto();
       // TODO: declare this as a const, e.g., WAIT_TIME or better name
       // time we want to wait/stall after the last photo is taken
 
@@ -127,7 +126,7 @@ const Home = () => {
           <>
             {isLoading ? (
               <>
-                <LoadingOverlay></LoadingOverlay>
+                <LoadingOverlay takePhoto={takePhoto}></LoadingOverlay>
               </>
             ) : (
               <EndingOverlay></EndingOverlay>
