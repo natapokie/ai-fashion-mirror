@@ -32,6 +32,7 @@ body {
 
 .loading-title {
   font-size: 240px;
+  line-height: 240px;
   position: relative;
   animation: 2s linear fade-in-from-top;
 }

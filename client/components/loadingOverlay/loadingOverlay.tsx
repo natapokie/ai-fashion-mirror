@@ -8,7 +8,6 @@ interface LoadingOverlayProps {
 export const LoadingOverlay = ({ takePhoto }: LoadingOverlayProps) => {
   const [isCounting, setIsCounting] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(3);
-
   const [showSpinner, setShowSpinner] = useState<boolean>(false);
 
   useEffect(() => {
@@ -21,17 +20,17 @@ export const LoadingOverlay = ({ takePhoto }: LoadingOverlayProps) => {
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
     if (isCounting) {
-      interval = setInterval(() => {
-        if (countdown > 0) {
+      if (countdown > 0) {
+        interval = setInterval(() => {
           setCountdown((countdown) => countdown - 1);
-        } else {
-          console.log('Counter done, taking photo.');
-          setShowSpinner(true);
-          takePhoto();
-          setIsCounting(false);
-          // take photo once loading overlay completes
-        }
-      }, 1500);
+        }, 1500);
+      } else {
+        setIsCounting(false);
+        setShowSpinner(true);
+      }
+    } else {
+      console.log('Counter done, taking photo.');
+      takePhoto();
     }
 
     return () => clearInterval(interval);
