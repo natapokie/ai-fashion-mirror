@@ -23,13 +23,13 @@ export const LoadingOverlay = ({ takePhoto }: LoadingOverlayProps) => {
     if (isCounting) {
       interval = setInterval(() => {
         if (countdown > 0) {
-          setCountdown((countdown) => (countdown > 0 ? countdown - 1 : countdown));
+          setCountdown((countdown) => countdown - 1);
         } else {
           console.log('Counter done, taking photo.');
+          setShowSpinner(true);
+          takePhoto();
           setIsCounting(false);
           // take photo once loading overlay completes
-          takePhoto();
-          setShowSpinner(true);
         }
       }, 1500);
     }
