@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-
 import { socket } from '../utils/socket';
 import { Likes } from '@/components/likes/likes';
 import CommentFeed from '@/components/comments/commentFeed';
 import { ResponseData } from '../../shared/types';
 import { LoadingOverlay } from '@/components/loadingOverlay/loadingOverlay';
+import { BlackScreen } from '@/components/blackScreen/blackScreen';
 
 const Home = () => {
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
@@ -16,6 +16,8 @@ const Home = () => {
   // state variables to indicate completed animations
   const [likesComplete, setLikesComplete] = useState<boolean>(false);
   const [commentsComplete, setCommentsComplete] = useState<boolean>(false);
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     console.log('Connecting Socket');
@@ -89,13 +91,14 @@ const Home = () => {
     console.log('Completed displaying all comments and likes');
     console.log('Clearing display');
     setDisplay();
+    setIsLoading(false);
 
     setTimeout(() => {
       console.log('5s passed taking a new photo');
       // TODO: declare this as a const, e.g., WAIT_TIME or better name
       // time we want to wait/stall after the last photo is taken
 
-      // TODO: here set isLoading is true
+      setIsLoading(true);
     }, 5000);
   };
 
@@ -117,7 +120,15 @@ const Home = () => {
           </>
         ) : (
           <>
-            <LoadingOverlay takePhoto={takePhoto}></LoadingOverlay>
+            {isLoading ? (
+              <>
+                <LoadingOverlay takePhoto={takePhoto}></LoadingOverlay>
+              </>
+            ) : (
+              <>
+                <BlackScreen></BlackScreen>
+              </>
+            )}
           </>
         )}
       </div>
