@@ -18,17 +18,16 @@ export const LoadingOverlay = ({ takePhoto }: LoadingOverlayProps) => {
   }, []);
 
   useEffect(() => {
+    console.log('useEffect', isCounting, countdown);
     let interval: ReturnType<typeof setInterval>;
-    if (isCounting) {
-      if (countdown > 0) {
-        interval = setInterval(() => {
-          setCountdown((countdown) => countdown - 1);
-        }, 1500);
-      } else {
-        setIsCounting(false);
-        setShowSpinner(true);
-      }
-    } else {
+    if (countdown > 0 && isCounting) {
+      interval = setInterval(() => {
+        setCountdown((countdown) => countdown - 1);
+      }, 1500);
+    } else if (countdown === 0 && isCounting) {
+      setIsCounting(false);
+      setShowSpinner(true);
+    } else if (countdown === 0) {
       console.log('Counter done, taking photo.');
       takePhoto();
     }
