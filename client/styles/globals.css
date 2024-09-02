@@ -9,7 +9,7 @@
   }
   h2 {
     /* use for numbers */
-    @apply text-xl;
+    @apply text-4xl font-bold;
   }
   h3 {
     /* use for other text */
