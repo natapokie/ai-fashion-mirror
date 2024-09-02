@@ -5,11 +5,11 @@
 @layer base {
   h1 {
     /* use for titles / big messages */
-    @apply text-9xl font-bold;
+    @apply text-10xl font-bold leading-tight;
   }
   h2 {
     /* use for numbers */
-    @apply text-7xl font-bold;
+    @apply text-7xl font-bold leading-tight;
   }
   h3 {
     /* use for other text */
