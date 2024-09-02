@@ -50,7 +50,7 @@ export const LoadingOverlay = ({ takePhoto }: LoadingOverlayProps) => {
             <div className="flex flex-col gap-3 text-center">
               <h1 className="loading-title">Smile!</h1>
               <h3 className="loading-subtitle">Taking your photo in...</h3>
-              <h2 className="loading-countdown leading-normal">{countdown}</h2>
+              <h2 className="loading-countdown leading-normal mt-4">{countdown}</h2>
             </div>
           </>
         )}
