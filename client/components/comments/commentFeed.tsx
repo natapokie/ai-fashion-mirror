@@ -24,7 +24,7 @@ const CommentFeed: React.FC<CommentFeedProps> = ({ comments, onComplete }) => {
         }
         return nextIndex;
       });
-    }, 2000);
+    }, 4500);
 
     return () => clearInterval(interval);
   }, []);

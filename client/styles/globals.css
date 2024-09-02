@@ -13,7 +13,7 @@
   }
   h3 {
     /* use for other text */
-    @apply text-5xl;
+    @apply text-5xl leading-normal;
   }
 }
 
