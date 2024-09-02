@@ -16,7 +16,9 @@ const Comment: React.FC<CommentProps> = ({ comment }) => {
       exit={{ opacity: 0, y: -200, transition: { duration: 10 } }}
     >
       <>
-        <span className="font-bold">{comment.user}:</span> {comment.text}
+        <h3>
+          <span className="font-bold">{comment.user}:</span> {comment.text}
+        </h3>
       </>
     </motion.div>
   );
