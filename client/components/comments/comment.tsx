@@ -13,7 +13,7 @@ const Comment: React.FC<CommentProps> = ({ comment }) => {
       className="bg-slate-950/70 text-white p-3 rounded-t-2xl rounded-r-2xl shadow-md mb-2 absolute bottom-0"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0, transition: { duration: 4 } }}
-      exit={{ opacity: 0, y: -200, transition: { duration: 10 } }}
+      exit={{ opacity: 0, y: -600, transition: { duration: 10 } }}
     >
       <>
         <h3>
