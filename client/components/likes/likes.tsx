@@ -72,7 +72,7 @@ export const Likes = ({ finalLikes, onComplete }: LikesProps) => {
     setTimeout(() => {
       setIsAnimating(true);
       incrementLikes();
-    }, 2000);
+    }, 4000);
 
     return () => {
       clearInterval(incrementTimeoutId);
