@@ -5,15 +5,15 @@
 @layer base {
   h1 {
     /* use for titles / big messages */
-    @apply text-2xl;
+    @apply text-9xl;
   }
   h2 {
     /* use for numbers */
-    @apply text-4xl font-bold;
+    @apply text-7xl font-bold;
   }
   h3 {
     /* use for other text */
-    @apply text-lg;
+    @apply text-5xl;
   }
 }
 
