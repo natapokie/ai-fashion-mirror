@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { LIKES_INCREMENT_STEP, LIKES_INCREMENT_DELAY } from '../../../server/src/utils/constants';
+import { LIKES_INCREMENT_STEP, LIKES_INCREMENT_DELAY } from '../..//utils/constants';
 import { LikesDisplay } from './likesDisplay';
 
 interface LikesProps {
