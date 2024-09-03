@@ -8,9 +8,9 @@ interface LikesDisplayProps {
 export const LikesDisplay: React.FC<LikesDisplayProps> = ({ animatedLikes, isAnimating }) => {
   return (
     <div className="w-full h-16 flex items-center justify-center">
-      <div className="flex items-center">
-        <span className={`text-4xl font-bold ${isAnimating ? 'animate-pulse' : ''}`}>❤️</span>
-        <span className="text-4xl font-bold ml-2 w-20 text-left">{animatedLikes}</span>
+      <div className="flex items-center mt-8 relative -translate-x-32">
+        <h2 className={`font-bold ${isAnimating ? 'animate-pulse' : ''}`}>❤️</h2>
+        <h2 className="font-bold ml-2 w-20 text-left">{animatedLikes}</h2>
       </div>
       {/* eslint-disable-next-line react/no-unknown-property */}
       <style jsx>{`

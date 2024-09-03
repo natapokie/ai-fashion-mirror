@@ -26,8 +26,8 @@ export const Likes = ({ finalLikes, onComplete }: LikesProps) => {
     let isIncrementing = true;
 
     const randomDelay = (min: number, max: number) => Math.random() * (max - min) + min;
-    const animationDuration = randomDelay(500, 1000); // random duration (ms) to continue animation for
-    const pauseDuration = randomDelay(400, 1200); // random duration (ms) to puase animation for
+    const animationDuration = randomDelay(1000, 2000); // random duration (ms) to continue animation for
+    const pauseDuration = randomDelay(2000, 3000); // random duration (ms) to puase animation for
 
     const incrementLikes = () => {
       if (isIncrementing) {
@@ -69,12 +69,16 @@ export const Likes = ({ finalLikes, onComplete }: LikesProps) => {
     };
 
     setAnimatedLikes(0); // reset to displayed likes to 0 every time finalLikes is updated
-    setIsAnimating(true);
-    incrementLikes();
+
+    const startAnimation = setTimeout(() => {
+      setIsAnimating(true);
+      incrementLikes();
+    }, 4000);
 
     return () => {
       clearInterval(incrementTimeoutId);
       clearTimeout(pauseTimeoutId);
+      clearTimeout(startAnimation);
     };
   }, [finalLikes]); // reset when finalLikes is updated
 

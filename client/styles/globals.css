@@ -2,37 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  h1 {
+    /* use for titles / big messages */
+    @apply text-10xl font-bold leading-tight;
+  }
+  h2 {
+    /* use for numbers */
+    @apply text-7xl font-bold leading-tight;
+  }
+  h3 {
+    /* use for other text */
+    @apply text-5xl leading-normal;
+  }
+}
+
 :root {
   /* --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255; */
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-} */
-
 body {
   background: black;
   color: white;
-  /* color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb)); */
 }
 
 /* LOADING OVERLAY */
 
 .loading-title {
-  font-size: 240px;
-  line-height: 240px;
   position: relative;
   animation: 2s linear fade-in-from-top;
 }
@@ -48,7 +46,7 @@ body {
 }
 
 .ending-text {
-  font-size: 150px;
+  /* font-size: 150px; */
   /* height: 30px; */
   width: 100%;
   /* margin-top: 50px;

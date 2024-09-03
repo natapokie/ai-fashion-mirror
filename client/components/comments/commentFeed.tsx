@@ -24,7 +24,7 @@ const CommentFeed: React.FC<CommentFeedProps> = ({ comments, onComplete }) => {
         }
         return nextIndex;
       });
-    }, 2000);
+    }, 4500);
 
     return () => clearInterval(interval);
   }, []);
@@ -52,9 +52,9 @@ const CommentFeed: React.FC<CommentFeedProps> = ({ comments, onComplete }) => {
 
   return (
     <div className="fixed bottom-0 right-0 w-full p-4">
-      <div className="relative h-80">
+      <div className="relative h-160">
         <motion.div
-          className="flex flex-col space-y-2"
+          className="flex flex-col space-y-400"
           style={{ position: 'absolute', bottom: 0, width: '100%' }}
         >
           <AnimatePresence>
