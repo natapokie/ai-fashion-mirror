@@ -69,7 +69,8 @@ export const Likes = ({ finalLikes, onComplete }: LikesProps) => {
     };
 
     setAnimatedLikes(0); // reset to displayed likes to 0 every time finalLikes is updated
-    setTimeout(() => {
+
+    const startAnimation = setTimeout(() => {
       setIsAnimating(true);
       incrementLikes();
     }, 4000);
@@ -77,6 +78,7 @@ export const Likes = ({ finalLikes, onComplete }: LikesProps) => {
     return () => {
       clearInterval(incrementTimeoutId);
       clearTimeout(pauseTimeoutId);
+      clearTimeout(startAnimation);
     };
   }, [finalLikes]); // reset when finalLikes is updated
 
