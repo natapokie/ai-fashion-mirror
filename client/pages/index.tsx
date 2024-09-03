@@ -11,7 +11,6 @@ const Home = () => {
 
   // state to determine if we're displaying stuff (true) or not (false)
   const [display, setDisplay] = useState<ResponseData | void>();
-  const [finalLikes, setFinalLikes] = useState<number>(0);
 
   // state variables to indicate completed animations
   const [likesComplete, setLikesComplete] = useState<boolean>(false);
@@ -41,9 +40,6 @@ const Home = () => {
         }, 2000);
       } else {
         setDisplay(data);
-        if (data.likes !== undefined) {
-          setFinalLikes(data.likes);
-        }
       }
     };
 
@@ -119,7 +115,7 @@ const Home = () => {
       <div className="w-screen h-screen flex flex-col justify-between items-center">
         {display ? (
           <>
-            <Likes finalLikes={finalLikes} onComplete={onLikesComplete}></Likes>
+            <Likes finalLikes={display.likes} onComplete={onLikesComplete}></Likes>
             <CommentFeed comments={display.comments} onComplete={onCommentsComplete}></CommentFeed>
           </>
         ) : (
