@@ -91,3 +91,17 @@ body {
     opacity: 1;
   }
 }
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.animate-pulse {
+  animation: pulse 0.3s infinite;
+}

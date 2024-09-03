@@ -12,21 +12,6 @@ export const LikesDisplay: React.FC<LikesDisplayProps> = ({ animatedLikes, isAni
         <h2 className={`font-bold ${isAnimating ? 'animate-pulse' : ''}`}>❤️</h2>
         <h2 className="font-bold ml-2 w-20 text-left">{animatedLikes}</h2>
       </div>
-      {/* eslint-disable-next-line react/no-unknown-property */}
-      <style jsx>{`
-        @keyframes pulse {
-          0%,
-          100% {
-            transform: scale(1);
-          }
-          50% {
-            transform: scale(1.2);
-          }
-        }
-        .animate-pulse {
-          animation: pulse 0.3s infinite;
-        }
-      `}</style>
     </div>
   );
 };
