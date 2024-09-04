@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import * as Client_constants from '../..//utils/constants';
+import * as ClienConstants from '../../utils/constants';
 
 interface LikesProps {
   finalLikes: number;
@@ -26,13 +26,13 @@ export const Likes = ({ finalLikes, onComplete }: LikesProps) => {
 
     const randomDelay = (min: number, max: number) => Math.random() * (max - min) + min;
     const animationDuration = randomDelay(
-      Client_constants.ANIMATION_DURATION_LOWER,
-      Client_constants.ANIMATION_DURATION_UPPER,
+      ClienConstants.ANIMATION_DURATION_LOWER,
+      ClienConstants.ANIMATION_DURATION_UPPER,
     ); // random duration (ms) to continue animation for
 
     const pauseDuration = randomDelay(
-      Client_constants.PAUSE_DURATION_LOWER,
-      Client_constants.PAUSE_DURATION_UPPER,
+      ClienConstants.PAUSE_DURATION_LOWER,
+      ClienConstants.PAUSE_DURATION_UPPER,
     ); // random duration (ms) to puase animation for
 
     const initPauseTimeout = (shouldPause: boolean, timeoutDuration: number) => {
@@ -52,7 +52,7 @@ export const Likes = ({ finalLikes, onComplete }: LikesProps) => {
         setIsAnimating(true);
         incrementTimeoutId = setInterval(() => {
           setAnimatedLikes((prevLikes) => {
-            const newLikes = prevLikes + Client_constants.LIKES_INCREMENT_STEP;
+            const newLikes = prevLikes + ClienConstants.LIKES_INCREMENT_STEP;
             if (newLikes >= finalLikes) {
               clearInterval(incrementTimeoutId);
               setIsAnimating(false); // stop animation when finalLikes is reached (heart stops pulsing)
@@ -61,7 +61,7 @@ export const Likes = ({ finalLikes, onComplete }: LikesProps) => {
               return newLikes;
             }
           });
-        }, Client_constants.LIKES_INCREMENT_DELAY); // increase displayed likes by LIKES_INCREMENT_STEP every 15 ms
+        }, ClienConstants.LIKES_INCREMENT_DELAY); // increase displayed likes by LIKES_INCREMENT_STEP every 15 ms
 
         pauseTimeoutId = initPauseTimeout(false, animationDuration); // pause after animationDuration
       } else {
@@ -74,7 +74,7 @@ export const Likes = ({ finalLikes, onComplete }: LikesProps) => {
     const startAnimation = setTimeout(() => {
       setIsAnimating(true);
       incrementLikes();
-    }, Client_constants.LIKES_ANIMATION_DELAY);
+    }, ClienConstants.LIKES_ANIMATION_DELAY);
 
     return () => {
       clearInterval(incrementTimeoutId);
