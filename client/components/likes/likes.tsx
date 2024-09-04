@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { LIKES_INCREMENT_STEP, LIKES_INCREMENT_DELAY } from '../../../server/src/utils/constants';
-import { LikesDisplay } from './likesDisplay';
+import * as ClienConstants from '../../utils/constants';
 
 interface LikesProps {
   finalLikes: number;
@@ -26,15 +25,34 @@ export const Likes = ({ finalLikes, onComplete }: LikesProps) => {
     let isIncrementing = true;
 
     const randomDelay = (min: number, max: number) => Math.random() * (max - min) + min;
-    const animationDuration = randomDelay(1000, 2000); // random duration (ms) to continue animation for
-    const pauseDuration = randomDelay(2000, 3000); // random duration (ms) to puase animation for
+    const animationDuration = randomDelay(
+      ClienConstants.ANIMATION_DURATION_LOWER,
+      ClienConstants.ANIMATION_DURATION_UPPER,
+    ); // random duration (ms) to continue animation for
+
+    const pauseDuration = randomDelay(
+      ClienConstants.PAUSE_DURATION_LOWER,
+      ClienConstants.PAUSE_DURATION_UPPER,
+    ); // random duration (ms) to puase animation for
+
+    const initPauseTimeout = (shouldPause: boolean, timeoutDuration: number) => {
+      return setTimeout(
+        () => {
+          clearInterval(incrementTimeoutId);
+          isIncrementing = shouldPause;
+          setIsAnimating(shouldPause);
+          incrementLikes(); // call again to switch between animation and pause
+        },
+        timeoutDuration, // continues animation or puase for a random duration
+      );
+    };
 
     const incrementLikes = () => {
       if (isIncrementing) {
         setIsAnimating(true);
         incrementTimeoutId = setInterval(() => {
           setAnimatedLikes((prevLikes) => {
-            const newLikes = prevLikes + LIKES_INCREMENT_STEP;
+            const newLikes = prevLikes + ClienConstants.LIKES_INCREMENT_STEP;
             if (newLikes >= finalLikes) {
               clearInterval(incrementTimeoutId);
               setIsAnimating(false); // stop animation when finalLikes is reached (heart stops pulsing)
@@ -43,28 +61,11 @@ export const Likes = ({ finalLikes, onComplete }: LikesProps) => {
               return newLikes;
             }
           });
-        }, LIKES_INCREMENT_DELAY); // increase displayed likes by LIKES_INCREMENT_STEP every 15 ms
+        }, ClienConstants.LIKES_INCREMENT_DELAY); // increase displayed likes by LIKES_INCREMENT_STEP every 15 ms
 
-        pauseTimeoutId = setTimeout(
-          () => {
-            clearInterval(incrementTimeoutId);
-            isIncrementing = false;
-            setIsAnimating(false);
-            incrementLikes(); // call again to pause animation
-          },
-          animationDuration, // continues animation for a random duration
-        );
+        pauseTimeoutId = initPauseTimeout(false, animationDuration); // pause after animationDuration
       } else {
-        // Pause for a random duration
-        pauseTimeoutId = setTimeout(
-          () => {
-            clearInterval(incrementTimeoutId);
-            isIncrementing = true;
-            setIsAnimating(true);
-            incrementLikes(); // call again to continue animation
-          },
-          pauseDuration, // pauses animation for a random duration
-        );
+        pauseTimeoutId = initPauseTimeout(true, pauseDuration); // resume animation after pauseDuration
       }
     };
 
@@ -73,7 +74,7 @@ export const Likes = ({ finalLikes, onComplete }: LikesProps) => {
     const startAnimation = setTimeout(() => {
       setIsAnimating(true);
       incrementLikes();
-    }, 4000);
+    }, ClienConstants.LIKES_ANIMATION_DELAY);
 
     return () => {
       clearInterval(incrementTimeoutId);
@@ -82,5 +83,12 @@ export const Likes = ({ finalLikes, onComplete }: LikesProps) => {
     };
   }, [finalLikes]); // reset when finalLikes is updated
 
-  return <LikesDisplay animatedLikes={animatedLikes} isAnimating={isAnimating} />;
+  return (
+    <div className="w-full h-16 flex items-center justify-center">
+      <div className="flex items-center mt-8 relative -translate-x-32">
+        <h2 className={`font-bold ${isAnimating ? 'animate-pulse' : ''}`}>❤️</h2>
+        <h2 className="font-bold ml-2 w-20 text-left">{animatedLikes}</h2>
+      </div>
+    </div>
+  );
 };
