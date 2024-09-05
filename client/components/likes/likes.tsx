@@ -85,7 +85,7 @@ export const Likes = ({ finalLikes, onComplete }: LikesProps) => {
 
   return (
     <div className="w-full h-16 flex items-center justify-center">
-      <div className="flex items-center mt-8 relative -translate-x-32">
+      <div className="w-full h-16 flex items-center mt-8 justify-start transform translate-x-10">
         <h2 className={`font-bold ${isAnimating ? 'animate-pulse' : ''}`}>❤️</h2>
         <h2 className="font-bold ml-2 w-20 text-left">{animatedLikes}</h2>
       </div>
