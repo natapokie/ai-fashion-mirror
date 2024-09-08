@@ -8,12 +8,8 @@ FROM node:20.16.0-alpine
 # this is our working directory in our docker container
 WORKDIR /app
 
-# Copy package.json and package-lock.json
 # Copy package.json and package-lock.json to WORKDIR
 COPY package*.json ./
-
-# Install dependencies
-# RUN npm install
 
 # instead of using npm install, we can use npm ci
 # the main reason why we also included the package-lock.json is so that we can use ci

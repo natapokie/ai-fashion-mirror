@@ -2,17 +2,19 @@
 FROM node:20.16.0-alpine
 
 # Set the working directory
-WORKDIR /client
+WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci
+
+RUN ls
 
 # Copy the rest of the application code and the shared directory
-COPY . .
-COPY ../shared /client/shared
+COPY ./client ./
+COPY ./shared ../shared
 
 # Expose the port on which the application will run
 EXPOSE 3000
