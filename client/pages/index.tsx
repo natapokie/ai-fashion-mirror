@@ -124,7 +124,7 @@ const Home = () => {
       <div className="w-screen h-screen flex flex-col justify-start items-center">
         {display ? (
           <>
-          <div className='flex flex-row justify-between align-start'>
+          <div className='w-screen flex flex-row justify-between align-start'>
           <Likes finalLikes={display.likes} onComplete={onLikesComplete}></Likes>
           {img && !(likesComplete && commentsComplete) && <Photo img={img} />}
           </div>
