@@ -121,10 +121,14 @@ const Home = () => {
 
   return (
     <>
-      <div className="w-screen h-screen flex flex-col justify-between items-center">
+      <div className="w-screen h-screen flex flex-col justify-start items-center">
         {display ? (
           <>
-            <Likes finalLikes={display.likes} onComplete={onLikesComplete}></Likes>
+          <div className='flex flex-row justify-between align-start'>
+          <Likes finalLikes={display.likes} onComplete={onLikesComplete}></Likes>
+          {img && !(likesComplete && commentsComplete) && <Photo img={img} />}
+          </div>
+            
             <CommentFeed comments={display.comments} onComplete={onCommentsComplete}></CommentFeed>
           </>
         ) : (
@@ -138,7 +142,7 @@ const Home = () => {
             )}
           </>
         )}
-        {img && !(likesComplete && commentsComplete) && <Photo img={img} />}
+        
       </div>
     </>
   );
