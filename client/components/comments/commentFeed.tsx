@@ -54,7 +54,7 @@ const CommentFeed: React.FC<CommentFeedProps> = ({ comments, onComplete }) => {
     <div className="fixed top-[200px] w-full h-full p-4">
       <div className="relative h-full">
         <motion.div
-          className="absolute top-0 w-full flex flex-col my-14"
+          className="absolute top-0 w-full flex flex-col my-20"
         >
           <AnimatePresence>
             {displayedComments.map((comment) => (
