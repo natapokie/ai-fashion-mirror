@@ -5,6 +5,7 @@ import CommentFeed from '@/components/comments/commentFeed';
 import { ResponseData } from '../../shared/types';
 import { LoadingOverlay } from '@/components/loadingOverlay/loadingOverlay';
 import { EndingOverlay } from '@/components/endingOverlay/endingOverlay';
+import { Photo } from '@/components/photo/photo';
 
 const Home = () => {
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
@@ -17,6 +18,7 @@ const Home = () => {
   const [commentsComplete, setCommentsComplete] = useState<boolean>(false);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [img, setImg] = useState<string>('');
 
   useEffect(() => {
     console.log('Connecting Socket');
@@ -43,6 +45,11 @@ const Home = () => {
       }
     };
 
+    const onSendPhoto = (data: string) => {
+      console.log('Received image data');
+      setImg(`data:image/jpeg;base64,${data}`);
+    };
+
     const onErrorMessage = (msg: string) => {
       // on error take a new photo
       console.error(msg);
@@ -51,6 +58,7 @@ const Home = () => {
 
     socket.on('connect', onConnect);
     socket.on('api_response', onApiResonse);
+    socket.on('send_photo', onSendPhoto);
     socket.on('err_msg', onErrorMessage);
 
     return () => {
@@ -59,6 +67,7 @@ const Home = () => {
       // clean up socket event listeners
       socket.off('connect', onConnect);
       socket.off('api_response', onApiResonse);
+      socket.off('send_photo', onSendPhoto);
 
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -76,7 +85,7 @@ const Home = () => {
       console.log('Likes and comments animation completed');
       setLikesComplete(false);
       setCommentsComplete(false);
-
+      setImg('');
       donePhoto();
     }
     // fire useEffect when either state vars change
@@ -112,10 +121,14 @@ const Home = () => {
 
   return (
     <>
-      <div className="w-screen h-screen flex flex-col justify-between items-center">
+      <div className="w-screen h-screen flex flex-col justify-start items-center">
         {display ? (
           <>
-            <Likes finalLikes={display.likes} onComplete={onLikesComplete}></Likes>
+          <div className='w-screen flex flex-row justify-between align-start'>
+          <Likes finalLikes={display.likes} onComplete={onLikesComplete}></Likes>
+          {img && !(likesComplete && commentsComplete) && <Photo img={img} />}
+          </div>
+            
             <CommentFeed comments={display.comments} onComplete={onCommentsComplete}></CommentFeed>
           </>
         ) : (
@@ -129,6 +142,7 @@ const Home = () => {
             )}
           </>
         )}
+        
       </div>
     </>
   );
