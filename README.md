@@ -47,13 +47,26 @@ _Note: if you notice that there is 1 high vulnerability after installing depende
 ```shell
 # in one terminal start the client
 cd client
-npm run dev>>
+npm run dev
 ```
 
 ```shell
 # in another terminal start the server
 cd server
 npm run dev
+```
+
+**Running with Docker:**
+
+Make sure you have Docker Desktop installed, to install Docker Desktop use the following [link](https://www.docker.com/products/docker-desktop/).
+
+From the **root** repository run:
+
+_Note: The server does not build due to node-webcam (future todo!)_
+
+```shell
+# rebuilds the images for all services (client and server) in the compose.yaml
+docker-compose up --build
 ```
 
 ## Camera
