@@ -1,4 +1,3 @@
-# tried using the below code but throwing copy error
 services:
   client:
     build:
