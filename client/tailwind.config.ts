@@ -3,7 +3,7 @@ import type { Config } from 'tailwindcss';
 const config: Config = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx,css}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
@@ -13,7 +13,7 @@ const config: Config = {
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       fontSize: {
-        '10xl': ['12rem', { lineHeight: '1.5' }], 
+        '10xl': ['12rem', { lineHeight: '1.5' }],
       },
       borderWidth: {
         '20': '20px',
