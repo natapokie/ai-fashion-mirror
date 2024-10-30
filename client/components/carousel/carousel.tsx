@@ -102,7 +102,7 @@ const Carousel: React.FC<CarouselProps> = ({ products }) => {
       {displayedProducts.length > 0 && (
         <div
           ref={carouselRef}
-          className={`${grabbing ? styles.active : ''} w-full flex flex-row cursor-grab`}
+          className={`${grabbing ? styles.active : ''} w-full flex flex-row cursor-grab touch-none`}
           onMouseDown={handleMouseDown}
           onMouseLeave={() => setGrabbing(false)}
           onPointerDown={handleMouseDown}
