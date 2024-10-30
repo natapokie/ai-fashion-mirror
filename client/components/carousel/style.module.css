@@ -1,0 +1,87 @@
+.carouselCard {
+  width: 400px;
+  height: 500px;
+
+  @apply relative rounded-xl shadow-md overflow-hidden select-none;
+}
+
+.carouselCard:hover .productImage {
+  transform: scale(1.1);
+}
+
+.productImage {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: scale(1);
+  transition: transform 0.3s ease-in-out;
+  @apply w-full h-full object-cover;
+}
+
+.gradientOverlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 75%,
+    rgba(212, 212, 216, 0.5) 85%,
+    #78716c 100%
+  );
+}
+
+.productName {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  text-align: left;
+
+  @apply text-3xl font-bold text-white;
+}
+
+.active {
+  @apply cursor-grabbing;
+}
+
+.baseCard {
+  position: absolute;
+  left: calc(50% - 200px);
+
+  transition:
+    transform 300ms ease-in-out,
+    opacity 300ms ease-in-out;
+}
+
+.primaryCard {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+}
+
+.secondaryCard {
+  opacity: 0.6;
+  transform: scale(0.9);
+  z-index: 1;
+}
+
+.secondaryCardLeft {
+  transform: scale(0.9) translateX(-80%);
+}
+
+.secondaryCardRight {
+  transform: scale(0.9) translateX(80%);
+}
+
+.hiddenCard {
+  opacity: 0;
+}
+
+.feedbackCard {
+  background-color: rgba(120, 113, 108, 0.9);
+
+  @apply w-[80%] p-4 rounded-xl shadow-md touch-none;
+}

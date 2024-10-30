@@ -23,3 +23,9 @@ export interface PhotoData {
   encodedImg: string;
   errorMsg?: string;
 }
+
+export interface ProductData {
+  image: string;
+  name: string;
+  feedback: string;
+}
