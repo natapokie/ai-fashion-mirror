@@ -48,6 +48,9 @@
 }
 
 .baseCard {
+  position: absolute;
+  left: calc(50% - 200px);
+
   transition:
     transform 300ms ease-in-out,
     opacity 300ms ease-in-out;
@@ -56,9 +59,29 @@
 .primaryCard {
   opacity: 1;
   transform: scale(1);
+  z-index: 2;
 }
 
 .secondaryCard {
-  opacity: 0.5;
+  opacity: 0.6;
   transform: scale(0.9);
+  z-index: 1;
+}
+
+.secondaryCardLeft {
+  transform: scale(0.9) translateX(-80%);
+}
+
+.secondaryCardRight {
+  transform: scale(0.9) translateX(80%);
+}
+
+.hiddenCard {
+  opacity: 0;
+}
+
+.feedbackCard {
+  background-color: rgba(120, 113, 108, 0.9);
+
+  @apply w-[80%] p-4 rounded-xl shadow-md touch-none;
 }

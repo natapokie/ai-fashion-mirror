@@ -10,25 +10,16 @@ interface CarouselProps {
 }
 
 const Carousel: React.FC<CarouselProps> = ({ products }) => {
-  const [index, setIndex] = useState<number>(0);
-  const [displayedProducts, setDisplayedProducts] = useState<ProductData[]>([]);
   const [grabbing, setGrabbing] = useState<boolean>(false);
+
+  const [primaryIndex, setPrimaryIndex] = useState<number>(0);
+  const [secondaryLeftIndex, setSecondaryLeftIndex] = useState<number>(1);
+  const [secondaryRightIndex, setSecondaryRightIndex] = useState<number>(products.length - 1);
 
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const movementXRef = useRef<number>(0);
 
-  const getCenteredSection = (arr: ProductData[], index: number): ProductData[] => {
-    const length = arr.length;
-    const result = [
-      arr[(index - 1 + length) % length], // Element before the index
-      arr[index], // Center element
-      arr[(index + 1) % length], // Element after the index
-    ];
-    return result;
-  };
-
   const handleMouseDown = () => {
-    console.log('handleMouseDown');
     setGrabbing(true);
     movementXRef.current = 0;
   };
@@ -41,39 +32,38 @@ const Carousel: React.FC<CarouselProps> = ({ products }) => {
   };
 
   const handleMouseUp = () => {
-    console.log('handleMouseUp', movementXRef.current);
     setGrabbing(false);
 
     // Check the accumulated movement to adjust index
     if (movementXRef.current > 0) {
-      console.warn('shift left');
-      setIndex((prevIndex) => (prevIndex - 1 + products.length) % products.length);
+      // shift left
+      setPrimaryIndex((prevIndex) => (prevIndex - 1 + products.length) % products.length);
     } else if (movementXRef.current < 0) {
-      console.warn('shift right');
-      setIndex((prevIndex) => (prevIndex + 1) % products.length);
+      // shift right
+      setPrimaryIndex((prevIndex) => (prevIndex + 1) % products.length);
     }
 
     movementXRef.current = 0; // Reset after handling
   };
 
   useEffect(() => {
-    // get the initial displayed products
-    setDisplayedProducts(getCenteredSection(products, index));
-  }, [products, index]);
+    // Update secondary indexes
+    setSecondaryRightIndex((primaryIndex + 1) % products.length);
+    setSecondaryLeftIndex((primaryIndex - 1 + products.length) % products.length);
+  }, [products, primaryIndex]);
 
   useEffect(() => {
-    console.log('grabbing', grabbing, carouselRef);
     const carouselElement = carouselRef.current;
 
     if (grabbing && carouselElement) {
-      console.log('adding event lisener');
+      // add event listeners
       carouselElement.addEventListener('mousemove', handleMouseMove);
       carouselElement.addEventListener('touchend', handleMouseUp);
 
       carouselElement.addEventListener('pointermove', handleMouseMove);
       carouselElement.addEventListener('pointerup', handleMouseUp);
     } else if (carouselElement) {
-      console.log('removing event lisener');
+      // remove event listeners
       carouselElement.removeEventListener('mousemove', handleMouseMove);
       carouselElement.removeEventListener('mouseup', handleMouseUp);
 
@@ -92,31 +82,29 @@ const Carousel: React.FC<CarouselProps> = ({ products }) => {
     };
   }, [grabbing]);
 
-  useEffect(() => {
-    console.log('index', index);
-    setDisplayedProducts(getCenteredSection(products, index));
-  }, [index]);
-
   return (
-    <div>
-      {displayedProducts.length > 0 && (
-        <div
-          ref={carouselRef}
-          className={`${grabbing ? styles.active : ''} w-full flex flex-row justify-center items-center cursor-grab touch-none`}
-          onMouseDown={handleMouseDown}
-          onMouseLeave={() => setGrabbing(false)}
-          onPointerDown={handleMouseDown}
-        >
-          {displayedProducts.map((product, i) => (
-            <div
-              key={i}
-              className={`${styles.baseCard} ${i === 1 ? styles.primaryCard : styles.secondaryCard}`}
-            >
-              <CarouselCard name={product.name} image={product.image} />
-            </div>
-          ))}
-        </div>
-      )}
+    <div className="flex flex-col items-center gap-7 p-5">
+      <div
+        ref={carouselRef}
+        className={`${grabbing ? styles.active : ''} w-full h-[500px] cursor-grab touch-none relative`}
+        onMouseDown={handleMouseDown}
+        onMouseLeave={() => setGrabbing(false)}
+        onPointerDown={handleMouseDown}
+      >
+        {products.map((product, i) => (
+          <div
+            key={i}
+            className={`${styles.baseCard} ${i === primaryIndex ? styles.primaryCard : i === secondaryLeftIndex || i === secondaryRightIndex ? styles.secondaryCard : styles.hiddenCard} ${secondaryLeftIndex === i ? styles.secondaryCardLeft : ''} ${
+              secondaryRightIndex === i ? styles.secondaryCardRight : ''
+            }`}
+          >
+            <CarouselCard name={product.name} image={product.image} />
+          </div>
+        ))}
+      </div>
+      <div className={styles.feedbackCard}>
+        <p className="text-xl">{products[primaryIndex].feedback}</p>
+      </div>
     </div>
   );
 };
