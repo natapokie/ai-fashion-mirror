@@ -45,9 +45,10 @@ Currently, you will have the run with frontend and backend in two different term
 _Note: if you notice that there is 1 high vulnerability after installing dependencies on the the client side, it's because we needed to downgrade to Next v13 as Next v14 is not working on the raspberry pi_
 
 ```shell
+# for prototype 2, run client with HTTPS
 # in one terminal start the client
 cd client
-npm run dev
+npm run dev -- --experimental-https -H <ip_address>
 ```
 
 ```shell
