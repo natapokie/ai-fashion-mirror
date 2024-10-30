@@ -1,23 +1,21 @@
 import React from 'react';
+import CameraFeed from '@/components/cameraFeed/cameraFeed';
 
 const Home = () => {
-  const handleStart = () => {
-    console.log("Start button clicked or tapped");
-    // Future camera streaming functionality can be triggered here
-  };
-
   return (
-    <div className="w-screen h-screen overflow-hidden bg-black relative flex justify-center items-center">
+    <div className="w-screen h-screen overflow-hidden bg-black relative">
+      <CameraFeed /> {/* This renders the live camera feed as background */}
       <button
-        onClick={handleStart}
+        onClick={() => console.log("Button clicked")}
         className="
-          bg-white/30 text-white text-xl font-bold 
+          bg-white/30 text-white text-3xl font-bold 
           py-4 px-10 rounded-full opacity-90 
           hover:opacity-100 transition-opacity 
           active:bg-white/50 active:scale-95
-          absolute bottom-[25%] touch-auto cursor-pointer
+          select-none
+          absolute bottom-[25%] left-1/2 transform -translate-x-1/2 touch-auto cursor-pointer
         "
-        style={{ touchAction: 'manipulation', pointerEvents: 'auto' }} // Ensures smooth interaction on touch devices
+        style={{ touchAction: 'manipulation', pointerEvents: 'auto' }}
       >
         CLICK TO START
       </button>
