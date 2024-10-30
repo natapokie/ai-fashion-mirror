@@ -45,9 +45,11 @@ const Carousel: React.FC<CarouselProps> = ({ products }) => {
     setGrabbing(false);
 
     // Check the accumulated movement to adjust index
-    if (movementXRef.current > 100) {
+    if (movementXRef.current > 0) {
+      console.warn('shift left');
       setIndex((prevIndex) => (prevIndex - 1 + products.length) % products.length);
-    } else if (movementXRef.current < -100) {
+    } else if (movementXRef.current < 0) {
+      console.warn('shift right');
       setIndex((prevIndex) => (prevIndex + 1) % products.length);
     }
 
@@ -66,17 +68,26 @@ const Carousel: React.FC<CarouselProps> = ({ products }) => {
     if (grabbing && carouselElement) {
       console.log('adding event lisener');
       carouselElement.addEventListener('mousemove', handleMouseMove);
-      carouselElement.addEventListener('mouseup', handleMouseUp);
+      carouselElement.addEventListener('touchend', handleMouseUp);
+
+      carouselElement.addEventListener('pointermove', handleMouseMove);
+      carouselElement.addEventListener('pointerup', handleMouseUp);
     } else if (carouselElement) {
       console.log('removing event lisener');
       carouselElement.removeEventListener('mousemove', handleMouseMove);
       carouselElement.removeEventListener('mouseup', handleMouseUp);
+
+      carouselElement.removeEventListener('pointermove', handleMouseMove);
+      carouselElement.removeEventListener('pointerup', handleMouseUp);
     }
 
     return () => {
       if (carouselElement) {
         carouselElement.removeEventListener('mousemove', handleMouseMove);
         carouselElement.removeEventListener('mouseup', handleMouseUp);
+
+        carouselElement.removeEventListener('pointermove', handleMouseMove);
+        carouselElement.removeEventListener('pointerup', handleMouseUp);
       }
     };
   }, [grabbing]);
@@ -94,6 +105,7 @@ const Carousel: React.FC<CarouselProps> = ({ products }) => {
           className={`${grabbing ? styles.active : ''} w-full flex flex-row cursor-grab`}
           onMouseDown={handleMouseDown}
           onMouseLeave={() => setGrabbing(false)}
+          onPointerDown={handleMouseDown}
         >
           {displayedProducts.map((product, index) => (
             <div key={index}>
