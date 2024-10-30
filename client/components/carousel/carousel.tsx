@@ -102,37 +102,19 @@ const Carousel: React.FC<CarouselProps> = ({ products }) => {
       {displayedProducts.length > 0 && (
         <div
           ref={carouselRef}
-          className={`${grabbing ? styles.active : ''} w-full flex flex-row cursor-grab touch-none`}
+          className={`${grabbing ? styles.active : ''} w-full flex flex-row justify-center items-center cursor-grab touch-none`}
           onMouseDown={handleMouseDown}
           onMouseLeave={() => setGrabbing(false)}
           onPointerDown={handleMouseDown}
         >
-          {displayedProducts.map((product, index) => (
-            <div key={index}>
+          {displayedProducts.map((product, i) => (
+            <div
+              key={i}
+              className={`${styles.baseCard} ${i === 1 ? styles.primaryCard : styles.secondaryCard}`}
+            >
               <CarouselCard name={product.name} image={product.image} />
             </div>
           ))}
-
-          {/* <div>
-            <CarouselCard name={displayedProducts[0].name} image={displayedProducts[0].image} />
-          </div>
-
-          <div>
-            <CarouselCard name={displayedProducts[1].name} image={displayedProducts[1].image} />
-          </div>
-
-          <div
-            draggable
-            onDragEnd={(event) => {
-              console.log('onDragEnd', displayedProducts[2].name);
-              event.preventDefault();
-              event.stopPropagation();
-              setIndex((index + 1) % products.length);
-              setDisplayedProducts(getCenteredSection(products, index));
-            }}
-          >
-            <CarouselCard name={displayedProducts[2].name} image={displayedProducts[2].image} />
-          </div> */}
         </div>
       )}
     </div>

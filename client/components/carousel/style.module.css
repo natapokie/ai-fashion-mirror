@@ -2,7 +2,7 @@
   width: 400px;
   height: 500px;
 
-  @apply relative rounded-xl shadow-md overflow-hidden;
+  @apply relative rounded-xl shadow-md overflow-hidden select-none;
 }
 
 .carouselCard:hover .productImage {
@@ -45,4 +45,20 @@
 
 .active {
   @apply cursor-grabbing;
+}
+
+.baseCard {
+  transition:
+    transform 300ms ease-in-out,
+    opacity 300ms ease-in-out;
+}
+
+.primaryCard {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.secondaryCard {
+  opacity: 0.5;
+  transform: scale(0.9);
 }
