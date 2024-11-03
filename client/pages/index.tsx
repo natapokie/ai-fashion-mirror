@@ -1,12 +1,13 @@
 import React from 'react';
 import CameraFeed from '@/components/cameraFeed/cameraFeed';
+import Feedback from './feedback';
 
 const Home = () => {
   return (
     <div className="w-screen h-screen overflow-hidden bg-black relative">
       <CameraFeed /> {/* This renders the live camera feed as background */}
       <button
-        onClick={() => console.log("Button clicked")}
+        onClick={() => console.log('Button clicked')}
         className="
           bg-white/30 text-white text-3xl font-bold 
           py-4 px-10 rounded-full opacity-90 
@@ -19,6 +20,7 @@ const Home = () => {
       >
         CLICK TO START
       </button>
+      <Feedback /> {/* This renders the feedback component */}
     </div>
   );
 };

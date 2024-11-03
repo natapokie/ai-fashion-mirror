@@ -3,6 +3,7 @@ import NodeWebcam, { WebcamOptions } from 'node-webcam';
 import { sendToApi } from './apiService';
 import fs from 'fs';
 import { PhotoData } from '../../../shared/types';
+import { sendToGpt } from './gptService';
 
 const PHOTO_WIDTH = 450;
 const PHOTO_HEIGHT = 900;
@@ -83,6 +84,13 @@ export class CameraService {
     try {
       resp.apiResponse = await sendToApi(photo);
       resp.encodedImg = encodedImg;
+
+      console.log('photo name:', `photo_${this.photosTaken}.jpg`);
+      const gptResponse = await sendToGpt(`photo_${this.photosTaken}.jpg`);
+      console.log(
+        'Received GPT Response',
+        JSON.stringify(gptResponse.choices[0].message.content, null, 2),
+      );
     } catch (err) {
       console.error('Error creating PhotoData object.');
       resp.errorMsg = `${err}`;
