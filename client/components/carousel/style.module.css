@@ -82,6 +82,6 @@
 
 .feedbackCard {
   background-color: rgba(120, 113, 108, 0.9);
-
+  z-index: 1;
   @apply w-[80%] p-4 rounded-xl shadow-md touch-none;
 }

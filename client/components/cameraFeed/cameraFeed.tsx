@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 
-const CameraFeed: React.FC = () => {
+const CameraFeed: React.FC<{ className?: string }> = ({ className }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const startCamera = async () => {
-    console.log("Attempting to start camera..."); // Debug log
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       if (videoRef.current) {
@@ -18,10 +17,9 @@ const CameraFeed: React.FC = () => {
   useEffect(() => {
     startCamera();
 
-    // Clean up the camera stream when the component unmounts
     return () => {
       if (videoRef.current?.srcObject) {
-        (videoRef.current.srcObject as MediaStream).getTracks().forEach((track) => track.stop());
+        (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
       }
     };
   }, []);
@@ -31,8 +29,8 @@ const CameraFeed: React.FC = () => {
       ref={videoRef}
       autoPlay
       playsInline
-      muted // Ensures there’s no audio playback
-      className="absolute top-0 left-0 w-full h-full object-cover transform scale-x-[-1]"
+      muted
+      className={`absolute top-0 left-0 w-full h-full object-cover transform scale-x-[-1] ${className}`}
     />
   );
 };
