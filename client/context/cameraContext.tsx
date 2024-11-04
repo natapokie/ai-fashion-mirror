@@ -51,21 +51,25 @@ export const CameraProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         // console.log('dataURL base64', dataURL);
 
         return new Promise((resolve) => {
-          canvas.toBlob((blob) => {
-            console.log('convertting to form-data');
-            if (blob) {
-              console.log('blob', blob);
-              const formData = new FormData();
-              formData.append('image', blob, 'image.jpg');
+          canvas.toBlob(
+            (blob) => {
+              console.log('convertting to form-data');
+              if (blob) {
+                console.log('blob', blob);
+                const formData = new FormData();
+                formData.append('image', blob, 'capture.jpg');
 
-              // console.log('returning', formData);
-              console.log(formData.get('image'));
-              resolve(formData);
-            } else {
-              console.error('No blob!');
-              resolve(undefined);
-            }
-          });
+                // console.log('returning', formData);
+                console.log(formData.get('image'));
+                resolve(formData);
+              } else {
+                console.error('No blob!');
+                resolve(undefined);
+              }
+            },
+            'image/jpeg',
+            0.95,
+          );
         });
       }
       console.error('Context not defined!');
