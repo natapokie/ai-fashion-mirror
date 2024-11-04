@@ -2,22 +2,16 @@ import { Request, Response } from 'express';
 
 export const CameraController = {
   async saveImage(req: Request, res: Response) {
-    console.log('saveImage');
-    console.log(req.body);
-    console.log(req.file);
-
     try {
       if (!req.file) {
         return res.status(400).json({ success: false, message: 'No file uploaded' });
       }
 
       if (req.file.mimetype !== 'image/jpeg') {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message: `Must upload a JPEG image. Your image is minetype: ${req.file.mimetype}`,
-          });
+        return res.status(400).json({
+          success: false,
+          message: `Must upload a JPEG image. Your image is minetype: ${req.file.mimetype}`,
+        });
       }
 
       res.status(200).json({ success: true, message: 'Image saved successfully' });

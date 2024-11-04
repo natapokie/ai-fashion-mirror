@@ -27,16 +27,13 @@ const Home = () => {
   const { takePhoto } = useCamera();
 
   const [pageState, setPageState] = useState(pageStates.MAIN);
-  // const [showCarousel, setShowCarousel] = useState(false);
 
   const handleStart = () => {
     setPageState(pageStates.COUNTDOWN);
-    // setShowCarousel(true);
   };
 
   const closeCarousel = () => {
     setPageState(pageStates.MAIN);
-    // setShowCarousel(false); // Reset to the initial state
   };
 
   const onCountdownComplete = () => {
@@ -50,7 +47,6 @@ const Home = () => {
       // console.log('FormData captured:', formData);
       console.log(formData.get('image'));
 
-      // TODO: make a ost request to send image
       await saveImage(formData);
     }
   };
@@ -60,28 +56,17 @@ const Home = () => {
       setTimeout(() => {
         // after two seconds of SMILE
         // capture photo and parse into form-data for post request...
-        // const formData = await takePhoto();
         takePhotoHandler();
-        // console.log('formData in main page', formData)
-        // console.log('photoStr captured...', photoStr.length);
 
-        // TODO: save the photo
-        // call cameraService -> sends axios req
-        // await response...
-        // if any errors, display error state
-
+        // TODO: if there is error change state accordinly!
         // display loading state -- only if no errors saving photo
         setPageState(pageStates.LOADING);
+
+        // TODO: call API as well here?
       }, 2000);
     }
 
     if (pageState === pageStates.LOADING) {
-      // TODO: send data to API
-      // call apiService -> sends axios req to api
-      // await response..
-      // if any errors, display error state
-
-      // display carousel if no errors
       setPageState(pageStates.RESULTS);
     }
   }, [pageState]);

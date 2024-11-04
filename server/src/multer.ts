@@ -8,14 +8,13 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     // set filename
-    const filename = `capture.jpg`;
+    const filename = `${Date.now()}.jpg`;
     cb(null, filename);
   },
 });
 
 // Export multer instance
 export const upload = multer({
-  // dest: '__uploads'
   storage: storage,
   limits: {
     fileSize: 1000000, // 1000000 Bytes = 1 MB

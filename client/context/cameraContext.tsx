@@ -46,10 +46,6 @@ export const CameraProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         // capture photo and draw to canvas
         context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
-        // convert canvas image to data url (base64 str)
-        // const dataURL = canvas.toDataURL('image/jpeg');
-        // console.log('dataURL base64', dataURL);
-
         return new Promise((resolve) => {
           canvas.toBlob(
             (blob) => {
@@ -59,8 +55,7 @@ export const CameraProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 const formData = new FormData();
                 formData.append('image', blob, 'capture.jpg');
 
-                // console.log('returning', formData);
-                console.log(formData.get('image'));
+                console.log('[DEBUG]', formData.get('image'));
                 resolve(formData);
               } else {
                 console.error('No blob!');
