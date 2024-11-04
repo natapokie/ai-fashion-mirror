@@ -4,7 +4,7 @@ type CameraContextType = {
   videoRef: React.RefObject<HTMLVideoElement> | null;
   startCamera: () => Promise<void>;
   stopCamera: () => void;
-  takePhoto: () => string;
+  takePhoto: () => Promise<FormData | undefined> | undefined;
 };
 
 const CameraContext = createContext<CameraContextType | undefined>(undefined);
@@ -16,8 +16,10 @@ export const CameraProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   // const startCamera =
   const startCamera = async () => {
     try {
+      console.log('startCamera');
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       if (videoRef.current) {
+        console.log('setting video stream...');
         videoRef.current.srcObject = stream;
       }
     } catch (error) {
@@ -27,11 +29,12 @@ export const CameraProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const stopCamera = () => {
     if (stream) {
+      console.log('stopCamera');
       stream.getTracks().forEach((track) => track.stop());
     }
   };
 
-  const takePhoto = () => {
+  const takePhoto = (): Promise<FormData | undefined> | undefined => {
     if (videoRef.current) {
       // canvas element created in memory, not visible
       const canvas = document.createElement('canvas');
@@ -44,13 +47,31 @@ export const CameraProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
         // convert canvas image to data url (base64 str)
-        const dataURL = canvas.toDataURL('image/png');
-        console.log('dataURL base64', dataURL);
+        // const dataURL = canvas.toDataURL('image/jpeg');
+        // console.log('dataURL base64', dataURL);
 
-        return dataURL;
+        return new Promise((resolve) => {
+          canvas.toBlob((blob) => {
+            console.log('convertting to form-data');
+            if (blob) {
+              console.log('blob', blob);
+              const formData = new FormData();
+              formData.append('image', blob, 'image.jpg');
+
+              // console.log('returning', formData);
+              console.log(formData.get('image'));
+              resolve(formData);
+            } else {
+              console.error('No blob!');
+              resolve(undefined);
+            }
+          });
+        });
       }
+      console.error('Context not defined!');
     }
-    return '';
+    console.error('Could not access videoRef!');
+    return undefined;
   };
 
   useEffect(() => {

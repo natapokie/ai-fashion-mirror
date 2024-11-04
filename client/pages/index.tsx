@@ -42,13 +42,26 @@ const Home = () => {
     setPageState(pageStates.SMILE);
   };
 
+  const takePhotoHandler = async () => {
+    const formData = await takePhoto();
+    if (formData) {
+      // Handle the FormData, e.g., send it to a server
+      // console.log('FormData captured:', formData);
+      console.log(formData.get('image'));
+
+      // TODO: make a ost request to send image
+    }
+  };
+
   useEffect(() => {
     if (pageState === pageStates.SMILE) {
       setTimeout(() => {
         // after two seconds of SMILE
-        // capture photo
-        const photoStr = takePhoto();
-        console.log('photoStr captured...', photoStr.length);
+        // capture photo and parse into form-data for post request...
+        // const formData = await takePhoto();
+        takePhotoHandler();
+        // console.log('formData in main page', formData)
+        // console.log('photoStr captured...', photoStr.length);
 
         // TODO: save the photo
         // call cameraService -> sends axios req
@@ -96,7 +109,7 @@ const Home = () => {
           ) : pageState === pageStates.COUNTDOWN ? (
             <Countdown
               className="z-0 text-3xl font-bold"
-              totalCount={5}
+              totalCount={3}
               countdownComplete={onCountdownComplete}
             />
           ) : (
