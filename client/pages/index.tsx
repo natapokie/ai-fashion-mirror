@@ -10,6 +10,10 @@ const Home = () => {
     setShowCarousel(true);
   };
 
+  const handleClickOutside = () => {
+    setShowCarousel(false); // Reset to the initial state
+  };
+
   return (
     <div className="w-screen h-screen overflow-hidden bg-black relative">
       <CameraFeed className="absolute top-0 left-0 w-full h-full object-cover z-0" />
@@ -31,7 +35,7 @@ const Home = () => {
           CLICK TO START
         </button>
       ) : (
-        <Carousel products={mockProductData} />
+        <Carousel products={mockProductData} onClickOutside={handleClickOutside} />
       )}
     </div>
   );
