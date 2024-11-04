@@ -30,7 +30,7 @@ const CameraFeed: React.FC<{ className?: string }> = ({ className }) => {
       autoPlay
       playsInline
       muted
-      className={`absolute top-0 left-0 w-full h-full object-cover transform scale-x-[-1] ${className}`}
+      className={`absolute top-0 left-0 w-svw h-svh object-cover transform scale-x-[-1] ${className}`}
     />
   );
 };

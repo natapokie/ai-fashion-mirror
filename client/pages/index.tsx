@@ -15,8 +15,8 @@ const Home = () => {
   };
 
   return (
-    <div className="w-screen h-screen overflow-hidden bg-black relative">
-      <CameraFeed className="absolute top-0 left-0 w-full h-full object-cover z-0" />
+    <div className="w-svw h-svh overflow-hidden bg-black relative">
+      <CameraFeed/>
 
       {!showCarousel ? (
         <button
