@@ -4,7 +4,7 @@ type CameraContextType = {
   videoRef: React.RefObject<HTMLVideoElement> | null;
   startCamera: () => Promise<void>;
   stopCamera: () => void;
-  takePhoto: () => void;
+  takePhoto: () => string;
 };
 
 const CameraContext = createContext<CameraContextType | undefined>(undefined);
@@ -47,20 +47,10 @@ export const CameraProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         const dataURL = canvas.toDataURL('image/png');
         console.log('dataURL base64', dataURL);
 
-        // set download link
-
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'photo.png'; // Set the desired filename
-            link.click();
-            URL.revokeObjectURL(url); // Clean up the URL object
-          }
-        }, 'image/png');
+        return dataURL;
       }
     }
+    return '';
   };
 
   useEffect(() => {
