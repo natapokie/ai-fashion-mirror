@@ -16,7 +16,7 @@ const Home = () => {
 
   return (
     <div className="w-svw h-svh overflow-hidden bg-black relative">
-      <CameraFeed/>
+      <CameraFeed />
 
       {!showCarousel ? (
         <button
@@ -35,7 +35,9 @@ const Home = () => {
           CLICK TO START
         </button>
       ) : (
-        <Carousel products={mockProductData} onClickOutside={handleClickOutside} />
+        <div className="w-full h-full flex flex-col justify-end items-center">
+          <Carousel products={mockProductData} onClickOutside={handleClickOutside} />
+        </div>
       )}
     </div>
   );

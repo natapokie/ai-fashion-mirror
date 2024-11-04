@@ -45,6 +45,37 @@ const Carousel: React.FC<CarouselProps> = ({ products, onClickOutside }) => {
     setSecondaryLeftIndex((primaryIndex - 1 + products.length) % products.length);
   }, [primaryIndex, products]);
 
+  useEffect(() => {
+    // mouse events to enable carousel drag and scroll
+    const carouselElement = carouselRef.current;
+
+    if (grabbing && carouselElement) {
+      // add event listeners
+      carouselElement.addEventListener('mousemove', handleMouseMove);
+      carouselElement.addEventListener('touchend', handleMouseUp);
+
+      carouselElement.addEventListener('pointermove', handleMouseMove);
+      carouselElement.addEventListener('pointerup', handleMouseUp);
+    } else if (carouselElement) {
+      // remove event listeners
+      carouselElement.removeEventListener('mousemove', handleMouseMove);
+      carouselElement.removeEventListener('mouseup', handleMouseUp);
+
+      carouselElement.removeEventListener('pointermove', handleMouseMove);
+      carouselElement.removeEventListener('pointerup', handleMouseUp);
+    }
+
+    return () => {
+      if (carouselElement) {
+        carouselElement.removeEventListener('mousemove', handleMouseMove);
+        carouselElement.removeEventListener('mouseup', handleMouseUp);
+
+        carouselElement.removeEventListener('pointermove', handleMouseMove);
+        carouselElement.removeEventListener('pointerup', handleMouseUp);
+      }
+    };
+  }, [grabbing]);
+
   // Click outside handler
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -77,7 +108,11 @@ const Carousel: React.FC<CarouselProps> = ({ products, onClickOutside }) => {
           <div
             key={i}
             className={`${styles.baseCard} ${
-              i === primaryIndex ? styles.primaryCard : i === secondaryLeftIndex || i === secondaryRightIndex ? styles.secondaryCard : styles.hiddenCard
+              i === primaryIndex
+                ? styles.primaryCard
+                : i === secondaryLeftIndex || i === secondaryRightIndex
+                  ? styles.secondaryCard
+                  : styles.hiddenCard
             } ${secondaryLeftIndex === i ? styles.secondaryCardLeft : ''} ${
               secondaryRightIndex === i ? styles.secondaryCardRight : ''
             }`}
