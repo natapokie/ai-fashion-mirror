@@ -5,6 +5,6 @@ import { upload } from '../multer';
 const router = express.Router();
 
 // uploaded file is located in the "file" field of the formData obj
-router.post('/save', upload.single('image'), CameraController.saveBase64);
+router.post('/save', upload.single('image'), CameraController.saveImage);
 
 export default router;

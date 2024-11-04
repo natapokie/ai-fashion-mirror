@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 export const CameraController = {
-  async saveBase64(req: Request, res: Response) {
+  async saveImage(req: Request, res: Response) {
     console.log(req.body);
     console.log(req.file);
 
