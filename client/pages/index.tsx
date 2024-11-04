@@ -1,29 +1,60 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CameraFeed from '@/components/cameraFeed/cameraFeed';
 import Carousel from '@/components/carousel/carousel';
 import { mockProductData } from '@/utils/mockData';
 import Image from 'next/image';
 import { AnimatePresence } from 'framer-motion';
 import { motion } from 'framer-motion';
+import { Countdown } from '@/components/countdown/countdown';
 
 const closeIcon = '/icons/xmark-solid.svg';
 
+// define states
+const pageStates = {
+  MAIN: 'MAIN', // main state with click to start bttn
+  COUNTDOWN: 'COUNTDOWN', // displays countdown
+  SMILE: 'SMILE', // capture photo
+  LOADING: 'LOADING', // loading
+  RESULTS: 'RESULTS', // displays results
+  API_ERROR: 'API_ERROR', // api error page
+  ERROR: 'ERROR', // other errors?
+};
+
 const Home = () => {
-  const [showCarousel, setShowCarousel] = useState(false);
+  const [pageState, setPageState] = useState(pageStates.MAIN);
+  // const [showCarousel, setShowCarousel] = useState(false);
 
   const handleStart = () => {
-    setShowCarousel(true);
+    setPageState(pageStates.COUNTDOWN);
+    // setShowCarousel(true);
   };
 
   const closeCarousel = () => {
-    setShowCarousel(false); // Reset to the initial state
+    setPageState(pageStates.MAIN);
+    // setShowCarousel(false); // Reset to the initial state
   };
+
+  const onCountdownComplete = () => {
+    setPageState(pageStates.SMILE);
+  };
+
+  useEffect(() => {
+    if (pageState === pageStates.SMILE) {
+      // after two seconds of SMILE
+      setTimeout(() => {
+        // display loading state
+        setPageState(pageStates.LOADING);
+      }, 2000);
+    }
+  }, [pageState]);
 
   return (
     <div className="w-dvw h-dvh overflow-hidden bg-black relative">
       <CameraFeed />
 
-      {!showCarousel ? (
+      {pageState === pageStates.MAIN ||
+      pageState === pageStates.COUNTDOWN ||
+      pageState === pageStates.SMILE ? (
         <button
           onClick={handleStart}
           className="
@@ -33,16 +64,26 @@ const Home = () => {
             active:bg-white/50 active:scale-95
             select-none
             absolute bottom-[25%] left-1/2 transform -translate-x-1/2 
-            z-10 touch-auto cursor-pointer
+            z-10 touch-auto cursor-pointer w-[330px]
           "
           style={{ touchAction: 'manipulation' }}
         >
-          CLICK TO START
+          {pageState === pageStates.MAIN ? (
+            'CLICK TO START'
+          ) : pageState === pageStates.COUNTDOWN ? (
+            <Countdown
+              className="z-0 text-3xl font-bold"
+              totalCount={5}
+              countdownComplete={onCountdownComplete}
+            />
+          ) : (
+            'SMILE!'
+          )}
         </button>
       ) : null}
 
       <AnimatePresence>
-        {showCarousel && (
+        {pageState === pageStates.RESULTS && (
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
