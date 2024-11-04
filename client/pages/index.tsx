@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { AnimatePresence } from 'framer-motion';
 import { motion } from 'framer-motion';
 import { Countdown } from '@/components/countdown/countdown';
+import { Spinner } from '@/components/spinner/spinner';
+import { useCamera } from '@/context/cameraContext';
 
 const closeIcon = '/icons/xmark-solid.svg';
 
@@ -21,6 +23,8 @@ const pageStates = {
 };
 
 const Home = () => {
+  const { takePhoto } = useCamera();
+
   const [pageState, setPageState] = useState(pageStates.MAIN);
   // const [showCarousel, setShowCarousel] = useState(false);
 
@@ -40,11 +44,30 @@ const Home = () => {
 
   useEffect(() => {
     if (pageState === pageStates.SMILE) {
-      // after two seconds of SMILE
       setTimeout(() => {
-        // display loading state
+        // after two seconds of SMILE
+        // capture photo
+        const photoStr = takePhoto();
+        console.log('photoStr captured...', photoStr.length);
+
+        // TODO: save the photo
+        // call cameraService -> sends axios req
+        // await response...
+        // if any errors, display error state
+
+        // display loading state -- only if no errors saving photo
         setPageState(pageStates.LOADING);
       }, 2000);
+    }
+
+    if (pageState === pageStates.LOADING) {
+      // TODO: send data to API
+      // call apiService -> sends axios req to api
+      // await response..
+      // if any errors, display error state
+
+      // display carousel if no errors
+      setPageState(pageStates.RESULTS);
     }
   }, [pageState]);
 
@@ -81,6 +104,12 @@ const Home = () => {
           )}
         </button>
       ) : null}
+
+      {pageState === pageStates.LOADING && (
+        <div className="w-full h-full flex flex-col justify-center items-center opacity-80">
+          <Spinner />
+        </div>
+      )}
 
       <AnimatePresence>
         {pageState === pageStates.RESULTS && (
