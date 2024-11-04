@@ -1,32 +1,30 @@
 import { Request, Response } from 'express';
-// import { saveBase64Str } from '../services/cameraService';
 
 export const CameraController = {
   async saveBase64(req: Request, res: Response) {
-    res.status(200).json({ success: true, message: 'Image saved successfully' });
     console.log(req.body);
-    // console.log(req.file)
+    console.log(req.file);
 
-    // Validate request body
-    // if (!req.body || !req.body.base64String) {
-    //   return res.status(400).json({ success: false, message: 'No base64String provided' });
-    // }
+    try {
+      if (!req.file) {
+        return res.status(400).json({ success: false, message: 'No file uploaded' });
+      }
 
-    // const { base64String } = req.body;
+      if (req.file.mimetype !== 'image/jpeg') {
+        return res.status(400).json({ success: false, message: 'Must upload a JPEG image' });
+      }
 
-    // try {
-    //   const savedPath = await saveBase64Str(base64String);
-    //   res.status(200).json({ success: true, message: 'Image saved successfully', path: savedPath });
-    // } catch (err) {
-    //   if (err instanceof Error) {
-    //     res
-    //       .status(500)
-    //       .json({ success: false, message: 'Failed to save image', error: err.message });
-    //   } else {
-    //     res
-    //       .status(500)
-    //       .json({ success: false, message: 'Failed to save image', error: 'Unknown error' });
-    //   }
-    // }
+      res.status(200).json({ success: true, message: 'Image saved successfully' });
+    } catch (err) {
+      if (err instanceof Error) {
+        res
+          .status(500)
+          .json({ success: false, message: 'Failed to save image', error: err.message });
+      } else {
+        res
+          .status(500)
+          .json({ success: false, message: 'Failed to save image', error: 'Unknown error' });
+      }
+    }
   },
 };
