@@ -8,11 +8,13 @@ const app = express();
 const corsOptions: CorsOptions = {};
 
 app.use(cors(corsOptions));
+app.use(express.json());
+
+// routes
+app.use('/camera', cameraRouter);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
-
-app.use('/camera', cameraRouter);
 
 export default app;
