@@ -2,6 +2,8 @@ import axios from 'axios';
 import fs from 'fs';
 // import path from 'path';
 import dotenv from 'dotenv';
+import { gptSystemContext } from '../utils/gptServiceHelper';
+
 dotenv.config();
 
 interface GptResponse {
@@ -28,17 +30,17 @@ export const sendToGpt = async (photoPath: string): Promise<GptResponse> => {
       model: 'gpt-4o',
       messages: [
         {
+          role: 'system',
+          content: gptSystemContext,
+          // ask for feedback that has activity/weather context
+          // include fashion trend
+          // integrate with store products, use mockData for testing
+          // may be able to prompt chatgpt to search store website
+          // return in JSON
+        },
+        {
           role: 'user',
           content: [
-            {
-              type: 'text',
-              text: "What's this image?",
-              // ask for feedback that has activity/weather context
-              // include fashion trend
-              // integrate with store products, use mockData for testing
-              // may be able to prompt chatgpt to search store website
-              // return in JSON
-            },
             {
               type: 'image_url',
               image_url: {
