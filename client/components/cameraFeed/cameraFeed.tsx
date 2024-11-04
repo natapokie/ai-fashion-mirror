@@ -10,7 +10,7 @@ const CameraFeed: React.FC<{ className?: string }> = ({ className }) => {
         videoRef.current.srcObject = stream;
       }
     } catch (error) {
-      console.error("Error accessing the camera:", error);
+      console.error('Error accessing the camera:', error);
     }
   };
 
@@ -19,7 +19,7 @@ const CameraFeed: React.FC<{ className?: string }> = ({ className }) => {
 
     return () => {
       if (videoRef.current?.srcObject) {
-        (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
+        (videoRef.current.srcObject as MediaStream).getTracks().forEach((track) => track.stop());
       }
     };
   }, []);
@@ -30,7 +30,7 @@ const CameraFeed: React.FC<{ className?: string }> = ({ className }) => {
       autoPlay
       playsInline
       muted
-      className={`absolute top-0 left-0 w-svw h-svh object-cover transform scale-x-[-1] ${className}`}
+      className={`absolute top-0 left-0 w-dvw h-dvh object-cover transform scale-x-[-1] ${className}`}
     />
   );
 };

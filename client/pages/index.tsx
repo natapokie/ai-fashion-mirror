@@ -20,7 +20,7 @@ const Home = () => {
   };
 
   return (
-    <div className="w-svw h-svh overflow-hidden bg-black relative">
+    <div className="w-dvw h-dvh overflow-hidden bg-black relative">
       <CameraFeed />
 
       {!showCarousel ? (
