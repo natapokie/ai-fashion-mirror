@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { Countdown } from '@/components/countdown/countdown';
 import { Spinner } from '@/components/spinner/spinner';
 import { useCamera } from '@/context/cameraContext';
+import { saveImage } from '@/services/cameraService';
 
 const closeIcon = '/icons/xmark-solid.svg';
 
@@ -50,6 +51,7 @@ const Home = () => {
       console.log(formData.get('image'));
 
       // TODO: make a ost request to send image
+      await saveImage(formData);
     }
   };
 
