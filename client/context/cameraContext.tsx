@@ -4,7 +4,7 @@ type CameraContextType = {
   videoRef: React.RefObject<HTMLVideoElement> | null;
   startCamera: () => Promise<void>;
   stopCamera: () => void;
-  // takePhoto:
+  takePhoto: () => void;
 };
 
 const CameraContext = createContext<CameraContextType | undefined>(undefined);
@@ -31,6 +31,38 @@ export const CameraProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   };
 
+  const takePhoto = () => {
+    if (videoRef.current) {
+      // canvas element created in memory, not visible
+      const canvas = document.createElement('canvas');
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+
+      const context = canvas.getContext('2d');
+      if (context) {
+        // capture photo and draw to canvas
+        context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+
+        // convert canvas image to data url (base64 str)
+        const dataURL = canvas.toDataURL('image/png');
+        console.log('dataURL base64', dataURL);
+
+        // set download link
+
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'photo.png'; // Set the desired filename
+            link.click();
+            URL.revokeObjectURL(url); // Clean up the URL object
+          }
+        }, 'image/png');
+      }
+    }
+  };
+
   useEffect(() => {
     // initially start up camera
     startCamera();
@@ -39,7 +71,7 @@ export const CameraProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, []);
 
   return (
-    <CameraContext.Provider value={{ videoRef, startCamera, stopCamera }}>
+    <CameraContext.Provider value={{ videoRef, startCamera, stopCamera, takePhoto }}>
       {children}
     </CameraContext.Provider>
   );
