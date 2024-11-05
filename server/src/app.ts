@@ -5,7 +5,7 @@ import fs from 'fs';
 import cameraRouter from './routes/cameraRoutes';
 
 // define directory to save images
-const uploadDir = path.join(__dirname, '__uploads');
+const uploadDir = path.join(__dirname, '../__uploads');
 
 // Check if the folder exists, and create it if it doesn't
 if (!fs.existsSync(uploadDir)) {
