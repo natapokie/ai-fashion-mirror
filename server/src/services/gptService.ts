@@ -1,30 +1,26 @@
+// NOTE for self:
+// follow format of apiService.ts
+// 1. put interface GptResponse in shared/types.ts
+
 import axios from 'axios';
-import fs from 'fs';
+// import fs from 'fs';
 // import path from 'path';
 import dotenv from 'dotenv';
+import { GptResponse } from '../../../shared/types';
 import { gptSystemContext } from '../utils/gptServiceHelper';
-
 dotenv.config();
 
-interface GptResponse {
-  id: string;
-  object: string;
-  created: number;
-  model: string;
-  choices: Array<{
-    message: {
-      role: string;
-      content: string;
-    };
-    finish_reason: string;
-    index: number;
-  }>;
+async function blobToBase64(blob: Blob): Promise<string> {
+  const arrayBuffer = await blob.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  return buffer.toString('base64');
 }
 
-export const sendToGpt = async (photoPath: string): Promise<GptResponse> => {
+export const sendToGpt = async (buffer: Buffer): Promise<GptResponse> => {
   try {
-    const imageBuffer = fs.readFileSync(photoPath);
-    const base64Image = imageBuffer.toString('base64');
+    console.log('sending to chatgpt...');
+    const imgBlob = new Blob([buffer], { type: 'image/jpeg' });
+    const base64Image = await blobToBase64(imgBlob);
 
     const requestData = {
       model: 'gpt-4o',
@@ -32,11 +28,6 @@ export const sendToGpt = async (photoPath: string): Promise<GptResponse> => {
         {
           role: 'system',
           content: gptSystemContext,
-          // ask for feedback that has activity/weather context
-          // include fashion trend
-          // integrate with store products, use mockData for testing
-          // may be able to prompt chatgpt to search store website
-          // return in JSON
         },
         {
           role: 'user',
@@ -50,7 +41,7 @@ export const sendToGpt = async (photoPath: string): Promise<GptResponse> => {
           ],
         },
       ],
-      max_tokens: 300,
+      max_tokens: 500,
     };
 
     const config = {
@@ -66,7 +57,6 @@ export const sendToGpt = async (photoPath: string): Promise<GptResponse> => {
 
     const response = await axios.request(config);
 
-    // Add error handling for API-level errors
     if (response.status !== 200) {
       console.error('API Error:', response.data);
       throw new Error(`API returned status ${response.status}: ${JSON.stringify(response.data)}`);

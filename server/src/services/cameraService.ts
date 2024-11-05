@@ -1,6 +1,6 @@
 import StillCamera from '../pi-camera-connect/lib/still-camera';
 import NodeWebcam, { WebcamOptions } from 'node-webcam';
-import { sendToApi } from './apiService';
+// import { sendToApi } from './apiService';
 import fs from 'fs';
 import { PhotoData } from '../../../shared/types';
 import { sendToGpt } from './gptService';
@@ -82,15 +82,17 @@ export class CameraService {
     const resp = {} as PhotoData;
 
     try {
-      resp.apiResponse = await sendToApi(photo);
+      // resp.apiResponse = await sendToApi(photo);
+      // resp.encodedImg = encodedImg;
+
+      const gptResponse = await sendToGpt(photo);
       resp.encodedImg = encodedImg;
 
-      console.log('photo name:', `photo_${this.photosTaken}.jpg`);
-      const gptResponse = await sendToGpt(`photo_${this.photosTaken}.jpg`);
       console.log(
-        'Received GPT Response',
+        'Received GPT Response\n',
         JSON.stringify(gptResponse.choices[0].message.content, null, 2),
       );
+      fs.writeFileSync('response.txt', gptResponse.choices[0].message.content, 'utf-8');
     } catch (err) {
       console.error('Error creating PhotoData object.');
       resp.errorMsg = `${err}`;

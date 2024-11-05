@@ -1,0 +1,27 @@
+Hello, welcome to Canada Goose!
+
+Your choice of a **bright, bold color** really stands out and brings a fun energy to your look. The **clean, neat hairstyle** adds a polished touch to your overall appearance. It's clear you like to keep things simple and effective with a **minimalist style**.
+
+Here are some Canada Goose products that would perfectly complement your style:
+
+```json
+[
+    {
+        "productName": "HyBridge Knit Jacket",
+        "image": "https://www.canadagoose.com/ca/en/hybridge-knit-jacket-6911M.html",
+        "feedback": "<b>This jacket</b> will fit seamlessly into your minimalist style while offering warmth and comfort in the cold Toronto weather. The sleek design keeps things looking sharp without overwhelming your outfit."
+    },
+    {
+        "productName": "Arctic Disc Rib Toque",
+        "image": "https://www.canadagoose.com/ca/en/arctic-disc-rib-toque-5217M.html",
+        "feedback": "<b>Complete your look</b> with this cozy toque. It offers that pop of texture that complements your clean lines and fits nicely with urban autumn trends."
+    },
+    {
+        "productName": "Lodge Hoody",
+        "image": "https://www.canadagoose.com/ca/en/lodge-hoody-5078M.html",
+        "feedback": "This <b>lightweight hoody</b> is versatile and practical for chilly days, ideal if you enjoy comfort without compromising on style. It’s perfect for layering during the fall season!"
+    }
+]
+```
+
+Enjoy your stylish winter adventures in Toronto!
