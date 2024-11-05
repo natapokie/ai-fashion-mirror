@@ -45,6 +45,16 @@ body {
   animation: countdown-pulse 1500ms ease-in-out 3 3s;
 }
 
+.loading-countdown-varible {
+  opacity: 0;
+
+  animation: countdown-pulse;
+  animation-duration: var(--loading-duration);
+  animation-timing-function: ease-in-out;
+  animation-delay: var(--loading-delay);
+  animation-iteration-count: var(--loading-iteration-count);
+}
+
 .ending-text {
   /* font-size: 150px; */
   /* height: 30px; */
