@@ -2,11 +2,14 @@ import StillCamera from '../pi-camera-connect/lib/still-camera';
 import NodeWebcam, { WebcamOptions } from 'node-webcam';
 // import { sendToApi } from './apiService';
 import fs from 'fs';
+import path from 'path';
 import { PhotoData } from '../../../shared/types';
 import { sendToGpt } from './gptService';
 
 const PHOTO_WIDTH = 450;
 const PHOTO_HEIGHT = 900;
+
+const FILE_LOCATION = '../cache_photos/photo.png';
 
 const OPTS: WebcamOptions = {
   width: 100,
@@ -102,3 +105,20 @@ export class CameraService {
     return resp;
   };
 }
+
+export const saveBase64Str = (base64Str: string): Promise<string> => {
+  // Base64 => Buffer => Image
+  return new Promise((resolve, reject) => {
+    try {
+      const buffer = Buffer.from(base64Str, 'base64');
+      const filePath = path.join(__dirname, FILE_LOCATION, 'photo.png');
+      // console.log('__dirname', __dirname)
+      console.log('Save base64 str to', filePath);
+      fs.writeFileSync(filePath, buffer);
+      resolve(filePath);
+    } catch (err) {
+      console.error(err);
+      reject(err);
+    }
+  });
+};
