@@ -1,10 +1,19 @@
-// NOTE for self:
-// follow format of apiService.ts
-// 1. put interface GptResponse in shared/types.ts
+// TODO: Nov 5 and forward
+// clean up current gptService stuff
+//
+
+// eri will provide new structure for calling openai, i.e. new routes and controller,
+// then i will fill in the content with actual openai call.
+// Expect a picture from eri that calls my stuff to call openai
+// might need to change photo intake method: may not use base64 string anymore
+
+// need to:
+// testing with eri's routes & controller
+// integration of frontend and openai call
+//
+//
 
 import axios from 'axios';
-// import fs from 'fs';
-// import path from 'path';
 import dotenv from 'dotenv';
 import { GptResponse } from '../../../shared/types';
 import { gptSystemContext } from '../utils/gptServiceHelper';
@@ -46,10 +55,10 @@ export const sendToGpt = async (buffer: Buffer): Promise<GptResponse> => {
 
     const config = {
       method: 'post',
-      url: 'https://api.openai.com/v1/chat/completions', // This is the standard endpoint
+      url: 'https://api.openai.com/v1/chat/completions',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Replace with your actual API key
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       data: requestData,
       validateStatus: (status: number): boolean => status < 500, // Optional: to get full error messages
