@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-undef */
 import { Request } from 'express';
-import multer from 'multer';
+import multer, { StorageEngine } from 'multer';
 import fs from 'fs';
 import path from 'path';
 
@@ -12,7 +12,7 @@ interface CustomFileResult extends Partial<Express.Multer.File> {
   bucket?: string;
 }
 
-class CustomStorageEngine implements multer.StorageEngine {
+class CustomStorageEngine implements StorageEngine {
   // private getDestination: (req: Request, file: Multer.File, cb: (error: any, destination: string) => void) => void;
 
   numFilesLimit = 1;
@@ -20,32 +20,64 @@ class CustomStorageEngine implements multer.StorageEngine {
   mimeTypeLimits = ['image/jpeg', 'image/png'];
   destination = path.join(__dirname, '../', '__uploads');
 
+  result: CustomFileResult = {};
+
   constructor() {}
 
-  getDestination = (
-    req: Request,
+  // set destination for uploaded file
+  getDiskDestination = (
     file: Express.Multer.File,
-    cb: (error: any, destination?: string) => void,
+    cb: (error: any, metadata?: Partial<Express.Multer.File>) => void,
   ) => {
-    cb(null, path.join(this.destination, `${Date.now()}.jpg`));
+    // Handle potential errors and set the file destination
+    try {
+      const destinationPath = path.join(this.destination, `${Date.now()}.jpg`);
+      const outStream = fs.createWriteStream(destinationPath);
+
+      file.stream.pipe(outStream);
+      outStream.on('error', cb);
+
+      outStream.on('finish', () => {
+        cb(null, {
+          path: destinationPath,
+          size: outStream.bytesWritten,
+        });
+      });
+    } catch (error) {
+      cb(error); // Pass the error to the callback
+    }
   };
 
+  // save to buffer
   getBufferDestination = (
-    req: Request,
     file: Express.Multer.File,
-    cb: (error: any, buffer?: Buffer) => void,
+    cb: (error: any, metadata?: Partial<Express.Multer.File>) => void,
   ) => {
-    const chunks: Buffer[] = [];
-    file.stream.on('data', (chunk) => {
-      console.log('data chunk', typeof chunk);
-      chunks.push(chunk);
-    });
-    file.stream.on('end', () => {
-      console.log('on end');
-      const buffer = Buffer.concat(chunks);
-      cb(null, buffer);
-    });
-    file.stream.on('error', (err) => cb(err));
+    try {
+      const chunks: Buffer[] = [];
+
+      file.stream.on('data', (chunk) => {
+        chunks.push(chunk); // Collect chunks of data from the stream
+      });
+
+      file.stream.on('end', () => {
+        // Concatenate all chunks into a single buffer once the stream ends
+        const buffer = Buffer.concat(chunks);
+
+        // Return the buffer and size to the callback
+        cb(null, {
+          buffer: buffer,
+          size: buffer.length,
+        });
+      });
+
+      file.stream.on('error', (err) => {
+        console.error('Error reading file stream:', err);
+        cb(err); // Pass the error to the callback
+      });
+    } catch (error) {
+      cb(error);
+    }
   };
 
   _handleFile = (
@@ -53,55 +85,48 @@ class CustomStorageEngine implements multer.StorageEngine {
     file: Express.Multer.File,
     cb: (err?: any, info?: CustomFileResult) => void,
   ): void => {
-    this.getDestination(req, file, (err, destinationPath) => {
-      if (err) return cb(err);
+    // initialize result
+    this.result = {};
 
-      console.log('file', file, destinationPath);
+    // initial checks for size limits and mimeType
+    if (file.size > this.fileLimit) {
+      return cb(new Error(`File size exceeds the limit of ${this.fileLimit / (1024 * 1024)} MB`));
+    }
 
-      if (destinationPath) {
-        const outStream = fs.createWriteStream(destinationPath);
+    // Validate MIME type
+    if (!this.mimeTypeLimits.includes(file.mimetype)) {
+      return cb(
+        new Error(
+          `Invalid file type: ${file.mimetype}. Allowed types are ${this.mimeTypeLimits.join(', ')}`,
+        ),
+      );
+    }
 
-        // Pipe the file stream to the destination
-        file.stream.pipe(outStream);
-
-        // Handle errors during file writing
-        outStream.on('error', (err) => cb(err));
-
-        // On successful file writing, call the callback with the file metadata
-        outStream.on('finish', () => {
-          console.log('on finish', destinationPath);
-          if (destinationPath) {
-            const imageStream = fs.createReadStream(destinationPath);
-
-            const chunks: Buffer[] = [];
-            imageStream.on('data', (data) => {
-              if (typeof data === 'string') {
-                // Convert string to Buffer assuming UTF-8 encoding
-                chunks.push(Buffer.from(data, 'utf-8'));
-              } else if (data instanceof Buffer) {
-                chunks.push(data);
-              } else {
-                // Convert other data types to JSON and then to a Buffer
-                const jsonData = JSON.stringify(data);
-                chunks.push(Buffer.from(jsonData, 'utf-8'));
-              }
-            });
-
-            imageStream.on('end', () => {
-              return cb(null, {
-                path: destinationPath,
-                size: outStream.bytesWritten,
-                buffer: Buffer.concat(chunks),
-                filename: destinationPath,
-              });
-            });
-            imageStream.on('error', () => {
-              cb(new Error('Error saving to buffer'));
-            });
-          }
-        });
+    this.getDiskDestination(file, (err, metadata) => {
+      if (err) {
+        console.error('Error getting destination path:', err);
+        return cb(err); // Return the error if destination path fails
       }
+
+      this.result = { ...this.result, ...metadata };
+      console.log('getDestination', this.result);
     });
+
+    this.getBufferDestination(file, (err, metadata) => {
+      if (err) {
+        console.error('Error getting buffer from file:', err);
+        return cb(new Error('Error processing buffer'));
+      }
+
+      // Return the file metadata and the buffer after processing
+      this.result = { ...this.result, ...metadata };
+
+      console.log('getBufferDestination', this.result);
+    });
+
+    console.log('final result', this.result);
+    // return final result
+    cb(null, this.result);
   };
 
   _removeFile = (
@@ -109,7 +134,15 @@ class CustomStorageEngine implements multer.StorageEngine {
     file: Express.Multer.File & { name: string },
     cb: (error: Error | null) => void,
   ): void => {
-    fs.unlink(file.path, cb);
+    // Attempt to delete the file from the filesystem
+    fs.unlink(file.path, (err) => {
+      if (err) {
+        console.error('Error deleting file:', err);
+        return cb(err); // Pass the error to the callback if deletion fails
+      }
+      console.log('File successfully deleted:', file.path);
+      cb(null); // No error
+    });
   };
 }
 
