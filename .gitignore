@@ -47,3 +47,6 @@ next-env.d.ts
 
 #
 __uploads/
+
+# SSL key and certificate
+/ssl/
