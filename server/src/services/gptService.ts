@@ -11,9 +11,10 @@ export class GptService {
     return buffer.toString('base64');
   }
 
-  public async doSomething(): Promise<string> {
+  public async doSomething(str: string): Promise<string> {
     console.log('inside the gpt service');
-    return 'called gpt';
+    console.log(str);
+    return str;
   }
 
   public async sendToGpt(buffer: Buffer): Promise<GptResponse> {
