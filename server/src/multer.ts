@@ -26,25 +26,33 @@ class CustomStorageEngine implements StorageEngine {
 
   // set destination for uploaded file
   getDiskDestination = (
-    file: Express.Multer.File,
+    buffer: Buffer,
     cb: (error: any, metadata?: Partial<Express.Multer.File>) => void,
   ) => {
     // Handle potential errors and set the file destination
     try {
       const destinationPath = path.join(this.destination, `${Date.now()}.jpg`);
-      const outStream = fs.createWriteStream(destinationPath);
 
-      file.stream.pipe(outStream);
-      outStream.on('error', cb);
+      // Ensure directory exists
+      if (!fs.existsSync(this.destination)) {
+        fs.mkdirSync(this.destination, { recursive: true });
+      }
 
-      outStream.on('finish', () => {
+      fs.writeFile(destinationPath, buffer, (err) => {
+        if (err) {
+          console.error('Error writing file:', err);
+          return cb(err);
+        }
+
+        console.log('File written successfully:', destinationPath);
         cb(null, {
           path: destinationPath,
-          size: outStream.bytesWritten,
+          size: buffer.length,
         });
       });
     } catch (error) {
-      cb(error); // Pass the error to the callback
+      console.error('Unexpected error:', error);
+      cb(error);
     }
   };
 
@@ -102,29 +110,31 @@ class CustomStorageEngine implements StorageEngine {
       );
     }
 
-    this.getBufferDestination(file, (err, metadata) => {
+    this.getBufferDestination(file, (err, memoryMetadata) => {
       if (err) {
         console.error('Error getting buffer from file:', err);
         return cb(new Error('Error processing buffer'));
       }
 
       // Return the file metadata and the buffer after processing
-      this.result = { ...this.result, ...metadata };
+      this.result = { ...this.result, ...memoryMetadata };
       console.log('getBufferDestination', this.result);
 
       console.log('before getDiskDestination');
-      this.getDiskDestination(file, (err, metadata) => {
-        if (err) {
-          console.error('Error getting destination path:', err);
-          return cb(err); // Return the error if destination path fails
-        }
 
-        this.result = { ...this.result, ...metadata };
-        console.log('getDestination', this.result);
-      });
+      // TODO: later on, we probably don't want to save this? add an env variable to conditionally save photos
+      if (memoryMetadata?.buffer) {
+        this.getDiskDestination(memoryMetadata?.buffer, (err, diskMetadata) => {
+          if (err) {
+            console.error('Error getting destination path:', err);
+            return cb(err); // Return the error if destination path fails
+          }
 
-      console.log('final result', this.result);
-      cb(null, this.result);
+          this.result = { ...this.result, ...diskMetadata };
+          console.log('final result', this.result);
+          cb(null, this.result);
+        });
+      }
     });
   };
 
