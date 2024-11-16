@@ -1,4 +1,6 @@
+import https from 'https'; 
 import http from 'http';
+import fs from 'fs';
 import app from './app';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -10,11 +12,30 @@ dotenv.config({
   path: path.resolve(__dirname, '../../.env'),
 });
 
-const server = http.createServer(app);
+// load certificate and key from .env, if available
+let server;
+const keyPath = process.env.SSL_KEY_PATH ? path.resolve(__dirname, '../../', process.env.SSL_KEY_PATH) : null;
+const certPath = process.env.SSL_CERT_PATH ? path.resolve(__dirname, '../../', process.env.SSL_CERT_PATH) : null;
+
+if (keyPath && certPath && fs.existsSync(keyPath) && fs.existsSync(certPath)) {
+  const credentials = {
+    key: fs.readFileSync(keyPath, 'utf8'),
+    cert: fs.readFileSync(certPath, 'utf8'),
+  }
+
+  server = https.createServer(credentials, app);
+  console.log("Starting server with HTTPS at: ", process.env.SERVER_BASE_URL);
+
+} else {
+  // fallback to HTTP if no SSL credentials are provided
+  server = http.createServer(app);
+  console.log("SSL credentials not found, starting server with HTTP");
+}
 
 const io = new Server(server, {
   cors: {
     origin: process.env.CLIENT_BASE_URL,
+    credentials: true,
   },
   transports: ['websocket', 'polling'],
 });
@@ -22,6 +43,7 @@ const io = new Server(server, {
 // create socket manager
 new SocketManager(io);
 
-server.listen(process.env.SERVER_PORT || 8080, () => {
-  console.log(`Server started on port: ${process.env.SERVER_PORT}`);
+const PORT = process.env.SERVER_PORT;
+server.listen(PORT, () => {
+  console.log(`Server started on ${keyPath && certPath ? "HTTPS" : "HTTP"} port: ${PORT}`);
 });
