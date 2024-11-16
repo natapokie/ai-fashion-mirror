@@ -1,6 +1,5 @@
 import express from 'express';
 import { ApiController } from '../controllers/apiController';
-
 import { upload } from '../multer';
 
 const router = express.Router();
