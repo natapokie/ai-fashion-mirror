@@ -102,16 +102,6 @@ class CustomStorageEngine implements StorageEngine {
       );
     }
 
-    this.getDiskDestination(file, (err, metadata) => {
-      if (err) {
-        console.error('Error getting destination path:', err);
-        return cb(err); // Return the error if destination path fails
-      }
-
-      this.result = { ...this.result, ...metadata };
-      console.log('getDestination', this.result);
-    });
-
     this.getBufferDestination(file, (err, metadata) => {
       if (err) {
         console.error('Error getting buffer from file:', err);
@@ -120,13 +110,22 @@ class CustomStorageEngine implements StorageEngine {
 
       // Return the file metadata and the buffer after processing
       this.result = { ...this.result, ...metadata };
-
       console.log('getBufferDestination', this.result);
-    });
 
-    console.log('final result', this.result);
-    // return final result
-    cb(null, this.result);
+      console.log('before getDiskDestination');
+      this.getDiskDestination(file, (err, metadata) => {
+        if (err) {
+          console.error('Error getting destination path:', err);
+          return cb(err); // Return the error if destination path fails
+        }
+
+        this.result = { ...this.result, ...metadata };
+        console.log('getDestination', this.result);
+      });
+
+      console.log('final result', this.result);
+      cb(null, this.result);
+    });
   };
 
   _removeFile = (
