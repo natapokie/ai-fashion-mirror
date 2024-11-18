@@ -23,7 +23,7 @@ export const ApiController = {
       // });
 
       const gptService = new GptService();
-      const data = await gptService.doSomething(encodedImg);
+      const data = await gptService.sendToGpt(encodedImg);
 
       res
         .status(200)
