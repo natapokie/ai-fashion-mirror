@@ -17,15 +17,16 @@ export class GptService {
     return str;
   }
 
-  public async sendToGpt(buffer: Buffer): Promise<GptResponse> {
+  // public async sendToGpt(buffer: Buffer): Promise<GptResponse> {
+  public async sendToGpt(base64Img: string): Promise<GptResponse> {
     try {
-      console.log('sending to chatgpt...');
-      // check if buffer is correct
-      if (!buffer) {
-        throw new Error('No image buffer');
-      }
+      // console.log('sending to chatgpt...');
+      // if (!buffer) {
+      //   throw new Error('No image buffer');
+      // }
 
-      const base64Image = buffer.toString('base64');
+      // const base64Image = buffer.toString('base64');
+      const base64Image = base64Img;
       const requestData = {
         model: 'gpt-4o',
         messages: [
@@ -41,11 +42,13 @@ export class GptService {
                 image_url: {
                   url: `data:image/jpeg;base64,${base64Image}`,
                 },
+                // type: 'text',
+                // text: gptPrompt,
               },
             ],
           },
         ],
-        max_tokens: 500,
+        max_tokens: 4096,
       };
 
       const config = {

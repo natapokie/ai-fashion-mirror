@@ -9,7 +9,7 @@ export const GptController = {
       }
 
       const gptService = new GptService();
-      const data = await gptService.sendToGpt(req.file.buffer);
+      const data = await gptService.sendToGpt(req.file.buffer.toString('base64'));
       // nov 6 NOTE:
       // in order to obtain buffer, multer.ts must be changed to use memory storage instead of disk storage
       // this might not be ideal since we are saving images to server
