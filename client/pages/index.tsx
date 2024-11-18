@@ -9,7 +9,7 @@ import { Countdown } from '@/components/countdown/countdown';
 import { Spinner } from '@/components/spinner/spinner';
 import { useCamera } from '@/context/cameraContext';
 import { saveImage } from '@/services/cameraService';
-import { ProductData } from '@/types';
+import { ProductData } from '../../shared/types';
 
 const closeIcon = '/icons/xmark-solid.svg';
 
