@@ -61,7 +61,7 @@ const Home = () => {
       // ********************************************************************
       // NOTE: Nov 17
       // added by victor to send image to GPT service
-      const gptResponse = await fetch('https://192.168.2.16:8080/gpt/ask', {
+      const gptResponse = await fetch(`${process.env.SERVER_BASE_URL}/api/request`, {
         method: 'POST',
         body: formData,
       });
