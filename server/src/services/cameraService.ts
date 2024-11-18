@@ -1,9 +1,8 @@
 import StillCamera from '../pi-camera-connect/lib/still-camera';
 import NodeWebcam, { WebcamOptions } from 'node-webcam';
-/*
+
 // this is for prototype 1
 import { sendToApi } from './apiService';
-*/
 
 import fs from 'fs';
 import path from 'path';
@@ -93,11 +92,10 @@ export class CameraService {
     const resp = {} as PhotoData;
 
     try {
-      /* 
-      // this is for prototype 1 
+      // this is for prototype 1
       resp.apiResponse = await sendToApi(photo);
       resp.encodedImg = encodedImg;
-      */
+
       /*
       // this is for prototype 2
       const gptService = new GptService();
