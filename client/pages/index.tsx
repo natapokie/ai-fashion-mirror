@@ -72,7 +72,11 @@ const Home = () => {
       }
       const full_response = await gptResponse.json();
       console.log('GPT Response:', full_response);
-      const content: ProductData[] = JSON.parse(full_response.data.choices[0].message.content);
+      // const content: ProductData[] = JSON.parse(full_response.data.choices[0].message.content);
+
+      // nov 18 note:
+      // modified to use parsed.product_list instead of content due to changes in gptService.ts
+      const content: ProductData[] = full_response.data.choices[0].message.parsed.product_list;
       console.log('Response Content:', content);
 
       setProductInfo(content);
