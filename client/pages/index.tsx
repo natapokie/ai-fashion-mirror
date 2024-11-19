@@ -9,6 +9,7 @@ import { Countdown } from '@/components/countdown/countdown';
 import { Spinner } from '@/components/spinner/spinner';
 import { useCamera } from '@/context/cameraContext';
 import { ProductData } from '../../shared/types';
+import { sendImageToGpt } from '@/services/gptService';
 
 const closeIcon = '/icons/xmark-solid.svg';
 
@@ -56,26 +57,28 @@ const Home = () => {
         // TODO: add an error message state
       }
 
-      // ********************************************************************
-      // NOTE: Nov 17
-      // added by victor to send image to GPT service
-      const gptResponse = await fetch(`${process.env.SERVER_BASE_URL}/api/request`, {
-        method: 'POST',
-        body: formData,
-      });
-      // ********************************************************************
+      // // ********************************************************************
+      // // NOTE: Nov 17
+      // // added by victor to send image to GPT service
+      // const gptResponse = await fetch(`${process.env.SERVER_BASE_URL}/api/request`, {
+      //   method: 'POST',
+      //   body: formData,
+      // });
+      // // ********************************************************************
 
-      if (!gptResponse.ok) {
-        throw new Error('Failed to process image');
-      }
-      const full_response = await gptResponse.json();
-      console.log('GPT Response:', full_response);
-      // const content: ProductData[] = JSON.parse(full_response.data.choices[0].message.content);
+      // if (!gptResponse.ok) {
+      //   throw new Error('Failed to process image');
+      // }
+      // const full_response = await gptResponse.json();
+      // console.log('GPT Response:', full_response);
+      // // const content: ProductData[] = JSON.parse(full_response.data.choices[0].message.content);
 
-      // nov 18 note:
-      // modified to use parsed.product_list instead of content due to changes in gptService.ts
-      const content: ProductData[] = full_response.data.choices[0].message.parsed.product_list;
-      console.log('Response Content:', content);
+      // // nov 18 note:
+      // // modified to use parsed.product_list instead of content due to changes in gptService.ts
+      // const content: ProductData[] = full_response.data.choices[0].message.parsed.product_list;
+      // console.log('Response Content:', content);
+
+      const content = await sendImageToGpt(formData);
 
       setProductInfo(content);
       setPageState(pageStates.RESULTS);
