@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ProductData } from '../../../shared/types';
+import { ProductData } from '../../shared/types';
 
 export const sendImageToGpt = async (formData: FormData): Promise<ProductData[]> => {
   try {
