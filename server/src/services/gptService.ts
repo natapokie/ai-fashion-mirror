@@ -32,7 +32,7 @@ export class GptService {
         messages: [
           {
             role: 'system',
-            content: gptSystemContext,
+            content: `${gptSystemContext}. Always return a JSON array. Do not include any additional text or explanations.`,
           },
           {
             role: 'user',
