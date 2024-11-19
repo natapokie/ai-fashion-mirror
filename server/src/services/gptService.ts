@@ -90,6 +90,9 @@ import { gptSystemContext } from '../utils/gptServiceHelper';
 import dotenv from 'dotenv';
 dotenv.config();
 
+import fs from 'fs';
+import path from 'path';
+
 const ProductInfo = z.object({
   image: z.string(),
   name: z.string(),
@@ -132,6 +135,19 @@ export class GptService {
 
     const full_response = completion;
     console.log(full_response);
+
+    // DEBUG: save the response for debug purposes
+    const dir = path.join(__dirname, '../../__uploads');
+    const filePath = path.join(dir, `${Date.now()}.json`);
+    // Write the JSON content to the file
+    fs.writeFile(filePath, JSON.stringify(full_response, null, 2), (err) => {
+      if (err) {
+        console.error('Error writing JSON to file:', err);
+      } else {
+        console.log(`JSON file saved to ${filePath}`);
+      }
+    });
+
     return full_response;
   }
 }
