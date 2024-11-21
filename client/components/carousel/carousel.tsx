@@ -16,10 +16,7 @@ const Carousel: React.FC<CarouselProps> = ({ products, onClickOutside }) => {
   const [secondaryLeftIndex, setSecondaryLeftIndex] = useState(1);
   const [secondaryRightIndex, setSecondaryRightIndex] = useState(products.length - 1);
 
-  const carouselContainerRef = useRef<HTMLDivElement | null>(null);
   const carouselRef = useRef<HTMLDivElement | null>(null);
-  const feedbackRef = useRef<HTMLDivElement | null>(null);
-  const sliderRef = useRef<HTMLDivElement | null>(null);
   const movementXRef = useRef(0);
 
   const handleMouseDown = () => {
@@ -82,31 +79,15 @@ const Carousel: React.FC<CarouselProps> = ({ products, onClickOutside }) => {
     };
   }, [grabbing]);
 
-  // Click outside handler
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        carouselContainerRef.current &&
-        !carouselContainerRef.current.contains(event.target as Node) &&
-        carouselRef.current &&
-        !carouselRef.current.contains(event.target as Node) &&
-        feedbackRef.current &&
-        !feedbackRef.current.contains(event.target as Node) &&
-        sliderRef.current &&
-        !sliderRef.current.contains(event.target as Node)
-      ) {
-        onClickOutside(); // Call the handler to exit the carousel
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClickOutside]);
-
   return (
-    <div ref={carouselContainerRef} className="flex flex-col items-center gap-7 p-5 w-fit h-fit">
+    <div className="w-full h-full flex flex-col items-center gap-7 p-5">
+      {/* dummy container to handle outside clicks */}
+      <div
+        onClick={() => {
+          onClickOutside();
+        }}
+        className="flex-1 w-full z-[1]"
+      ></div>
       <div
         ref={carouselRef}
         className={`${grabbing ? styles.active : ''} w-full h-[500px] cursor-grab touch-none relative`}
@@ -131,10 +112,10 @@ const Carousel: React.FC<CarouselProps> = ({ products, onClickOutside }) => {
           </div>
         ))}
       </div>
-      <div ref={feedbackRef} className={styles.feedbackCard}>
+      <div className={styles.feedbackCard}>
         <p className="text-xl">{products[primaryIndex].feedback}</p>
       </div>
-      <div ref={sliderRef} className="flex flex-row gap-4">
+      <div className="flex flex-row gap-4">
         {products.map((_, i) => (
           <button
             key={i}
