@@ -17,7 +17,6 @@ const Carousel: React.FC<CarouselProps> = ({ products, onClickOutside }) => {
   const [secondaryRightIndex, setSecondaryRightIndex] = useState(products.length - 1);
 
   const carouselRef = useRef<HTMLDivElement | null>(null);
-  const feedbackRef = useRef<HTMLDivElement | null>(null);
   const movementXRef = useRef(0);
 
   const handleMouseDown = () => {
@@ -38,6 +37,10 @@ const Carousel: React.FC<CarouselProps> = ({ products, onClickOutside }) => {
       setPrimaryIndex((prevIndex) => (prevIndex + 1) % products.length);
     }
     movementXRef.current = 0;
+  };
+
+  const handleSliderClick = (index: number) => {
+    setPrimaryIndex(index);
   };
 
   useEffect(() => {
@@ -76,27 +79,15 @@ const Carousel: React.FC<CarouselProps> = ({ products, onClickOutside }) => {
     };
   }, [grabbing]);
 
-  // Click outside handler
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        carouselRef.current &&
-        !carouselRef.current.contains(event.target as Node) &&
-        feedbackRef.current &&
-        !feedbackRef.current.contains(event.target as Node)
-      ) {
-        onClickOutside(); // Call the handler to exit the carousel
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClickOutside]);
-
   return (
-    <div className="flex flex-col items-center gap-7 p-5">
+    <div className="w-full h-full flex flex-col items-center gap-7 p-5">
+      {/* dummy container to handle outside clicks */}
+      <div
+        onClick={() => {
+          onClickOutside();
+        }}
+        className="flex-1 w-full z-[1]"
+      ></div>
       <div
         ref={carouselRef}
         className={`${grabbing ? styles.active : ''} w-full h-[500px] cursor-grab touch-none relative`}
@@ -121,8 +112,17 @@ const Carousel: React.FC<CarouselProps> = ({ products, onClickOutside }) => {
           </div>
         ))}
       </div>
-      <div ref={feedbackRef} className={styles.feedbackCard}>
+      <div className={styles.feedbackCard}>
         <p className="text-xl">{products[primaryIndex].feedback}</p>
+      </div>
+      <div className="flex flex-row gap-4">
+        {products.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => handleSliderClick(i)}
+            className={`${styles.sliderThumb} ${i === primaryIndex ? styles.sliderThumbFocus : styles.sliderThumbUnFocus}`}
+          ></button>
+        ))}
       </div>
     </div>
   );

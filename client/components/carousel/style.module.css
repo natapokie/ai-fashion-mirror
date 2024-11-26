@@ -85,3 +85,18 @@
   z-index: 1;
   @apply w-[80%] p-4 rounded-xl shadow-md touch-none;
 }
+
+.sliderThumb {
+  background-color: #fff;
+  z-index: 1;
+
+  @apply w-[18px] h-[18px] rounded-full transition-opacity ease-in-out;
+}
+
+.sliderThumbUnFocus {
+  opacity: 0.5;
+}
+
+.sliderThumbFocus {
+  opacity: 1;
+}
