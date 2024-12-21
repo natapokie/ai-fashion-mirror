@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import logging
 import time
+import json
 
 # cookie (cc-nx-g_CanadaGooseCA) expires jan 19
 cookie = "TLvpzrbXSJUc-4pyLmy6QjjLD_-d7Pgzplsu8lfOpNA"
@@ -11,6 +12,7 @@ cookie = "TLvpzrbXSJUc-4pyLmy6QjjLD_-d7Pgzplsu8lfOpNA"
 class Scraper:
     def __init__(self):
         self.base_url = "https://www.canadagoose.com"
+        self.image_url = "https://images.canadagoose.com/image/upload"
         self.access_token = ""
 
         self.expires_in = 1800
@@ -85,6 +87,15 @@ class Scraper:
                     # Extract and store product data
                     for hit in data.get("hits", []):
                         product = hit.get("representedProduct", {})
+
+                        model_image, other_images = self.parse_image_cache(
+                            product.get("c_cloudinaryImageObjectCache")
+                        )
+                        product["modelImageUrl"] = model_image
+                        product["otherProductImageUrl"] = other_images
+
+                        # TODO: add any extra parsing here
+
                         all_products.append(product)
 
             except Exception as e:
@@ -157,6 +168,34 @@ class Scraper:
     def save_df(self, df, output_file=os.path.join(os.getcwd(), "data", "output.csv")):
         df.to_csv(output_file, index=False)
         print(f"DataFrame saved to {output_file}")
+
+    def parse_image_cache(self, json_obj):
+        """
+        Parses the c_cloudinaryImageObjectCache and returns a tuple containing
+        (main image with model, list of all the other images) images are urls
+
+        e.g. of image url,
+        https://images.canadagoose.com/image/upload/product-image/1272MCD_9061.jpg
+        """
+
+        main_image = ""
+        other_images = []
+
+        cache = json.loads(json_obj)
+
+        for _, value in cache.items():
+            public_id = value.get("public_id")
+            format = value.get("format")
+
+            product_image_url = f"{self.image_url}/{public_id}.{format}"
+
+            if public_id.count("_") > 1:
+                # this is not the main model image
+                other_images.append(product_image_url)
+            else:
+                main_image = product_image_url
+
+        return (main_image, other_images)
 
     def refresh_tokens(self):
         """ """

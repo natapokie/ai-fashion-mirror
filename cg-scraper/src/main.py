@@ -6,8 +6,5 @@ def main():
     scraper.run()
 
 
-# Run the main coroutine
 if __name__ == "__main__":
     main()
-    print("testing")
-    hello = 0
