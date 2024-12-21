@@ -1,6 +1,8 @@
 import requests
 import pandas as pd
 import os
+import logging
+import time
 
 # cookie (cc-nx-g_CanadaGooseCA) expires jan 19
 cookie = "TLvpzrbXSJUc-4pyLmy6QjjLD_-d7Pgzplsu8lfOpNA"
@@ -21,11 +23,8 @@ class Scraper:
 
     def call_api(self):
         """ """
-        # limit of products that can be returned from api
         limit = 20
-        offset = 1
-        total_products = float("inf")
-
+        all_products = []
         catalogue_url = "/mobify/proxy/api/search/shopper-search/v1/organizations/f_ecom_aata_prd/product-search"
         headers = {
             "Authorization": f"Bearer {self.access_token}",
@@ -39,87 +38,109 @@ class Scraper:
             "locale": "en-CA",
             "expand": "availability,images,prices,represented_products,variations,promotions,custom_properties",
             "allVariationProperties": "true",
-            "offset": offset,
             "limit": limit,
         }
 
         cgids = ["shop-mens", "shop-womens", "shop-kids", "shop-shoes"]
 
-        # store all in a list
-        all_products = []
-
         for cgid in cgids:
-            print("Scraping", cgid)
+            print(f"Scraping {cgid}...")
+
             params["refine"] = f"cgid={cgid}"
             offset = 0
 
-            # call API to get the first 20 items, and find the total number of products
-            response = requests.get(
-                self.base_url + catalogue_url, headers=headers, params=params
-            )
+            while True:
+                params["offset"] = offset
+                response = self.make_request(catalogue_url, headers, params)
 
-            if response.status_code == 401:
-                print(f"Status Code: {response.status_code}")
-                print("refresh the access token!")
-                exit()
-            elif response.status_code != 200:
-                print("oh no something went wrong!", response.status_code)
+                if not response:
+                    break
 
-            data = response.json()
+                data = response.json()
 
-            try:
-                # TODO: depending on the total, make multiple calls to the API
-                total_products = data["total"]
-                print(f"Total products: {total_products}")
+                total_products = data.get("total", 0)
+                print(f"Total products in {cgid}: {total_products}")
 
-                # loop through all the objects:
-                for i in range(
-                    total_products // limit
-                    + (1 if total_products % limit else 0)
-                ):
-                    # modify the offset each time to get the next 20 items
-                    offset = i * limit + 1
+                if total_products == 0:
+                    break
+
+                # Loop through the products in chunks of the limit
+                for i in range(0, total_products, limit):
+                    offset = i + 1
                     params["offset"] = offset
-                    print("current offset", offset)
 
-                    response = requests.get(
-                        self.base_url + catalogue_url,
-                        headers=headers,
-                        params=params,
-                    )
-
-                    if response.status_code == 401:
-                        print(f"Status Code: {response.status_code}")
-                        print("refresh the access token!")
-                        exit()
-                    elif response.status_code != 200:
-                        print("oh no something went wrong!")
+                    response = self.make_request(catalogue_url, headers, params)
+                    if not response:
+                        break
 
                     data = response.json()
-
                     for hit in data["hits"]:
                         product = hit["representedProduct"]
-                        # print(f'parsing product {product['c_fsProductName']}')
-
-                        # TODO: parse any fields that might need special attention
-                        # c_customBulletPoints
-                        # c_cloudinaryImageObjectCache
-                        # c_variationAttributes
-
                         all_products.append(product)
-            except Exception:
-                print("oh no!", Exception)
-            finally:
-                print(f"Scraping {cgid} complete\n")
 
-        # save all products to pandas df
-        df = pd.json_normalize(all_products, sep="_")
-        print(df)
-        return df
+            print(f"Scraping {cgid} complete\n")
 
-    def save_df(
-        self, df, output_file=os.path.join(os.getcwd(), "data", "output.csv")
+        # Return all the products as a DataFrame
+        return pd.json_normalize(all_products, sep="_")
+
+    def make_request(
+        self, url, headers, params, retries=3, backoff_factor=2, timeout=10
     ):
+        """Makes an API request with error handling, retries, and timeout."""
+        attempt = 0
+        while attempt < retries:
+            try:
+                # Send the request with a timeout
+                response = requests.get(
+                    self.base_url + url, headers=headers, params=params, timeout=timeout
+                )
+
+                # If the response is successful (status code 200), return it
+                if response.status_code == 200:
+                    return response
+
+                # Handle specific HTTP status codes
+                if response.status_code == 401:
+                    logging.warning(
+                        "Status Code: 401 - Unauthorized. Token may have expired."
+                    )
+                    self.refresh_tokens()
+                    return None
+                elif response.status_code == 404:
+                    logging.error(
+                        f"Status Code: 404 - Not Found. Endpoint might be incorrect: {url}"
+                    )
+                    return None
+                elif response.status_code == 429:
+                    logging.warning(
+                        "Status Code: 429 - Too Many Requests. Retrying after a delay."
+                    )
+                    time.sleep(backoff_factor**attempt)  # Exponential backoff
+                elif response.status_code >= 500:
+                    logging.error(
+                        f"Status Code: {response.status_code} - Server error. Retrying..."
+                    )
+                    time.sleep(backoff_factor**attempt)  # Exponential backoff
+                else:
+                    logging.error(
+                        f"Status Code: {response.status_code} - Unexpected error."
+                    )
+                    return None
+
+            except requests.exceptions.RequestException as e:
+                logging.error(f"Request failed: {e}. Retrying...")
+                time.sleep(backoff_factor**attempt)  # Exponential backoff
+            except Exception as e:
+                logging.error(f"Unexpected error: {e}")
+                return None
+
+            attempt += 1
+            logging.info(f"Retrying... Attempt {attempt}/{retries}")
+
+        logging.error("Max retries exceeded. Unable to complete the request.")
+        return None
+
+    def save_df(self, df, output_file=os.path.join(os.getcwd(), "data", "output.csv")):
         df.to_csv(output_file, index=False)
         print(f"DataFrame saved to {output_file}")
 
