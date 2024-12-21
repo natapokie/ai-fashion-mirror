@@ -22,15 +22,18 @@ class Scraper:
         self.save_df(df)
 
     def call_api(self):
-        """ """
+        """Fetch products from the API and handle paging."""
         limit = 20
-        all_products = []
+        offset = 1
+        total_products = float("inf")
+
         catalogue_url = "/mobify/proxy/api/search/shopper-search/v1/organizations/f_ecom_aata_prd/product-search"
         headers = {
             "Authorization": f"Bearer {self.access_token}",
             "Connection": "keep-alive",
             "x-mobify": "true",
         }
+
         params = {
             "siteId": "CanadaGooseCA",
             "refine": "cgid=shop-womens",
@@ -38,50 +41,61 @@ class Scraper:
             "locale": "en-CA",
             "expand": "availability,images,prices,represented_products,variations,promotions,custom_properties",
             "allVariationProperties": "true",
+            "offset": offset,
             "limit": limit,
         }
 
         cgids = ["shop-mens", "shop-womens", "shop-kids", "shop-shoes"]
 
+        # Store all products
+        all_products = []
+
         for cgid in cgids:
-            print(f"Scraping {cgid}...")
-
+            print(f"Scraping {cgid}")
             params["refine"] = f"cgid={cgid}"
-            offset = 0
+            offset = 0  # Reset offset for each category
 
-            while True:
-                params["offset"] = offset
-                response = self.make_request(catalogue_url, headers, params)
+            # Initial API call to get total number of products
+            response = self.make_request(catalogue_url, headers, params)
+            if not response:
+                print(f"Failed to fetch products for category {cgid}. Skipping.")
+                continue  # Skip if the request fails
 
-                if not response:
-                    break
+            data = response.json()
 
-                data = response.json()
-
+            try:
                 total_products = data.get("total", 0)
-                print(f"Total products in {cgid}: {total_products}")
+                print(f"Total products: {total_products}")
 
-                if total_products == 0:
-                    break
-
-                # Loop through the products in chunks of the limit
-                for i in range(0, total_products, limit):
-                    offset = i + 1
+                # Loop through all pages based on total products
+                for i in range(
+                    total_products // limit + (1 if total_products % limit else 0)
+                ):
+                    offset = i * limit + 1  # Calculate the offset for each page
                     params["offset"] = offset
+                    print(f"Fetching products with offset {offset}")
 
                     response = self.make_request(catalogue_url, headers, params)
                     if not response:
-                        break
+                        print(f"Failed to fetch data for offset {offset}. Skipping.")
+                        continue  # Skip if the request fails
 
                     data = response.json()
-                    for hit in data["hits"]:
-                        product = hit["representedProduct"]
+
+                    # Extract and store product data
+                    for hit in data.get("hits", []):
+                        product = hit.get("representedProduct", {})
                         all_products.append(product)
 
-            print(f"Scraping {cgid} complete\n")
+            except Exception as e:
+                print(f"Error while processing category {cgid}: {e}")
+            finally:
+                print(f"Scraping {cgid} complete")
 
-        # Return all the products as a DataFrame
-        return pd.json_normalize(all_products, sep="_")
+        # Convert to DataFrame
+        df = pd.json_normalize(all_products, sep="_")
+        print(df)
+        return df
 
     def make_request(
         self, url, headers, params, retries=3, backoff_factor=2, timeout=10
