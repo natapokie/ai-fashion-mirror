@@ -10,7 +10,7 @@ class Scraper:
         self.access_token = ''
 
         self.expires_in = 1800
-        self.current_iteration = 0
+
 
     def run(self):
         self.refresh_tokens()
@@ -21,21 +21,37 @@ class Scraper:
     def call_api(self):
         '''
         '''
-        catalogue_url = "/mobify/proxy/api/search/shopper-search/v1/organizations/f_ecom_aata_prd/product-search?siteId=CanadaGooseCA&refine=cgid%3Dshop-womens&currency=CAD&locale=en-CA&expand=availability%2Cimages%2Cprices%2Crepresented_products%2Cvariations%2Cpromotions%2Ccustom_properties&allVariationProperties=true&offset=20&limit=20"
+        # limit of products that can be returned from api
+        limit = 20
+        offset = 1
+        total_products = float('inf')
+
+        catalogue_url = "/mobify/proxy/api/search/shopper-search/v1/organizations/f_ecom_aata_prd/product-search"
         headers = {
             'Authorization': f'Bearer {self.access_token}',
             'Connection': 'keep-alive',
             'x-mobify': 'true',
         }
+        params = {
+            'siteId': 'CanadaGooseCA',
+            'refine': 'cgid=shop-womens',
+            'currency': 'CAD',
+            'locale': 'en-CA',
+            'expand': 'availability,images,prices,represented_products,variations,promotions,custom_properties',
+            'allVariationProperties': 'true',
+            'offset': offset,
+            'limit': limit
+        }
 
-        response = requests.get(self.base_url + catalogue_url, headers=headers)
+        # call API to get the first 20 items, and find the total number of products
+        response = requests.get(self.base_url + catalogue_url, headers=headers, params=params)
 
         if response.status_code == 401:
             print(f'Status Code: {response.status_code}')
             print('refresh the access token!')
             exit()
         elif response.status_code != 200:
-            print('oh no something went wrong!')
+            print('oh no something went wrong!', response.status_code)
 
         data = response.json()
 
@@ -47,13 +63,32 @@ class Scraper:
             total_products = data['total']
             print(f'Total products: {total_products}')
 
-            for hit in data['hits']:
-                product = hit['representedProduct']
-                print(f'parsing product {product['c_fsProductName']}')
+            # loop through all the objects:
+            for i in range(total_products % limit):
+                print('current offset', offset)
+                # modify the offset each time to get the next 20 items
+                offset = i*limit + 1
+                params['offset'] = offset
 
-                # TODO: parse any fields that might need special attention
+                response = requests.get(self.base_url + catalogue_url, headers=headers, params=params)
 
-                all_products.append(product)
+                if response.status_code == 401:
+                    print(f'Status Code: {response.status_code}')
+                    print('refresh the access token!')
+                    exit()
+                elif response.status_code != 200:
+                    print('oh no something went wrong!')
+
+                data = response.json()
+
+                for hit in data['hits']:
+                    product = hit['representedProduct']
+                    print(f'parsing product {product['c_fsProductName']}')
+
+                    # TODO: parse any fields that might need special attention
+
+                    all_products.append(product)            
+
         except:
             print('oh no!')
 
