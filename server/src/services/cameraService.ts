@@ -8,11 +8,6 @@ import fs from 'fs';
 import path from 'path';
 import { PhotoData } from '../../../shared/types';
 
-/*
-// this is for prototype 2
-import { GptService } from './gptService';
-*/
-
 const PHOTO_WIDTH = 450;
 const PHOTO_HEIGHT = 900;
 
@@ -95,15 +90,6 @@ export class CameraService {
       // this is for prototype 1
       resp.apiResponse = await sendToApi(photo);
       resp.encodedImg = encodedImg;
-
-      /*
-      // this is for prototype 2
-      const gptService = new GptService();
-      const gptResponse = await gptService.sendToGpt(photo);
-      resp.encodedImg = encodedImg;
-      console.log('Received GPT Response\n', JSON.stringify(gptResponse, null, 2));
-      fs.writeFileSync('response.txt', gptResponse.choices[0].message.content, 'utf-8');
-      */
     } catch (err) {
       console.error('Error creating PhotoData object.');
       resp.errorMsg = `${err}`;
