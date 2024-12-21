@@ -87,6 +87,7 @@ import { zodResponseFormat } from 'openai/helpers/zod';
 import OpenAI from 'openai';
 import { GptResponse } from '../../../shared/types';
 import { gptSystemContext } from '../utils/gptServiceHelper';
+import sanitizeProductList from './sanitizeService';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -136,6 +137,9 @@ export class GptService {
     const full_response = completion;
     console.log(full_response);
 
+    const sanitizedResponse = await sanitizeProductList(full_response);
+    console.log(sanitizedResponse);
+
     // DEBUG: save the response for debug purposes
     const dir = path.join(__dirname, '../../__uploads');
     const filePath = path.join(dir, `${Date.now()}.json`);
@@ -148,6 +152,17 @@ export class GptService {
       }
     });
 
-    return full_response;
+    // DEBUG: save the response for debug purposes
+    const sanitizedFilePath = path.join(dir, `${Date.now() + '-sanitized'}.json`);
+    // Write the JSON content to the file
+    fs.writeFile(sanitizedFilePath, JSON.stringify(sanitizedResponse, null, 2), (err) => {
+      if (err) {
+        console.error('Error writing JSON to file:', err);
+      } else {
+        console.log(`JSON file saved to ${sanitizedFilePath}`);
+      }
+    });
+
+    return sanitizedResponse;
   }
 }
