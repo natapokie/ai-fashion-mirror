@@ -5,6 +5,21 @@ export interface PREAPIResponse {
   comments: number;
 }
 
+export interface GptResponse {
+  id: string;
+  object: string;
+  created: number;
+  model: string;
+  choices: Array<{
+    message: {
+      role: string;
+      content: string | null;
+    };
+    finish_reason: string;
+    index: number;
+  }>;
+}
+
 export interface CommentType {
   user: string;
   text: string;
