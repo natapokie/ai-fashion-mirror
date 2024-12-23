@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ProductData } from '../../../shared/types';
 import CarouselCard from './carouselCard';
 import styles from './style.module.css';
+import DOMPurify from 'dompurify';
 
 interface CarouselProps {
   products: ProductData[];
@@ -122,7 +123,10 @@ const Carousel: React.FC<CarouselProps> = ({ products, onClickOutside }) => {
         ))}
       </div>
       <div ref={feedbackRef} className={styles.feedbackCard}>
-        <p className="text-xl">{products[primaryIndex].feedback}</p>
+        <p
+          className="text-xl"
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(products[primaryIndex].feedback) }}
+        ></p>
       </div>
     </div>
   );
