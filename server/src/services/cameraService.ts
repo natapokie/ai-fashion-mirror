@@ -1,6 +1,9 @@
 import StillCamera from '../pi-camera-connect/lib/still-camera';
 import NodeWebcam, { WebcamOptions } from 'node-webcam';
+
+// this is for prototype 1
 import { sendToApi } from './apiService';
+
 import fs from 'fs';
 import path from 'path';
 import { PhotoData } from '../../../shared/types';
@@ -84,6 +87,7 @@ export class CameraService {
     const resp = {} as PhotoData;
 
     try {
+      // this is for prototype 1
       resp.apiResponse = await sendToApi(photo);
       resp.encodedImg = encodedImg;
     } catch (err) {
