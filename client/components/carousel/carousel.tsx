@@ -114,12 +114,11 @@ const Carousel: React.FC<CarouselProps> = ({ products, onClickOutside }) => {
         ))}
       </div>
 
-      <div ref={feedbackRef} className={styles.feedbackCard}>
+      <div className={styles.feedbackCard}>
         <p
           className="text-xl"
           dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(products[primaryIndex].feedback) }}
         ></p>
-
       </div>
       <div className="flex flex-row gap-4">
         {products.map((_, i) => (
