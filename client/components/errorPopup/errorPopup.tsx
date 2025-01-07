@@ -6,7 +6,7 @@ type ErrorPopupProps = {
   onClose: () => void;      // Callback for the "OK" button
 };
 
-const ErrorPopup: React.FC<ErrorPopupProps> = ({ message, onClose }) => {
+export const ErrorPopup: React.FC<ErrorPopupProps> = ({ message, onClose }) => {
   return (
     <div className={styles.overlay}>
       <div className={styles.popup}>
@@ -19,5 +19,3 @@ const ErrorPopup: React.FC<ErrorPopupProps> = ({ message, onClose }) => {
     </div>
   );
 };
-
-export default ErrorPopup;
