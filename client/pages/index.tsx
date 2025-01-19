@@ -101,9 +101,15 @@ const Home = () => {
         setErrorMessage('No photo captured. Please try again.');
         setShowErrorPopup(true); 
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in takePhotoHandler:', error);
-      setErrorMessage('No photo captured. Please try again.');
+
+      // handle response json format error or other server-side errors
+      if (error.response?.data?.error) {
+        setErrorMessage(`Server error: ${error.response.data.error}. Please try again later.`);
+      } else {
+        setErrorMessage('Something went wrong with the server photo. Please try again.');
+      }
       setShowErrorPopup(true); 
     }
   };

@@ -119,6 +119,7 @@ export class GptService {
   public async sendToGpt(base64Img: string): Promise<GptResponse> {
     const openai = new OpenAI();
     const base64Image = base64Img;
+
     const completion = await openai.beta.chat.completions.parse({
       model: 'gpt-4o-2024-08-06',
       messages: [
@@ -134,8 +135,18 @@ export class GptService {
     });
 
     const full_response = completion;
-    console.log(full_response);
+    // const full_response = "{ invalidJson: true"; // Deliberately malformed JSON for simulating an error
 
+    // validate the response format to be json
+    try {
+      JSON.parse(JSON.stringify(full_response)); // Serialize and parse to ensure valid JSON
+    } catch (error) {
+      throw new Error('Invalid response format (not valid JSON)');
+
+    }
+
+    console.log('gpt response: ', full_response);
+  
     // DEBUG: save the response for debug purposes
     const dir = path.join(__dirname, '../../__uploads');
     const filePath = path.join(dir, `${Date.now()}.json`);
