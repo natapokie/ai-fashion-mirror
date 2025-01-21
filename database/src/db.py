@@ -19,3 +19,5 @@ class DatabaseHelper:
         # return the stats of the index
         # you can use as a sanity check to make sure you're connected
         return pc_index.describe_index_stats()
+
+    # TODO: add other static methods needed to upsert, fetch indexes, etc.
