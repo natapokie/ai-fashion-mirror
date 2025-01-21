@@ -1,4 +1,4 @@
-import { EmbeddingsList, PineconeRecord, RecordValues } from '@pinecone-database/pinecone';
+import { EmbeddingsList, PineconeRecord } from '@pinecone-database/pinecone';
 import { pinecone, pineconeIndex } from '../pinecone';
 
 export class PineconeService {
@@ -32,21 +32,18 @@ export class PineconeService {
     return stats;
   };
 
-  static executeQuery = async (query: string[], topK: number = 10) => {
-    // Use Pinecone Inference to convert a text query into a query vector
-    const embedding = await this.createEmbeddings(query);
-
+  static executeQuery = async (embedding: number[], topK: number = 10) => {
     // Query the ns1 namespace for the three vectors that are most similar to the query vector, i.e., the vectors that represent the most relevant answers to your question:
-    if (embedding) {
-      const queryResponse = await pineconeIndex.namespace(this.namespace).query({
-        topK: topK,
-        vector: embedding[0].values as RecordValues,
-        includeValues: false,
-        includeMetadata: true,
-      });
+    const queryResponse = await pineconeIndex.namespace(this.namespace).query({
+      topK: topK,
+      vector: embedding,
+      includeValues: false,
+      includeMetadata: true,
+    });
 
-      console.log('\nTopk relevant:');
-      console.log(queryResponse);
-    }
+    console.log('\nTopk relevant:');
+    console.log(queryResponse);
+
+    return queryResponse;
   };
 }
