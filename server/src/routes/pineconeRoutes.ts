@@ -1,5 +1,6 @@
 import express from 'express';
 import { PineconeService } from '../services/pineconeService';
+import { PineconeRecord } from '@pinecone-database/pinecone';
 
 const router = express.Router();
 
@@ -74,6 +75,26 @@ router.post('/query', async (req, res) => {
     }
   } catch (err) {
     const message = `Failed to get execute query`;
+    if (err instanceof Error) {
+      res.status(500).json({ success: false, message: message, error: err.message });
+    } else {
+      res.status(500).json({ success: false, message: message, error: 'Unknown error' });
+    }
+  }
+});
+
+router.post('/upsert', async (req, res) => {
+  try {
+    if (!req.body || !req.body.records) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Error, records field must be provided in body' });
+    }
+    const records = req.body.records as PineconeRecord[];
+    await PineconeService.upsertData(records);
+    res.json({ success: true, message: 'Successfully upserted records' });
+  } catch (err) {
+    const message = `Failed to upsert records`;
     if (err instanceof Error) {
       res.status(500).json({ success: false, message: message, error: err.message });
     } else {
