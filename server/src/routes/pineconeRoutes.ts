@@ -38,7 +38,7 @@ router.post('/records', async (req, res) => {
   }
 });
 
-router.post('/stats', async (req, res) => {
+router.get('/stats', async (req, res) => {
   try {
     const result = await PineconeService.checkIndex();
     console.debug('results', result);
