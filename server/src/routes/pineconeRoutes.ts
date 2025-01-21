@@ -15,6 +15,8 @@ router.get('', async (req, res) => {
 });
 
 // get records by ids
+// Sample request body
+// { "ids": ["vec1"] }
 router.post('/records', async (req, res) => {
   try {
     if (!req.body || !req.body?.ids) {
@@ -51,6 +53,8 @@ router.post('/stats', async (req, res) => {
   }
 });
 
+// Sample request body
+// { "query": "Computer" }
 router.post('/query', async (req, res) => {
   try {
     if (!req.body || !req.body?.query) {
@@ -83,6 +87,7 @@ router.post('/query', async (req, res) => {
   }
 });
 
+// update/inserts record
 router.post('/upsert', async (req, res) => {
   try {
     if (!req.body || !req.body.records) {

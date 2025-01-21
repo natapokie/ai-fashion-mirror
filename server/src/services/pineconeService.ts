@@ -2,8 +2,8 @@ import { EmbeddingsList, PineconeRecord } from '@pinecone-database/pinecone';
 import { pinecone, pineconeIndex } from '../pinecone';
 
 export class PineconeService {
-  static model = 'multilingual-e5-large';
-  static namespace = 'ns1';
+  static model = process.env.PINECONE_EMBEDDING_MODEL || 'multilingual-e5-large';
+  static namespace = process.env.PINECONE_NAMESPACE || 'ns1';
 
   static fetchRecords = async (ids: string[]) => {
     const records = await pineconeIndex.namespace(this.namespace).fetch(ids);
