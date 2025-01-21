@@ -49,6 +49,13 @@ conda deactivate
 
 ### Making Changes to the Conda Environment
 
+Updating the conda environment,
+
+```bash
+cd database
+conda env update --file environment.yml --prun
+```
+
 If you've installed new packages and want to update the environment.yml file,
 
 ```bash
