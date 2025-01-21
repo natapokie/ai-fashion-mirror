@@ -43,9 +43,14 @@ conda env create -f environment.yml
 # activate the environment (name of the environment is scraper)
 conda activate scraper
 
+# important! pinecone not available in anaconda and must be installed via pip
+# make sure the environment is already activated and run
+pip install pinecone
+
 # deactivate the environment
 conda deactivate
 ```
+
 
 ### Making Changes to the Conda Environment
 
