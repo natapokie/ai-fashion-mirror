@@ -7,3 +7,4 @@ dependencies:
   - requests
   - black
   - flake8
+  - python-dotenv

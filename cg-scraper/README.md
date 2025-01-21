@@ -60,6 +60,7 @@ conda env export > environment.yml
 ### Running via Terminal
 
 ```bash
+cd database/src
 python main.py
 ```
 
