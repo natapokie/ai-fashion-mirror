@@ -1,0 +1,10 @@
+name: scraper  # name of environemnt
+channels:
+  - defaults
+dependencies:
+  - python=3.12
+  - pandas
+  - requests
+  - black
+  - flake8
+  - python-dotenv
