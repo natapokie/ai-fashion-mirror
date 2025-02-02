@@ -80,19 +80,24 @@
 //   }
 // }
 
+/* feb 2: not used for feature extraction
 // nov 18 note:
 // modified to use structured output, see https://platform.openai.com/docs/guides/structured-outputs?context=with_parse#how-to-use
 import { z } from 'zod';
 import { zodResponseFormat } from 'openai/helpers/zod';
+*/
+
 import OpenAI from 'openai';
 import { GptResponse } from '../../../shared/types';
-import { gptSystemContext } from '../utils/gptServiceHelper';
+import { featureExtractionContext } from '../utils/gptServiceHelper';
 import dotenv from 'dotenv';
 dotenv.config();
 
 import fs from 'fs';
 import path from 'path';
 
+/*
+// feb 2: not used for feature extraction
 const ProductInfo = z.object({
   image: z.string(),
   name: z.string(),
@@ -102,6 +107,7 @@ const ProductInfo = z.object({
 const FullRecommendation = z.object({
   product_list: z.array(ProductInfo),
 });
+*/
 
 export class GptService {
   private async blobToBase64(blob: Blob): Promise<string> {
@@ -122,7 +128,8 @@ export class GptService {
     const completion = await openai.beta.chat.completions.parse({
       model: 'gpt-4o-2024-08-06',
       messages: [
-        { role: 'system', content: `${gptSystemContext}. Make sure the image url ends in "jpg" ` },
+        // { role: 'system', content: `${gptSystemContext}. Make sure the image url ends in "jpg" ` },
+        { role: 'system', content: `${featureExtractionContext}` }, // feb2: used for feature extraction
         {
           role: 'user',
           content: [
@@ -130,7 +137,7 @@ export class GptService {
           ],
         },
       ],
-      response_format: zodResponseFormat(FullRecommendation, 'full_response'),
+      // response_format: zodResponseFormat(FullRecommendation, 'full_response'), //feb 2: not used for feature extraction
     });
 
     const full_response = completion;
