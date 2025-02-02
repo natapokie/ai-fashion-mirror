@@ -143,6 +143,18 @@ export class GptService {
     const full_response = completion;
     console.log(full_response);
 
+    // --------------------------------------
+    // feb 2: attempt to embed the features from the response
+    const features = full_response.choices[0].message.content;
+    console.log('Features:', features);
+    const embedding = await openai.embeddings.create({
+      model: 'text-embedding-3-small',
+      input: String(features),
+      encoding_format: 'float',
+    });
+    console.log('Embeddings:', embedding.data[0].embedding);
+    // --------------------------------------
+
     // DEBUG: save the response for debug purposes
     const dir = path.join(__dirname, '../../__uploads');
     const filePath = path.join(dir, `${Date.now()}.json`);
