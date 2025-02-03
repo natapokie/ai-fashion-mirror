@@ -1,6 +1,8 @@
-name: scraper  # name of environemnt
+name: scraper
 channels:
   - defaults
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
 dependencies:
   - python=3.12
   - pandas
@@ -8,3 +10,58 @@ dependencies:
   - black
   - flake8
   - python-dotenv
+  - black=24.10.0=py312hecd8cb5_0
+  - blas=1.0=openblas
+  - bottleneck=1.4.2=py312ha2b695f_0
+  - brotli-python=1.0.9=py312h6d0c2b6_9
+  - bzip2=1.0.8=h6c40b1e_6
+  - ca-certificates=2024.12.31=hecd8cb5_0
+  - certifi=2024.12.14=py312hecd8cb5_0
+  - charset-normalizer=3.3.2=pyhd3eb1b0_0
+  - click=8.1.7=py312hecd8cb5_0
+  - expat=2.6.4=h6d0c2b6_0
+  - flake8=7.1.1=py312hecd8cb5_0
+  - idna=3.7=py312hecd8cb5_0
+  - libcxx=14.0.6=h9765a3e_0
+  - libffi=3.4.4=hecd8cb5_1
+  - libgfortran=5.0.0=11_3_0_hecd8cb5_28
+  - libgfortran5=11.3.0=h9dfd629_28
+  - libopenblas=0.3.21=h54e7dc3_0
+  - llvm-openmp=14.0.6=h0dcd299_0
+  - mccabe=0.7.0=pyhd3eb1b0_0
+  - mypy_extensions=1.0.0=py312hecd8cb5_0
+  - ncurses=6.4=hcec6c5f_0
+  - numexpr=2.10.1=py312hc59c7be_0
+  - numpy=2.0.1=py312h255ab90_1
+  - numpy-base=2.0.1=py312h12d8432_1
+  - openssl=3.0.15=h46256e1_0
+  - packaging=24.2=py312hecd8cb5_0
+  - pandas=2.2.3=py312h6d0c2b6_0
+  - pathspec=0.10.3=py312hecd8cb5_0
+  - pip=24.2=py312hecd8cb5_0
+  - platformdirs=3.10.0=py312hecd8cb5_0
+  - pycodestyle=2.12.1=py312hecd8cb5_0
+  - pyflakes=3.2.0=py312hecd8cb5_0
+  - pysocks=1.7.1=py312hecd8cb5_0
+  - python=3.12.8=hcd54a6c_0
+  - python-dateutil=2.9.0post0=py312hecd8cb5_2
+  - python-dotenv=0.21.0=py312hecd8cb5_0
+  - python-tzdata=2023.3=pyhd3eb1b0_0
+  - pytz=2024.1=py312hecd8cb5_0
+  - readline=8.2=hca72f7f_0
+  - requests=2.32.3=py312hecd8cb5_1
+  - setuptools=75.1.0=py312hecd8cb5_0
+  - six=1.16.0=pyhd3eb1b0_1
+  - sqlite=3.45.3=h6c40b1e_0
+  - tk=8.6.14=h4d00af3_0
+  - tzdata=2025a=h04d1e81_0
+  - urllib3=2.3.0=py312hecd8cb5_0
+  - wheel=0.44.0=py312hecd8cb5_0
+  - xz=5.4.6=h6c40b1e_1
+  - zlib=1.2.13=h4b97444_1
+  - pip:
+      - pinecone==5.4.2
+      - pinecone-plugin-inference==3.1.0
+      - pinecone-plugin-interface==0.0.7
+      - tqdm==4.67.1
+      - typing-extensions==4.12.2
