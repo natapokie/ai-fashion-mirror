@@ -59,7 +59,7 @@ class DatabaseHelper:
     def upsert_handler(self, data: list[dict]):
         # Split data into batches
         for i in range(0, len(data), self.batch_size):
-            batch = data[i: i + self.batch_size]
+            batch = data[i : i + self.batch_size]
             self.upsert_index(batch)
             print(
                 f"Upserted batch {i//self.batch_size + 1}/{-(-len(data)//self.batch_size)} ({len(batch)} items)"
@@ -108,11 +108,9 @@ class DatabaseHelper:
         )
         return results
 
-
-# Test the database helper
-"""
-db = DatabaseHelper()
-print(db.describe_index())
-db.upsert_handler(db.data)
-print(db.query_index("Wyndham Parka"))
-"""
+    # Debugging purposes only
+    def test(self):
+        db = DatabaseHelper()
+        print(db.describe_index())
+        db.upsert_handler(db.data)
+        print(db.query_index("Wyndham Parka"))
