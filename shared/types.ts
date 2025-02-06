@@ -43,4 +43,9 @@ export interface ProductData {
   image: string;
   name: string;
   feedback: string;
+  metadata: {
+    color: string;
+    fit: string;
+    length: string;
+  };
 }

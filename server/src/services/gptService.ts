@@ -96,6 +96,9 @@ dotenv.config();
 import fs from 'fs';
 import path from 'path';
 
+import { generateRAGPrompt } from '../utils/gptServiceHelper';
+import { mockQueriedProducts } from '../utils/mockData';
+
 /*
 // feb 2: not used for feature extraction
 const ProductInfo = z.object({
@@ -166,6 +169,26 @@ export class GptService {
         console.log(`JSON file saved to ${filePath}`);
       }
     });
+
+    return full_response;
+  }
+
+  public async sendToGptWithRAG(userFeatures: string): Promise<GptResponse> {
+    const openai = new OpenAI();
+
+    // Generate the RAG prompt using extracted user features and queried product metadata
+    const ragPrompt = generateRAGPrompt(userFeatures, mockQueriedProducts);
+
+    const completion = await openai.beta.chat.completions.parse({
+      model: 'gpt-4o-2024-08-06',
+      messages: [
+        { role: 'system', content: 'You are a fashion recommendation assistant.' },
+        { role: 'user', content: ragPrompt },
+      ],
+    });
+
+    const full_response = completion;
+    console.log(full_response);
 
     return full_response;
   }

@@ -25,3 +25,30 @@ export const mockData: PREAPIResponse = {
   views: 443810,
   comments: 20,
 };
+
+export const mockQueriedProducts = [
+  {
+    id: 'Red Jacket',
+    metadata: {
+      color: 'red',
+      fit: 'slim',
+      length: 'long',
+    },
+  },
+  {
+    id: 'Blue Parka',
+    metadata: {
+      color: 'blue',
+      fit: 'regular',
+      length: 'medium',
+    },
+  },
+  {
+    id: 'Black Hoodie',
+    metadata: {
+      color: 'black',
+      fit: 'loose',
+      length: 'short',
+    },
+  },
+];

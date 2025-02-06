@@ -1,3 +1,25 @@
+import { ProductData } from '../../../shared/types';
+
+export const generateRAGPrompt = (userFeatures: string, products: ProductData[]) => {
+  return `The customer uploaded a photo that shows ${userFeatures}. Based on this, recommend clothing items from the given list with the following details:
+
+Products:
+${products
+  .map(
+    (product, index) =>
+      `${index + 1}. ${product.name} - ${product.metadata.color}, ${product.metadata.fit}, ${product.metadata.length}`,
+  )
+  .join('\n')}
+
+Provide recommendations in JSON format with the following structure:
+[
+  {
+    "product_name": "Product A",
+    "reasonForRecommending": "..."
+  }
+];`;
+};
+
 export const featureExtractionContext = `You are a fashion expert. Your task is to extract and/or create clothing recommendations.
 You will be provided with a picture of a shopper. You need to first recognize the shopper's general appearance, such as skin tone, 
 height, build. Then, you need to provide features and attributes of the clothes that would complement the shopper's appearance. 
