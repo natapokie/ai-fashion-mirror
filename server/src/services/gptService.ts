@@ -151,7 +151,7 @@ export class GptService {
     const features = full_response.choices[0].message.content;
     console.log('Features:', features);
     const embedding = await openai.embeddings.create({
-      model: 'text-embedding-3-small',
+      model: 'text-embedding-ada-002',
       input: String(features),
       encoding_format: 'float',
     });
