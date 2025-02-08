@@ -1,0 +1,21 @@
+components:
+  schemas:
+    ApiRequest:
+      type: object
+      properties:
+        image:
+          type: string
+          format: binary
+          description: The image file to be uploaded
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates whether the image was saved successfully
+        message:
+          type: string
+          description: A message describing the result of the operation
+        data:
+          type: object
+          description: Additional data or metadata returned with the response

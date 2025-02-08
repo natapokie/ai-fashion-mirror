@@ -11,7 +11,7 @@ dotenv.config({
 export const swaggerLoader = (app: Express) => {
   const swaggerOptions: Options = {
     swaggerDefinition: {
-      openai: '3.0.0',
+      openapi: '3.0.0',
       info: {
         version: 'v1.0.0',
         title: 'AI Fashion Mirror API',
@@ -24,7 +24,7 @@ export const swaggerLoader = (app: Express) => {
         },
       ],
     },
-    apis: [path.resolve(__dirname, '../routes/*.ts')],
+    apis: [path.resolve(__dirname, '../routes/*.ts'), path.resolve(__dirname, './components.yml')],
   };
 
   const swaggerDocs = swaggerJSDoc(swaggerOptions);
