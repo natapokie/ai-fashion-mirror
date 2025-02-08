@@ -229,10 +229,3 @@ class Scraper:
                 print("Error during json parse", Exception)
         else:
             print("Error with refresh", response.status_code)
-
-    def testing():
-        batch_size = 2
-        my_lst = list(range(0, 100))
-        for i in range(0, len(my_lst)):
-            numbers = my_lst[i : i + batch_size]
-            print(numbers)
