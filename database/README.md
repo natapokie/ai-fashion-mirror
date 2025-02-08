@@ -58,7 +58,7 @@ Updating the conda environment,
 
 ```bash
 cd database
-conda env update --file environment.yml --prun
+conda env update --file environment.yml --prune
 ```
 
 If you've installed new packages and want to update the environment.yml file,
