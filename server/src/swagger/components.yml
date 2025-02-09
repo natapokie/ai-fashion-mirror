@@ -1,0 +1,91 @@
+components:
+  schemas:
+    FormDataRequestBody:
+      type: object
+      properties:
+        image:
+          type: string
+          format: binary
+          description: The image file to be uploaded
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successfully processed.
+        message:
+          type: string
+          description: Details about the processing outcome.
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates successful api call
+        message:
+          type: string
+          description: A message describing the error
+        data:
+          type: object
+          description: Additional data or metadata from the error
+
+    ApiRequestResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiRequestResponse'
+        - type: object
+          properties:
+            success:
+              description: Indicates whether the image was saved successfully
+            message:
+              description: A message describing the result of the operation
+            data:
+              type: object
+              description: Additional data or metadata returned with the response
+
+    PineconeRecordsRequestBody:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+          description: An array of record ids
+
+    PineconeQueryRequestBody:
+      type: object
+      properties:
+        query:
+          type: string
+          description: The query string
+        topK:
+          type: integer
+          description: The number of top results to return
+          default: 10
+
+    PineconeUpsertRequestBody:
+      type: object
+      properties:
+        records:
+          type: array
+          items:
+            type: integer
+          minItems: 1536
+          maxItems: 1536
+          description: The records (vector embeddings) to be upserted into the table
+
+  responses:
+    BadRequest:
+      description: Error processing request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    ServerError:
+      description: Server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

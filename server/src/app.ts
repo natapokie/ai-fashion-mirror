@@ -6,6 +6,7 @@ import cameraRouter from './routes/cameraRoutes';
 import gptRouter from './routes/gptRoutes';
 import apiRouter from './routes/apiRoutes';
 import pineconeRouter from './routes/pineconeRoutes';
+import { swaggerLoader } from './swagger/swagger';
 
 // define directory to save images
 const uploadDir = path.join(__dirname, '../__uploads');
@@ -22,6 +23,9 @@ const corsOptions: CorsOptions = {};
 
 app.use(cors(corsOptions));
 app.use(express.json());
+
+// loaders
+swaggerLoader(app);
 
 // routes
 app.use('/camera', cameraRouter);
