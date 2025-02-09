@@ -27,4 +27,27 @@ export const GptController = {
       }
     }
   },
+  async requestRAG(req: Request, res: Response) {
+    // new RAG route handler
+    try {
+      const { userFeatures, queriedProducts } = req.body;
+
+      if (!userFeatures || !queriedProducts) {
+        return res.status(400).json({ success: false, message: 'Missing parameters' });
+      }
+
+      const gptService = new GptService();
+      const recommendations = await gptService.sendToGptWithRAG(userFeatures, queriedProducts);
+
+      res.status(200).json({ success: true, data: recommendations });
+    } catch (err) {
+      res
+        .status(500)
+        .json({
+          success: false,
+          message: 'Failed to process request',
+          error: err instanceof Error ? err.message : 'Unknown error',
+        });
+    }
+  },
 };

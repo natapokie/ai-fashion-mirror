@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ProductData } from '../../shared/types';
+import { ProductData, QueriedProduct } from '../../shared/types';
 
 export const sendImageToGpt = async (formData: FormData): Promise<ProductData[]> => {
   try {
@@ -25,5 +25,35 @@ export const sendImageToGpt = async (formData: FormData): Promise<ProductData[]>
   } catch (error) {
     console.error('Error in sendImageToGpt:', error);
     throw error;
+  }
+};
+
+export const sendRAGToGpt = async (
+  userFeatures: string,
+  queriedProducts: QueriedProduct[],
+): Promise<ProductData[]> => {
+  try {
+    console.log('Sending RAG request to GPT...');
+
+    const response = await axios.post(`${process.env.SERVER_BASE_URL}/gpt/request-rag`, {
+      userFeatures,
+      queriedProducts,
+    });
+
+    if (response.status !== 200 || !response.data.success) {
+      throw new Error('Failed to process image with RAG');
+    }
+
+    console.log('!!RAG GPT Response:', response.data);
+
+    // Ensure `data` exists and has a valid array before mapping
+    if (!response.data || !Array.isArray(response.data.data)) {
+      throw new Error('Invalid response format from GPT');
+    }
+
+    return response.data.data;
+  } catch (error) {
+    console.error('Error in sendRAGToGpt:', error);
+    return []; // Return an empty array if the request fails
   }
 };

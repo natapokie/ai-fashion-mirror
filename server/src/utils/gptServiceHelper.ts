@@ -1,7 +1,7 @@
 import { QueriedProduct } from '../../../shared/types';
 
 export const generateRAGPrompt = (userFeatures: string, products: QueriedProduct[]) => {
-  return `The customer uploaded a photo that shows ${userFeatures}. Based on this, recommend clothing items from the given list with the following details:
+  return `The customer uploaded a photo that shows ${userFeatures}. Based on this, provide recommendations for **each product** from the given list. Each product must have a feedback explanation. Use the following details:
 
 Products:
 ${products
@@ -11,15 +11,22 @@ ${products
   )
   .join('\n')}
 
-Return the recommendations in JSON format. Make sure the "image" field in each recommendation corresponds to the "modelImageUrl" provided in the product list above.
+Return the recommendations in **JSON format**, ensuring that each product from the list above is included, even if the recommendation is neutral.
 
 [
   {
     "name": "Product A",
-    "image": "https://images.canadagoose.com/image/upload/product-image/2050M_28.jpg",
+    "image": "https://example.com/image.jpg",
     "feedback": "This product is a great choice because..."
+  },
+  {
+    "name": "Product B",
+    "image": "https://example.com/image.jpg",
+    "feedback": "This product may not be the best fit, but it still has advantages such as..."
   }
-];`;
+];
+
+Make sure each product in the list above appears in the response. If a product is not ideal for the user, still provide a brief reason why.`;
 };
 
 export const featureExtractionContext = `You are a fashion expert. Your task is to extract and/or create clothing recommendations.

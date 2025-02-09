@@ -9,7 +9,10 @@ import { Countdown } from '@/components/countdown/countdown';
 import { Spinner } from '@/components/spinner/spinner';
 import { useCamera } from '@/context/cameraContext';
 import { ProductData } from '../../shared/types';
-import { sendImageToGpt } from '@/services/gptService';
+// import { sendImageToGpt, sendRAGToGpt } from '@/services/gptService'; # temporary commented out sendImageToGPT part
+import { sendRAGToGpt } from '@/services/gptService';
+
+import { mockQueriedProducts } from '@/utils/mockData';
 
 const closeIcon = '/icons/xmark-solid.svg';
 
@@ -53,9 +56,31 @@ const Home = () => {
         console.log('Photo captured successfully.');
         console.log('FormData contains image:', formData.get('image'));
 
-        const content = await sendImageToGpt(formData);
+        // step 1: getting user features from gpt
+        // const content = await sendImageToGpt(formData);
 
-        setProductInfo(content);
+        // step 2: query data form pinecone
+
+        // step 3: call sendRAGToGPT
+        const userFeatures =
+          'Tall person with warm skin tone, prefers a long fit, likes all colors'; // temporary harcoded user feature string
+        const ragResponse = await sendRAGToGpt(userFeatures, mockQueriedProducts);
+        console.log('RAG GPT Response: ', ragResponse);
+
+        const Recommendations = mockQueriedProducts.map((product) => {
+          const found = ragResponse.find((rec) => rec.name === product.id);
+          return {
+            name: product.id,
+            image: found?.image ?? product.metadata.modelImageUrl, // Use GPT image or fallback to original
+            feedback:
+              found?.feedback ?? 'No specific feedback provided, but this is a great choice!',
+          };
+        });
+
+        console.log('Recommendations: ', Recommendations);
+        setProductInfo(Recommendations);
+
+        // setProductInfo(content);
         setPageState(pageStates.RESULTS);
         console.log('showing carousel');
       } else {

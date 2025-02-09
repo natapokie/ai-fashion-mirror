@@ -189,17 +189,18 @@ export class GptService {
     console.log('Completion Response:', completion);
 
     // Ensure choices exist
-    const gptResponse = completion.choices?.[0]?.message?.parsed?.product_list;
+    // const gptResponse = completion.choices?.[0]?.message?.parsed?.product_list;
+    const gptResponse = completion.choices?.[0]?.message?.parsed?.product_list ?? [];
 
     if (!gptResponse) {
-      console.error('Error: GPT response is null or malformed.');
+      console.error('Error: RAG GPT response is null or malformed.');
       return []; // Return empty array to prevent crashes
     }
 
     // Convert response to expected ProductData format
     return gptResponse.map((product: z.infer<typeof ProductInfo>) => ({
       name: product.name,
-      image: product.image, // Ensure it is the correct image URL
+      image: product.image ?? 'MISSING Image URL', // Ensure it is the correct image URL
       feedback: product.feedback,
     }));
   }
