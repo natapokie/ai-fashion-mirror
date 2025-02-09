@@ -17,7 +17,7 @@ const router = express.Router();
  *       content:
  *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/ApiRequestBody'
+ *             $ref: '#/components/schemas/FormDataRequestBody'
  *     responses:
  *       "200":
  *         description: Successfully saved image to disk and queried OpenAI.
@@ -26,17 +26,9 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/ApiRequestResponse'
  *       "400":
- *         description: Error processing request.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *         $ref: '#/components/responses/BadRequest'
  *       "500":
- *         description: Server error.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *         $ref: '#/components/responses/ServerError'
  */
 router.post('/request', upload.single('image'), ApiController.process);
 

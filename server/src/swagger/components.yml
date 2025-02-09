@@ -1,25 +1,22 @@
 components:
   schemas:
-    # for /api/request
-    ApiRequestBody:
+    FormDataRequestBody:
       type: object
       properties:
         image:
           type: string
           format: binary
           description: The image file to be uploaded
-    ApiRequestResponse:
+
+    SuccessResponse:
       type: object
       properties:
         success:
           type: boolean
-          description: Indicates whether the image was saved successfully
+          description: Whether the request was successfully processed.
         message:
           type: string
-          description: A message describing the result of the operation
-        data:
-          type: object
-          description: Additional data or metadata returned with the response
+          description: Details about the processing outcome.
 
     ErrorResponse:
       type: object
@@ -33,3 +30,31 @@ components:
         data:
           type: object
           description: Additional data or metadata from the error
+
+    ApiRequestResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiRequestResponse'
+        - type: object
+          properties:
+            success:
+              description: Indicates whether the image was saved successfully
+            message:
+              description: A message describing the result of the operation
+            data:
+              type: object
+              description: Additional data or metadata returned with the response
+
+  responses:
+    BadRequest:
+      description: Error processing request.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    ServerError:
+      description: Server error.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
