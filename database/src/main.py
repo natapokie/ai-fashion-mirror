@@ -11,21 +11,30 @@ def main():
         print("Scraping data")
         scraper = Scraper()
         scraper.run()
+
+    # sanitize data if "--sanitize" flag is passed or if the cleaned output file does not exist
     if "--sanitize" in sys.argv or not os.path.exists("data/cleaned_output.json"):
         print("Sanitizing data")
         sanitizer = Sanitizer()
         sanitizer.run()
+
+    # upsert data if "--upsert" flag is passed
     if "--upsert" in sys.argv:
         print("Upserting data")
         db = DatabaseHelper()
         db.upsert_handler()
+
+    # describe index if "--describe" flag is passed
     if "--describe" in sys.argv:
         db = DatabaseHelper()
-        db.describe_index()
+        print(db.describe_index())
+
+    # query index if "--query" flag is passed
     if "--query" in sys.argv:
+        print("Querying index")
         db = DatabaseHelper()
         query = "canada goose"
-        db.query_index(query)
+        print(db.query_index(query))
 
 
 if __name__ == "__main__":
