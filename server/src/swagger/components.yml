@@ -1,13 +1,14 @@
 components:
   schemas:
-    ApiRequest:
+    # for /api/request
+    ApiRequestBody:
       type: object
       properties:
         image:
           type: string
           format: binary
           description: The image file to be uploaded
-    ApiResponse:
+    ApiRequestResponse:
       type: object
       properties:
         success:
@@ -19,3 +20,16 @@ components:
         data:
           type: object
           description: Additional data or metadata returned with the response
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates successful api call
+        message:
+          type: string
+          description: A message describing the error
+        data:
+          type: object
+          description: Additional data or metadata from the error
