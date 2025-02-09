@@ -39,13 +39,20 @@ export interface PhotoData {
   errorMsg?: string;
 }
 
+export interface ProductMetadata {
+  modelImageUrl: string;
+  color: string;
+  fit: string;
+  length: string;
+}
+
+export interface QueriedProduct {
+  id: string;
+  metadata: ProductMetadata;
+}
+
 export interface ProductData {
-  image: string;
   name: string;
+  image: string;
   feedback: string;
-  metadata: {
-    color: string;
-    fit: string;
-    length: string;
-  };
 }

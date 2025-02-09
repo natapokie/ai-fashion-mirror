@@ -1,21 +1,23 @@
-import { ProductData } from '../../../shared/types';
+import { QueriedProduct } from '../../../shared/types';
 
-export const generateRAGPrompt = (userFeatures: string, products: ProductData[]) => {
+export const generateRAGPrompt = (userFeatures: string, products: QueriedProduct[]) => {
   return `The customer uploaded a photo that shows ${userFeatures}. Based on this, recommend clothing items from the given list with the following details:
 
 Products:
 ${products
   .map(
     (product, index) =>
-      `${index + 1}. ${product.name} - ${product.metadata.color}, ${product.metadata.fit}, ${product.metadata.length}`,
+      `${index + 1}. ${product.id} - ${product.metadata.color}, ${product.metadata.fit}, ${product.metadata.length} (Image: ${product.metadata.modelImageUrl})`,
   )
   .join('\n')}
 
-Provide recommendations in JSON format with the following structure:
+Return the recommendations in JSON format. Make sure the "image" field in each recommendation corresponds to the "modelImageUrl" provided in the product list above.
+
 [
   {
-    "product_name": "Product A",
-    "reasonForRecommending": "..."
+    "name": "Product A",
+    "image": "https://images.canadagoose.com/image/upload/product-image/2050M_28.jpg",
+    "feedback": "This product is a great choice because..."
   }
 ];`;
 };

@@ -1,4 +1,4 @@
-import { PREAPIResponse } from '../../../shared/types';
+import { PREAPIResponse, QueriedProduct } from '../../../shared/types';
 
 export const mockData: PREAPIResponse = {
   '0': '@fabuloumiss: Maybe add a pop of color with a bright cushion or blanket.',
@@ -26,18 +26,20 @@ export const mockData: PREAPIResponse = {
   comments: 20,
 };
 
-export const mockQueriedProducts = [
+export const mockQueriedProducts: QueriedProduct[] = [
   {
     id: 'Red Jacket',
     metadata: {
+      modelImageUrl: 'https://images.canadagoose.com/image/upload/product-image/2050M_28.jpg',
       color: 'red',
       fit: 'slim',
-      length: 'long',
+      length: 'short',
     },
   },
   {
     id: 'Blue Parka',
     metadata: {
+      modelImageUrl: 'https://images.canadagoose.com/image/upload/product-image/2054M_222.jpg',
       color: 'blue',
       fit: 'regular',
       length: 'medium',
@@ -46,9 +48,10 @@ export const mockQueriedProducts = [
   {
     id: 'Black Hoodie',
     metadata: {
+      modelImageUrl: 'https://images.canadagoose.com/image/upload/product-image/2079M_61.jpg',
       color: 'black',
       fit: 'loose',
-      length: 'short',
+      length: 'long',
     },
   },
 ];

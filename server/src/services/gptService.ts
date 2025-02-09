@@ -80,15 +80,13 @@
 //   }
 // }
 
-/* feb 2: not used for feature extraction
 // nov 18 note:
 // modified to use structured output, see https://platform.openai.com/docs/guides/structured-outputs?context=with_parse#how-to-use
 import { z } from 'zod';
 import { zodResponseFormat } from 'openai/helpers/zod';
-*/
 
 import OpenAI from 'openai';
-import { GptResponse } from '../../../shared/types';
+import { GptResponse, ProductData, QueriedProduct } from '../../../shared/types';
 import { featureExtractionContext } from '../utils/gptServiceHelper';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -97,10 +95,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { generateRAGPrompt } from '../utils/gptServiceHelper';
-import { mockQueriedProducts } from '../utils/mockData';
 
-/*
-// feb 2: not used for feature extraction
 const ProductInfo = z.object({
   image: z.string(),
   name: z.string(),
@@ -110,7 +105,6 @@ const ProductInfo = z.object({
 const FullRecommendation = z.object({
   product_list: z.array(ProductInfo),
 });
-*/
 
 export class GptService {
   private async blobToBase64(blob: Blob): Promise<string> {
@@ -173,23 +167,40 @@ export class GptService {
     return full_response;
   }
 
-  public async sendToGptWithRAG(userFeatures: string): Promise<GptResponse> {
+  public async sendToGptWithRAG(
+    userFeatures: string,
+    queriedProducts: QueriedProduct[],
+  ): Promise<ProductData[]> {
     const openai = new OpenAI();
 
-    // Generate the RAG prompt using extracted user features and queried product metadata
-    const ragPrompt = generateRAGPrompt(userFeatures, mockQueriedProducts);
+    // Generate the RAG prompt using extracted features
+    const ragPrompt = generateRAGPrompt(userFeatures, queriedProducts);
 
+    // Call OpenAI with RAG prompt
     const completion = await openai.beta.chat.completions.parse({
       model: 'gpt-4o-2024-08-06',
       messages: [
         { role: 'system', content: 'You are a fashion recommendation assistant.' },
         { role: 'user', content: ragPrompt },
       ],
+      response_format: zodResponseFormat(FullRecommendation, 'full_response'),
     });
 
-    const full_response = completion;
-    console.log(full_response);
+    console.log('Completion Response:', completion);
 
-    return full_response;
+    // Ensure choices exist
+    const gptResponse = completion.choices?.[0]?.message?.parsed?.product_list;
+
+    if (!gptResponse) {
+      console.error('Error: GPT response is null or malformed.');
+      return []; // Return empty array to prevent crashes
+    }
+
+    // Convert response to expected ProductData format
+    return gptResponse.map((product: z.infer<typeof ProductInfo>) => ({
+      name: product.name,
+      image: product.image, // Ensure it is the correct image URL
+      feedback: product.feedback,
+    }));
   }
 }
