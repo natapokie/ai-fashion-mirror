@@ -9,15 +9,17 @@ interface PineconeResponse {
   }>;
 }
 
-export const queryPinecone = async (query: string, topK?: number): Promise<PineconeResponse> => {
+export const queryPinecone = async (query: number[], topK?: number): Promise<PineconeResponse> => {
   try {
     const response = await axios.post(`${process.env.SERVER_BASE_URL}/pinecone/query`, {
       query,
       topK,
     });
 
-    if (response.status !== 200 || !response.data.success) {
-      throw new Error('Failed to query Pinecone');
+    if (response.status !== 200) {
+      throw new Error('status code not 200');
+    } else if (!response.data.matches) {
+      throw new Error('response returns no matches');
     }
 
     return response.data;
