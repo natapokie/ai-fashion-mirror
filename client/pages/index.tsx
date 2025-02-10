@@ -14,6 +14,9 @@ import { sendRAGToGpt } from '@/services/gptService';
 
 import { mockQueriedProducts } from '@/utils/mockData';
 
+import { gptEmbeddings } from '@/services/gptService';
+import { queryPinecone } from '@/services/pineconeService';
+
 const closeIcon = '/icons/xmark-solid.svg';
 
 // define states
@@ -60,10 +63,15 @@ const Home = () => {
         // const content = await sendImageToGpt(formData);
 
         // step 2: query data form pinecone
-
-        // step 3: call sendRAGToGPT
         const userFeatures =
           'Tall person with warm skin tone, prefers a long fit, likes all colors'; // temporary harcoded user feature string
+        const gptResEmbeddings = await gptEmbeddings(userFeatures);
+        console.log('GPT Embeddings: ', gptResEmbeddings);
+        const queryResults = await queryPinecone(gptResEmbeddings);
+        console.log('Pinecone Query Results: ', queryResults);
+
+        // step 3: call sendRAGToGPT
+
         const ragResponse = await sendRAGToGpt(userFeatures, mockQueriedProducts);
         console.log('RAG GPT Response: ', ragResponse);
 
