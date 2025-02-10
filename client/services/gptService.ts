@@ -1,6 +1,23 @@
 import axios from 'axios';
 import { ProductData, QueriedProduct } from '../../shared/types';
 
+export const gptEmbeddings = async (text: string): Promise<number[]> => {
+  try {
+    const response = await axios.post(`${process.env.SERVER_BASE_URL}/gpt/embeddings`, {
+      text,
+    });
+
+    if (response.status !== 200) {
+      throw new Error('Failed to get embeddings');
+    }
+
+    return response.data.embeddings;
+  } catch (error) {
+    console.error('Error getting embeddings:', error);
+    throw error;
+  }
+};
+
 export const sendImageToGpt = async (formData: FormData): Promise<ProductData[]> => {
   try {
     const response = await axios.post(`${process.env.SERVER_BASE_URL}/api/request`, formData, {

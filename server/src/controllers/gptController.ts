@@ -41,13 +41,34 @@ export const GptController = {
 
       res.status(200).json({ success: true, data: recommendations });
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          success: false,
-          message: 'Failed to process request',
-          error: err instanceof Error ? err.message : 'Unknown error',
-        });
+      res.status(500).json({
+        success: false,
+        message: 'Failed to process request',
+        error: err instanceof Error ? err.message : 'Unknown error',
+      });
+    }
+  },
+  async gptEmbeddings(req: Request, res: Response) {
+    try {
+      const { text } = req.body;
+      if (!text) {
+        return res.status(400).json({ success: false, message: 'No text provided' });
+      }
+
+      const gptService = new GptService();
+      const embeddings = await gptService.createEmbeddings(text);
+
+      res.status(200).json({ success: true, embeddings });
+    } catch (err) {
+      if (err instanceof Error) {
+        res
+          .status(500)
+          .json({ success: false, message: 'Failed to get embeddings', error: err.message });
+      } else {
+        res
+          .status(500)
+          .json({ success: false, message: 'Failed to get embeddings', error: 'Unknown error' });
+      }
     }
   },
 };

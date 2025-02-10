@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.post('/ask', upload.single('image'), GptController.ask);
 router.post('/request-rag', GptController.requestRAG);
+router.post('/embeddings', GptController.gptEmbeddings);
 
 export default router;
