@@ -1,6 +1,7 @@
 name: scraper  # name of environemnt
 channels:
   - defaults
+  - conda-forge
 dependencies:
   - python=3.12
   - pandas
@@ -8,3 +9,4 @@ dependencies:
   - black
   - flake8
   - python-dotenv
+  - flake8-bugbear

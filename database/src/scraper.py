@@ -165,7 +165,10 @@ class Scraper:
         logging.error("Max retries exceeded. Unable to complete the request.")
         return None
 
-    def save_df(self, df, output_file=os.path.join(os.getcwd(), "data", "output.csv")):
+    def save_df(self, df, output_file=None):
+        if output_file is None:
+            output_file = os.path.join(os.getcwd(), "data", "output.csv")
+
         df.to_csv(output_file, index=False)
         print(f"DataFrame saved to {output_file}")
 
