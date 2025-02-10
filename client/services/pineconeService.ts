@@ -5,7 +5,7 @@ interface PineconeResponse {
   matches?: Array<{
     id: string;
     score: number;
-    metadata?: Record<string>;
+    metadata?: Record<string, unknown>;
   }>;
 }
 
