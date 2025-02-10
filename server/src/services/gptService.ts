@@ -119,6 +119,21 @@ export class GptService {
     return str;
   }
 
+  public async createEmbeddings(text: string): Promise<number[]> {
+    try {
+      const openai = new OpenAI();
+      const embedding = await openai.embeddings.create({
+        model: 'text-embedding-ada-002',
+        input: String(text),
+        encoding_format: 'float',
+      });
+      return embedding.data[0].embedding;
+    } catch (error) {
+      console.error('Error creating embeddings:', error);
+      throw error;
+    }
+  }
+
   public async sendToGpt(base64Img: string): Promise<GptResponse> {
     const openai = new OpenAI();
     const base64Image = base64Img;
@@ -144,12 +159,12 @@ export class GptService {
     // feb 2: attempt to embed the features from the response
     const features = full_response.choices[0].message.content;
     console.log('Features:', features);
-    const embedding = await openai.embeddings.create({
-      model: 'text-embedding-ada-002',
-      input: String(features),
-      encoding_format: 'float',
-    });
-    console.log('Embeddings:', embedding.data[0].embedding);
+    // const embedding = await openai.embeddings.create({
+    //   model: 'text-embedding-ada-002',
+    //   input: String(features),
+    //   encoding_format: 'float',
+    // });
+    // console.log('Embeddings:', embedding.data[0].embedding);
     // --------------------------------------
 
     // DEBUG: save the response for debug purposes
