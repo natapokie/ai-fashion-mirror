@@ -87,14 +87,14 @@ import { zodResponseFormat } from 'openai/helpers/zod';
 
 import OpenAI from 'openai';
 import { GptResponse, ProductData, QueriedProduct } from '../../../shared/types';
-import { featureExtractionContext } from '../utils/gptServiceHelper';
+import { featureExtractionContext } from '../utils/gptPrompts';
 import dotenv from 'dotenv';
 dotenv.config();
 
 import fs from 'fs';
 import path from 'path';
 
-import { generateRAGPrompt } from '../utils/gptServiceHelper';
+import { generateRAGPrompt } from '../utils/gptPrompts';
 
 const ProductInfo = z.object({
   image: z.string(),
