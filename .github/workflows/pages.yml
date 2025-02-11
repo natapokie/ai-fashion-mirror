@@ -74,8 +74,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # folder that contains files you want to publish
-          publish_dir: docs/_site
+        uses: actions/deploy-pages@v4
