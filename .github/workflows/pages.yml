@@ -7,6 +7,12 @@
 name: Deploy Jekyll site to Pages
 
 on:
+  pull_request:
+    branches:
+      - main
+    path:
+      - docs/**
+      - .github/workflows/pages.yml
   push:
     branches:
       - main
