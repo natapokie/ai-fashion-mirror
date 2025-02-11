@@ -22,8 +22,6 @@ const FullRecommendation = z.object({
 });
 
 export class GptService {
-  // private openai = new OpenAI();
-
   // step 1: call gpt to extract user features from image
   async gptExtractFeatures(base64Img: string): Promise<GptResponse> {
     const openai = new OpenAI();

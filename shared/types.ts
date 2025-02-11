@@ -53,7 +53,6 @@ export interface ProductMetadata {
 
 export interface QueriedProduct {
   id: string;
-  name: string;
   metadata?: ProductMetadata;
 }
 

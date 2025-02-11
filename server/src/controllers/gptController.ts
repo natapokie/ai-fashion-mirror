@@ -34,7 +34,6 @@ export const GptController = {
         const metadata: ProductMetadata = match.metadata || {};
         return {
           id: match.id,
-          name: String(metadata.fsProductName || 'Unknown Product'),
           metadata: metadata,
         };
       });
