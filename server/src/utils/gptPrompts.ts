@@ -1,32 +1,55 @@
 import { QueriedProduct } from '../../../shared/types';
 
 export const generateRAGPrompt = (userFeatures: string, products: QueriedProduct[]) => {
-  return `The customer uploaded a photo that shows ${userFeatures}. Based on this, provide recommendations for **each product** from the given list. Each product must have a feedback explanation. Use the following details:
+  return `The customer uploaded a photo showing **${userFeatures}**. Based on this, provide feedback and recommendations for **each product** listed below.
 
-Products:
+Each product must include:
+1. **Name** (from metadata field fsProductName)
+2. **Image URL** (from metadata field modelImageUrl)
+3. **Feedback** (why this product is a good fit or not)
+
+---
+### **Customer Features:**
+${userFeatures}
+
+---
+### **Products to Evaluate:**
 ${products
   .map(
     (product, index) =>
-      `${index + 1}. ${product.id} - ${product.metadata.color}, ${product.metadata.fit}, ${product.metadata.length} (Image: ${product.metadata.modelImageUrl})`,
+      `${index + 1}. **${product.metadata?.fsProductName ?? 'Unknown Product'}**
+      - **Color:** ${product.metadata?.colorName ?? 'Unknown'}
+      - **Fit & Length:** ${product.metadata?.lengthDescription ?? 'Unknown'}
+      - **Gender:** ${product.metadata?.gender ?? 'Unspecified'}
+      - **Fabric Technology:** ${product.metadata?.fabricTechnology ?? 'N/A'}
+      - **Tags:** ${product.metadata?.embeddingTags ?? 'No tags available'}
+      - **Description:** "${product.metadata?.fsProductDescriptionShort ?? 'No description available'}"
+      - **Image:** ${product.metadata?.modelImageUrl ?? 'No image available'}`,
   )
   .join('\n')}
 
-Return the recommendations in **JSON format**, ensuring that each product from the list above is included, even if the recommendation is neutral.
-
+---
+### **Expected JSON Response**
 [
   {
     "name": "Product A",
     "image": "https://example.com/image.jpg",
-    "feedback": "This product is a great choice because..."
+    "feedback": "This product complements the user's body type and color preferences..."
   },
   {
     "name": "Product B",
     "image": "https://example.com/image.jpg",
-    "feedback": "This product may not be the best fit, but it still has advantages such as..."
+    "feedback": "Although this product is not a perfect match, it has advantages such as..."
   }
-];
+]
 
-Make sure each product in the list above appears in the response. If a product is not ideal for the user, still provide a brief reason why.`;
+---
+### **Instructions for GPT**
+1. **Each product must have feedback.** Do not skip any.
+2. **If a product does not strongly match, provide a neutral or alternative suggestion.**
+3. **Ensure the response is in valid JSON format.**
+4. **Do not add explanations outside the JSON.**
+`;
 };
 
 export const featureExtractionContext = `You are a fashion expert. Your task is to extract and/or create clothing recommendations.

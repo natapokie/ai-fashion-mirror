@@ -40,14 +40,20 @@ export interface PhotoData {
 }
 
 export interface ProductMetadata {
+  colorName?: string;
+  embeddingTags?: string;
+  fabricTechnology?: string;
+  fsProductDescriptionShort?: string;
+  fsProductName?: string;
+  gender?: string;
+  lengthDescription?: string;
   modelImageUrl?: string;
-  color?: string;
-  fit?: string;
-  length?: string;
+  otherProductImageUrl?: string;
 }
 
 export interface QueriedProduct {
   id: string;
+  name: string;
   metadata?: ProductMetadata;
 }
 

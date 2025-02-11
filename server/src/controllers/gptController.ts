@@ -30,10 +30,14 @@ export const GptController = {
       console.log('Pinecone Query Results:', queryResults);
 
       // step 4: extract metadata from pinecone results
-      const queriedProducts = queryResults.matches.map((match) => ({
-        id: match.id,
-        metadata: match.metadata || ({} as ProductMetadata), // contains the product image, color, etc
-      }));
+      const queriedProducts = queryResults.matches.map((match) => {
+        const metadata: ProductMetadata = match.metadata || {};
+        return {
+          id: match.id,
+          name: String(metadata.fsProductName || 'Unknown Product'),
+          metadata: metadata,
+        };
+      });
       console.log('Queried Products:', queriedProducts);
 
       // step 5: call gpt with rag for recommendation reasonings (feedback)
