@@ -28,10 +28,10 @@ permissions:
   pages: write
   id-token: write
 
-# Allow one concurrent deployment
+# Prevent auto-cancellation of concurrent runs
 concurrency:
   group: 'pages'
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   # Build job
