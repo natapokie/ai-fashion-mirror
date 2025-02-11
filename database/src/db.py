@@ -1,23 +1,100 @@
 import os
-from dotenv import load_dotenv
+import json
+import openai
 from pinecone import Pinecone
-
-# load .env file
-current_dir = os.path.dirname(os.path.abspath(__file__))
-env_path = os.path.join(current_dir, "..", "..", ".env")
-load_dotenv(env_path)
-
-# create pinecone obj
-pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-pc_index = pc.Index(host=os.getenv("PINECONE_INDEX_HOST"))
+from dotenv import load_dotenv
 
 
 class DatabaseHelper:
+    def __init__(self):
+        # load .env file
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        env_path = os.path.join(current_dir, "..", "..", ".env")
+        load_dotenv(env_path)
 
-    @staticmethod
-    def check_index():
-        # return the stats of the index
-        # you can use as a sanity check to make sure you're connected
-        return pc_index.describe_index_stats()
+        # Configure APIs
+        pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+        openai.api_key = os.getenv("OPENAI_API_KEY")
 
-    # TODO: add other static methods needed to upsert, fetch indexes, etc.
+        # Setup index
+        index_name = os.getenv("PINECONE_INDEX_NAME")
+        if not pc.has_index(index_name):
+            print("Index not found")
+        self.index = pc.Index(os.getenv("PINECONE_INDEX_NAME"))
+        self.describe_index()
+
+        # Initialize items
+        with open("data/cleaned_output.json", "r", encoding="utf-8") as file:
+            self.data = json.load(file)
+        self.batch_size = 100
+
+    def describe_index(self):
+        return self.index.describe_index_stats()
+
+    # Embed data
+    def embed(self, docs: list[str]) -> list[list[float]]:
+        res = openai.embeddings.create(input=docs, model="text-embedding-ada-002")
+        doc_embeds = [r.embedding for r in res.data]
+        return doc_embeds
+
+    # Upsert handler
+    def upsert_handler(self):
+        data = self.data
+        # Split data into batches
+        for i in range(0, len(data), self.batch_size):
+            batch = data[i : i + self.batch_size]
+            self.upsert_index(batch)
+            print(
+                f"Upserted batch {i//self.batch_size + 1}/{-(-len(data)//self.batch_size)} ({len(batch)} items)"
+            )
+        print(f"Upserted total of {len(data)} items")
+
+    # Upsert data to the index
+    def upsert_index(self, data: list[dict]):
+        doc_embeds = self.embed([d.get("embeddingTags", "") for d in self.data])
+
+        vectors = []
+        for d, e in zip(data, doc_embeds):
+            vectors.append(
+                {
+                    "id": str(d["id"]),
+                    "values": e,  # Embedding vector
+                    "metadata": {
+                        "embeddingTags": str(
+                            d.get("embeddingTags", "")
+                        ),  # Store embeddingTags
+                        "colorName": str(d.get("colorName", "")),
+                        "fabricTechnology": str(d.get("fabricTechnology", "")),
+                        "fsProductDescriptionShort": str(
+                            d.get("fsProductDescriptionShort", "")
+                        ),
+                        "fsProductName": str(d.get("fsProductName", "")),
+                        "gender": str(d.get("gender", "")),
+                        "lengthDescription": str(d.get("lengthDescription", "")),
+                        "modelImageUrl": str(d.get("modelImageUrl", "")),
+                        "otherProductImageUrl": str(d.get("otherProductImageUrl", "")),
+                    },
+                }
+            )
+
+        self.index.upsert(vectors=vectors, namespace="ns1")
+
+    # Query the index
+    def query_index(self, query: str):
+        x = self.embed([query])
+
+        results = self.index.query(
+            namespace="ns1",
+            vector=x[0],
+            top_k=3,
+            include_values=False,
+            include_metadata=True,
+        )
+        return results
+
+    # Debugging purposes only
+    def test(self):
+        db = DatabaseHelper()
+        print(db.describe_index())
+        db.upsert_handler()
+        print(db.query_index("Wyndham Parka"))

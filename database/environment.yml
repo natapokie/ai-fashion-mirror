@@ -1,4 +1,4 @@
-name: scraper  # name of environemnt
+name: scraper
 channels:
   - defaults
   - conda-forge

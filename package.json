@@ -14,8 +14,7 @@
     "*.{js,jsx,ts,tsx}": "eslint --fix --max-warnings=0",
     "*.{js,jsx,ts,tsx,css,scss,html,json}": "prettier --write",
     "*.py": [
-      "black",
-      "flake8"
+      "black"
     ]
   },
   "keywords": [],
