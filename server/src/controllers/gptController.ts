@@ -1,74 +1,54 @@
 import { Request, Response } from 'express';
 import { GptService } from '../services/gptService';
+import { PineconeService } from '../services/pineconeService';
+import { ProductMetadata } from '../../../shared/types';
 
 export const GptController = {
-  async ask(req: Request, res: Response) {
+  async processRequest(req: Request, res: Response) {
     try {
       if (!req.file) {
-        return res.status(400).json({ success: false, message: 'no file available' });
+        return res.status(400).json({ success: false, message: 'No image file provided' });
       }
 
       const gptService = new GptService();
-      const data = await gptService.sendToGpt(req.file.buffer.toString('base64'));
-      // nov 6 NOTE:
-      // in order to obtain buffer, multer.ts must be changed to use memory storage instead of disk storage
-      // this might not be ideal since we are saving images to server
-      // need workaround
-      // claude has some solutions for me to try, check multer.ts
 
-      res.status(200).json({ success: true, message: 'Reached the backend successfully', data });
+      // step 1: extract user features from image
+      console.log('Extrarcting user features from image...');
+      const userFeatures = await gptService.gptExtractFeatures(req.file.buffer.toString('base64'));
+      console.log('Extracted user features:', userFeatures);
+
+      const userFeaturesStr = JSON.stringify(userFeatures);
+
+      // step 2: generate embeddings for extracted user features
+      console.log('Generating embeddings for user features...');
+      const featureEmbeddings = await gptService.createEmbeddings(userFeaturesStr);
+      console.log('Feature Embeddings:', featureEmbeddings);
+
+      // step 3: query pinecone for the top relevant (recommended) products
+      console.log('Querying Pinecone database...');
+      const queryResults = await PineconeService.executeQuery(featureEmbeddings, 10);
+      console.log('Pinecone Query Results:', queryResults);
+
+      // step 4: extract metadata from pinecone results
+      const queriedProducts = queryResults.matches.map((match) => ({
+        id: match.id,
+        metadata: match.metadata || ({} as ProductMetadata), // contains the product image, color, etc
+      }));
+      console.log('Queried Products:', queriedProducts);
+
+      // step 5: call gpt with rag for recommendation reasonings (feedback)
+      console.log('Calling GPT with RAG for feedback...');
+      const recommendations = await gptService.gptRAGFeedback(userFeaturesStr, queriedProducts);
+      console.log('Recommendations with feedback:', recommendations);
+
+      res.status(200).json({ success: true, recommendations });
     } catch (err) {
-      if (err instanceof Error) {
-        res.status(500).json({ success: false, message: 'Failed to ask gpt', error: err.message });
-      } else {
-        res
-          .status(500)
-          .json({ success: false, message: 'Failed to ask gpt', error: 'Unknown error' });
-      }
-    }
-  },
-  async requestRAG(req: Request, res: Response) {
-    // new RAG route handler
-    try {
-      const { userFeatures, queriedProducts } = req.body;
-
-      if (!userFeatures || !queriedProducts) {
-        return res.status(400).json({ success: false, message: 'Missing parameters' });
-      }
-
-      const gptService = new GptService();
-      const recommendations = await gptService.sendToGptWithRAG(userFeatures, queriedProducts);
-
-      res.status(200).json({ success: true, data: recommendations });
-    } catch (err) {
+      console.error('Error in processRequest:', err);
       res.status(500).json({
         success: false,
         message: 'Failed to process request',
         error: err instanceof Error ? err.message : 'Unknown error',
       });
-    }
-  },
-  async gptEmbeddings(req: Request, res: Response) {
-    try {
-      const { text } = req.body;
-      if (!text) {
-        return res.status(400).json({ success: false, message: 'No text provided' });
-      }
-
-      const gptService = new GptService();
-      const embeddings = await gptService.createEmbeddings(text);
-
-      res.status(200).json({ success: true, embeddings });
-    } catch (err) {
-      if (err instanceof Error) {
-        res
-          .status(500)
-          .json({ success: false, message: 'Failed to get embeddings', error: err.message });
-      } else {
-        res
-          .status(500)
-          .json({ success: false, message: 'Failed to get embeddings', error: 'Unknown error' });
-      }
     }
   },
 };

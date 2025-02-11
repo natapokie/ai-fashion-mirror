@@ -40,15 +40,15 @@ export interface PhotoData {
 }
 
 export interface ProductMetadata {
-  modelImageUrl: string;
-  color: string;
-  fit: string;
-  length: string;
+  modelImageUrl?: string;
+  color?: string;
+  fit?: string;
+  length?: string;
 }
 
 export interface QueriedProduct {
   id: string;
-  metadata: ProductMetadata;
+  metadata?: ProductMetadata;
 }
 
 export interface ProductData {
