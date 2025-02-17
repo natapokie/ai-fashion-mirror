@@ -6,6 +6,23 @@ const router = express.Router();
 
 // NOTE: these pinecone routes probably won't be used in the actual app, only for initial testing
 
+/**
+ * @swagger
+ * /pinecone:
+ *   get:
+ *     tags:
+ *       - pinecone
+ *     summary: Hits pinecone endpoint, used for testing
+ *     responses:
+ *       "200":
+ *         description: Successfully hit Pinecone endpoint
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
+ *       "500":
+ *         $ref: '#/components/responses/ServerError'
+ */
 router.get('', async (req, res) => {
   try {
     res.json({ message: 'Successfully hit pinecone endpoint!' });
@@ -14,9 +31,31 @@ router.get('', async (req, res) => {
   }
 });
 
-// get records by ids
-// Sample request body
-// { "ids": ["vec1"] }
+/**
+ * @swagger
+ * /pinecone/records:
+ *   post:
+ *     tags:
+ *       - pinecone
+ *     summary: Returns Pinecone records by IDs
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PineconeRecordsRequestBody'
+ *     responses:
+ *       "200":
+ *         description: Successfully retrieved Pinecone records
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       "400":
+ *         $ref: '#/components/responses/BadRequest'
+ *       "500":
+ *         $ref: '#/components/responses/ServerError'
+ */
 router.post('/records', async (req, res) => {
   try {
     if (!req.body || !req.body?.ids) {
@@ -38,6 +77,23 @@ router.post('/records', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /pinecone/stats:
+ *   get:
+ *     tags:
+ *       - pinecone
+ *     summary: Retrieves Pinecone index statistics
+ *     responses:
+ *       "200":
+ *         description: Successfully retrieved Pinecone index statistics
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       "500":
+ *         $ref: '#/components/responses/ServerError'
+ */
 router.get('/stats', async (req, res) => {
   try {
     const result = await PineconeService.checkIndex();
@@ -53,7 +109,31 @@ router.get('/stats', async (req, res) => {
   }
 });
 
-// takes in embeddings, not text strings
+/**
+ * @swagger
+ * /pinecone/query:
+ *   post:
+ *     tags:
+ *       - pinecone
+ *     summary: Executes a query against the Pinecone index
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PineconeQueryRequestBody'
+ *     responses:
+ *       "200":
+ *         description: Successfully executed query
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       "400":
+ *         $ref: '#/components/responses/BadRequest'
+ *       "500":
+ *         $ref: '#/components/responses/ServerError'
+ */
 router.post('/query', async (req, res) => {
   try {
     if (!req.body || !req.body?.query) {
@@ -88,6 +168,31 @@ router.post('/query', async (req, res) => {
 });
 
 // update/inserts record
+/**
+ * @swagger
+ * /pinecone/upsert:
+ *   post:
+ *     tags:
+ *       - pinecone
+ *     summary: Upserts records into the Pinecone index
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PineconeUpsertRequestBody'
+ *     responses:
+ *       "200":
+ *         description: Successfully upserted records
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
+ *       "400":
+ *         $ref: '#/components/responses/BadRequest'
+ *       "500":
+ *         $ref: '#/components/responses/ServerError'
+ */
 router.post('/upsert', async (req, res) => {
   try {
     if (!req.body || !req.body.records) {
