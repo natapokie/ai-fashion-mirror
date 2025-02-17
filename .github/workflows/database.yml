@@ -1,0 +1,36 @@
+name: Database
+on: 
+  push:
+    # trigger on pull requests
+    pull_request:
+      branches: 
+        - main
+      path:
+        - .github/workflows/database.yml
+        - database/**
+    # only trigger build for specific paths
+    paths:
+      - .github/workflows/database.yml
+      - database/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Conda Environment
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: 'latest'
+          channels: conda-forge
+          mamba-version: "*"
+          channel-priority: true
+          auto-update-conda: false
+          auto-activate-base: false
+          activate-environment: scraper
+          environment-file: database/environment.yml
+
+      - name: Run Tests
+        run: python -m pytest
