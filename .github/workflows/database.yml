@@ -32,5 +32,16 @@ jobs:
           activate-environment: scraper
           environment-file: database/environment.yml
 
-      - name: Run Tests
-        run: python -m pytest
+      - name: Activate Conda Environment
+        shell: bash -l {0} 
+        run: |
+          conda info --envs
+          conda activate scraper
+          conda list
+        
+      - name: Run Scraper
+        shell: bash -l {0}
+        run: |
+          python -m pytest
+
+
