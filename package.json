@@ -9,6 +9,8 @@
     "lint": "eslint . --fix --max-warnings=0",
     "format": "prettier . --write",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "test:client": "cd client && npm run test",
+    "test:server": "cd server && npm run test",
     "test:database": "cd database && docker compose up -d && pytest"
   },
   "lint-staged": {
