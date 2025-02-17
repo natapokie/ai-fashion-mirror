@@ -157,3 +157,18 @@ python main.py --query
 - If `data/output.csv` does not exist, the script will automatically trigger scraping.
 - If `data/cleaned_output.json` does not exist, the script will automatically trigger data sanitization.
 - Ensure all dependencies required for the scraper, sanitizer, and database helper modules are installed within the Conda environment.
+
+# Unit Tests
+
+## Running Unit Tests
+
+To run unit tests.
+
+```bash
+python -m unittest -v
+# use the -v (verbose) flag to run with more detail
+```
+
+## Creating Unit Tests
+
+All unit test python files must start with `test` and be placed in the tests folder
