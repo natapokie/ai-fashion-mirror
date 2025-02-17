@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from database.src.sanitizer import Sanitizer
+from src.sanitizer import Sanitizer
 
 sanitizer = Sanitizer()
 

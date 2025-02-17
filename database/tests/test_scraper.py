@@ -1,6 +1,6 @@
 import pytest
 import json
-from database.src.scraper import Scraper
+from src.scraper import Scraper
 
 
 @pytest.fixture
