@@ -40,9 +40,11 @@ class DatabaseHelper:
         # Initialize items
         # with open(self.config["data_path"], "r", encoding="utf-8") as file:
         #     self.data = json.load(file)
-        # self.batch_size = self.config["batch_size"]
+        self.batch_size = self.config["batch_size"]
 
     def describe_index(self):
+        if self.index is None:
+            self.init_index()
         return self.index.describe_index_stats()
 
     # Embed data
@@ -53,15 +55,29 @@ class DatabaseHelper:
 
     # Upsert handler
     def upsert_handler(self):
-        data = self.data
+        """
+        Handles adding data to the database.
+        Steps:
+        1. Load JSON data from the configured path.
+        2. Set up the index.
+        3. Split data into smaller chunks.
+        4. Prepare each chunk for adding to the database.
+        5. Print progress updates.
+        """
+        # load json data
+        self.data = self.load_json_data(self.config["data_path"])
+
+        # Initialize index
+        self.init_index()
+
         # Split data into batches
-        for i in range(0, len(data), self.batch_size):
-            batch = data[i : i + self.batch_size]
+        for i in range(0, len(self.data), self.batch_size):
+            batch = self.data[i : i + self.batch_size]
             self.prepare_batch(batch)
             print(
-                f"Upserted batch {i//self.batch_size + 1}/{-(-len(data)//self.batch_size)} ({len(batch)} items)"
+                f"Upserted batch {i//self.batch_size + 1}/{-(-len(self.data)//self.batch_size)} ({len(batch)} items)"
             )
-        print(f"Upserted total of {len(data)} items")
+        print(f"Upserted total of {len(self.data)} items")
 
     # Upsert data to the index
     def upsert_index(self, vectors: list[dict], namespace: str = "ns1"):
@@ -97,6 +113,9 @@ class DatabaseHelper:
     # Query the index
     def query_index(self, query: str, namespace: str = "ns1"):
         x = self.embed([query])
+
+        if self.index is None:
+            self.init_index()
 
         results = self.index.query(
             namespace=namespace,
