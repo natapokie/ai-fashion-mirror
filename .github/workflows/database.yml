@@ -40,8 +40,10 @@ jobs:
           conda list
         
       - name: Run Scraper
+        working-directory: ./database
         shell: bash -l {0}
         run: |
+          conda activate scraper
           python -m pytest
 
 
