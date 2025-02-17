@@ -162,13 +162,12 @@ python main.py --query
 
 ## Running Unit Tests
 
-To run unit tests.
+Unit tests are run using [pytest](https://docs.pytest.org/en/stable/).
 
 ```bash
-python -m unittest -v
-# use the -v (verbose) flag to run with more detail
+python -m pytest
 ```
 
 ## Creating Unit Tests
 
-All unit test python files must start with `test` and be placed in the tests folder
+All unit test python files must start with `test` and be placed in the tests folder.
