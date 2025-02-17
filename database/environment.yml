@@ -11,3 +11,8 @@ dependencies:
   - python-dotenv
   - flake8-bugbear
   - pytest
+  - openai
+  - pip
+  - pip:
+    - pinecone-client
+    - pinecone-client[grpc]
