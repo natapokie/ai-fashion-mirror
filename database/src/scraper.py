@@ -14,9 +14,9 @@ class Scraper:
         self.cookie = cookie
         self.base_url = "https://www.canadagoose.com"
         self.image_url = "https://images.canadagoose.com/image/upload"
-        self.access_token = ""
 
-        self.expires_in = 1800
+        self.access_token = None
+        self.expires_in = None
 
     def run(self):
         self.refresh_tokens()
