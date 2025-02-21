@@ -9,6 +9,7 @@ from db import DatabaseHelper
 def main():
     parser = argparse.ArgumentParser(description="Scrape Canada Goose data")
     parser.add_argument("--scrape", action="store_true", help="Run scraper")
+    parser.add_argument("--sanitize", action="store_true", help="Run sanitizer")  # Add this line
     parser.add_argument(
         "--limit",
         type=int,
@@ -30,7 +31,7 @@ def main():
         scraper.run()
 
     # sanitize data if "--sanitize" flag is passed or if the cleaned output file does not exist
-    if "--sanitize" in sys.argv or not os.path.exists("data/cleaned_output.json"):
+    if args.sanitize or not os.path.exists("data/cleaned_output.json"):  # Change this line
         print("Sanitizing data")
         sanitizer = Sanitizer()
         sanitizer.run()
