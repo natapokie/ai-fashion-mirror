@@ -1,15 +1,32 @@
 import sys
 import os
+import argparse
 from scraper import Scraper
 from sanitizer import Sanitizer
 from db import DatabaseHelper
 
 
 def main():
-    # scrape data if "--s" flag is passed or if the output file does not exist
-    if "--scrape" in sys.argv or not os.path.exists("data/output.csv"):
+    parser = argparse.ArgumentParser(description="Scrape Canada Goose data")
+    parser.add_argument("--scrape", action="store_true", help="Run scraper")
+    parser.add_argument(
+        "--limit",
+        type=int,
+        nargs="?",
+        const=0,
+        default=0,
+        help="Limit number of products",
+    )
+    parser.add_argument(
+        "--remove-category", nargs="+", default=[], help="Categories to exclude"
+    )
+    args = parser.parse_args()
+
+    # scrape data if "--scrape" flag is passed or if the output file does not exist
+    if args.scrape or not os.path.exists("data/output.csv"):
         print("Scraping data")
-        scraper = Scraper()
+        print(f"Removing categories: {args.remove_category}")  # Add this
+        scraper = Scraper(limit=args.limit, remove_categories=set(args.remove_category))
         scraper.run()
 
     # sanitize data if "--sanitize" flag is passed or if the cleaned output file does not exist

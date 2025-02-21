@@ -10,22 +10,22 @@ cookie = "TLvpzrbXSJUc-4pyLmy6QjjLD_-d7Pgzplsu8lfOpNA"
 
 
 class Scraper:
-    def __init__(self):
+    def __init__(self, limit=0, remove_categories=None):
         self.base_url = "https://www.canadagoose.com"
         self.image_url = "https://images.canadagoose.com/image/upload"
         self.access_token = ""
-
         self.expires_in = 1800
+        self.limit = limit  # Limit number of products
+        self.remove_categories = remove_categories if remove_categories else []
 
     def run(self):
         self.refresh_tokens()
         df = self.call_api()
-
         self.save_df(df)
 
     def call_api(self):
         """Fetch products from the API and handle paging."""
-        limit = 20
+        limit = 20  # Default batch size
         offset = 1
         total_products = float("inf")
 
@@ -48,6 +48,13 @@ class Scraper:
         }
 
         cgids = ["shop-mens", "shop-womens", "shop-kids", "shop-shoes"]
+
+        # Remove excluded categories
+        cgids = [
+            c
+            for c in cgids
+            if c.lower() not in {cat.lower() for cat in self.remove_categories}
+        ]
 
         # Store all products
         all_products = []
@@ -86,6 +93,15 @@ class Scraper:
 
                     # Extract and store product data
                     for hit in data.get("hits", []):
+                        # Stop scraping if limit is reached
+                        if self.limit and len(all_products) >= self.limit:
+                            print(
+                                f"Global scraping limit of {self.limit} reached. Stopping all scraping."
+                            )
+                            return pd.json_normalize(
+                                all_products, sep="_"
+                            )  # Stop early
+
                         product = hit.get("representedProduct", {})
 
                         model_image, other_images = self.parse_image_cache(
@@ -93,8 +109,6 @@ class Scraper:
                         )
                         product["modelImageUrl"] = model_image
                         product["otherProductImageUrl"] = other_images
-
-                        # TODO: add any extra parsing here
 
                         all_products.append(product)
 
