@@ -6,16 +6,17 @@ import time
 import json
 
 # cookie (cc-nx-g_CanadaGooseCA) expires jan 19
-cookie = "TLvpzrbXSJUc-4pyLmy6QjjLD_-d7Pgzplsu8lfOpNA"
+# "TLvpzrbXSJUc-4pyLmy6QjjLD_-d7Pgzplsu8lfOpNA"
 
 
 class Scraper:
-    def __init__(self):
+    def __init__(self, cookie="TLvpzrbXSJUc-4pyLmy6QjjLD_-d7Pgzplsu8lfOpNA"):
+        self.cookie = cookie
         self.base_url = "https://www.canadagoose.com"
         self.image_url = "https://images.canadagoose.com/image/upload"
-        self.access_token = ""
 
-        self.expires_in = 1800
+        self.access_token = None
+        self.expires_in = None
 
     def run(self):
         self.refresh_tokens()
@@ -205,7 +206,7 @@ class Scraper:
         auth_url = "/mobify/slas/private/shopper/auth/v1/organizations/f_ecom_aata_prd/oauth2/token"
         payload = {
             "grant_type": "refresh_token",
-            "refresh_token": cookie,
+            "refresh_token": self.cookie,
             "channel_id": "CanadaGooseCA",
             "dnt": "false",
         }
