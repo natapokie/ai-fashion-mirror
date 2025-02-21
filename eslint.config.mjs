@@ -5,7 +5,7 @@ import pluginReact from 'eslint-plugin-react';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default [
-  { files: ['**/*.{mjs,cjs,ts,jsx,tsx}'] },
+  { files: ['**/*.{mjs,cjs,ts,jsx,tsx,js,ts}'] },
   { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
