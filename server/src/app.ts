@@ -9,13 +9,15 @@ import pineconeRouter from './routes/pineconeRoutes';
 import { swaggerLoader } from './swagger/swagger';
 
 // define directory to save images
-const uploadDir = path.join(__dirname, '../__uploads');
+const initUploadDir = (uploadDir: string = path.join(__dirname, '../__uploads')) => {
+  // Check if the folder exists, and create it if it doesn't
+  if (!fs.existsSync(uploadDir)) {
+    console.log(`${uploadDir} does not exist! Creating folder...`);
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+};
 
-// Check if the folder exists, and create it if it doesn't
-if (!fs.existsSync(uploadDir)) {
-  console.log(`${uploadDir} does not exist! Creating folder...`);
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+initUploadDir();
 
 const app = express();
 
@@ -37,4 +39,4 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-export default app;
+export { app, initUploadDir };
