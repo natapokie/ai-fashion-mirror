@@ -33,7 +33,7 @@ def main():
     if "--query" in sys.argv:
         print("Querying index")
         db = DatabaseHelper()
-        query = "canada goose"
+        query = "red long jacket"
         print(db.query_index(query))
 
 

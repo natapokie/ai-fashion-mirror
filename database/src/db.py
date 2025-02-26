@@ -42,6 +42,21 @@ class DatabaseHelper:
         #     self.data = json.load(file)
         self.batch_size = self.config["batch_size"]
 
+    def init_index(self, index: Index = None) -> Index:
+        """
+        Initialize the index. If the index is not found, raise an error.
+        """
+        if index:
+            self.index = index
+            return index
+
+        if not self.check_has_index(self.pc, self.index_name):
+            raise ValueError(f"Index {self.index_name} not found")
+
+        find_index = self.pc.Index(self.index_name)
+        self.index = find_index
+        return find_index
+
     def describe_index(self):
         if self.index is None:
             self.init_index()
@@ -73,18 +88,16 @@ class DatabaseHelper:
         # Split data into batches
         for i in range(0, len(self.data), self.batch_size):
             batch = self.data[i : i + self.batch_size]
-            self.prepare_batch(batch)
+            vector = self.batch_to_vectors(batch)
+            self.upsert_to_index(vector)
             print(
                 f"Upserted batch {i//self.batch_size + 1}/{-(-len(self.data)//self.batch_size)} ({len(batch)} items)"
             )
         print(f"Upserted total of {len(self.data)} items")
 
-    # Upsert data to the index
-    def upsert_index(self, vectors: list[dict], namespace: str = "ns1"):
-        self.index.upsert(vectors=vectors, namespace=namespace)
-
-    def prepare_batch(self, data: list[dict]):
-        doc_embeds = self.embed([d.get("embeddingTags", "") for d in self.data])
+    # converts data to vectors
+    def batch_to_vectors(self, data: list[dict]) -> list[dict]:
+        doc_embeds = self.embed([d.get("embeddingTags", "") for d in data])
 
         vectors = []
         for d, e in zip(data, doc_embeds):
@@ -110,6 +123,12 @@ class DatabaseHelper:
                 }
             )
 
+        return vectors
+
+    # Upsert vectors to the index
+    def upsert_to_index(self, vectors: list[dict], namespace: str = "ns1"):
+        self.index.upsert(vectors=vectors, namespace=namespace)
+
     # Query the index
     def query_index(self, query: str, namespace: str = "ns1"):
         x = self.embed([query])
@@ -132,21 +151,6 @@ class DatabaseHelper:
         print(db.describe_index())
         db.upsert_handler()
         print(db.query_index("Wyndham Parka"))
-
-    def init_index(self, index: Index = None) -> Index:
-        """
-        Initialize the index. If the index is not found, raise an error.
-        """
-        if index:
-            self.index = index
-            return index
-
-        if not self.check_has_index(self.pc, self.index_name):
-            raise ValueError(f"Index {self.index_name} not found")
-
-        find_index = self.pc.Index(self.index_name)
-        self.index = find_index
-        return find_index
 
     @staticmethod
     def load_json_data(path: str) -> list[dict]:
