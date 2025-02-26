@@ -75,6 +75,21 @@ class DatabaseHelper:
         self.data = None
         self.batch_size = self.config["batch_size"]
 
+    def init_index(self, index: Index = None) -> Index:
+        """
+        Initialize the index. If the index is not found, raise an error.
+        """
+        if index:
+            self.index = index
+            return index
+
+        if not self.check_has_index(self.pc, self.index_name):
+            raise ValueError(f"Index {self.index_name} not found")
+
+        find_index = self.pc.Index(self.index_name)
+        self.index = find_index
+        return find_index
+
     def load_data(self):
         """Load data from the cleaned output file"""
         try:
@@ -196,29 +211,17 @@ class DatabaseHelper:
 
         data = self.data
         # Split data into batches
-        for i in range(0, len(self.data), self.batch_size):
-            batch = self.data[i : i + self.batch_size]
-            vector = self.batch_to_vectors(batch)
-            self.upsert_to_index(vector)
+        for i in range(0, len(data), self.batch_size):
+            batch = data[i : i + self.batch_size]
+            vectors = self.batch_to_vectors(batch)
+            self.upsert_to_index(vectors)
             print(
                 f"Upserted batch {i//self.batch_size + 1}/{-(-len(data)//self.batch_size)} ({len(batch)} items)"
             )
         print(f"Upserted total of {len(data)} items")
 
     # converts data to vectors
-    def batch_to_vectors(self, data: list[dict]) -> list[dict]:
-        metadata_fields = [
-            "embeddingTags",
-            "colorName",
-            "fabricTechnology",
-            "fsProductDescriptionShort",
-            "fsProductName",
-            "gender",
-            "lengthDescription",
-            "modelImageUrl",
-            "otherProductImageUrl",
-        ]
-
+    def batch_to_vectors(self, data: list[dict], namespace="ns1") -> list[dict]:
         doc_embeds = self.embed([d.get("embeddingTags", "") for d in data])
 
         vectors = []
