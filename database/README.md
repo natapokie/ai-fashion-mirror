@@ -51,7 +51,6 @@ pip install pinecone
 conda deactivate
 ```
 
-
 ### Making Changes to the Conda Environment
 
 Updating the conda environment,
@@ -79,20 +78,20 @@ python main.py
 ### Running via VSCode Run Button
 
 On VSCode make sure that your Python interpreter is set to the conda environment.
+
 - Open the Command Palette (Ctrl + Shift + P or Cmd + Shift + P on Mac).
 - Search for "Python: Select Interpreter" and select it.
 - Choose the path corresponding to your Conda environment. The name will include the environment name, e.g., Python 3.12.8 ('scraper').
 
-
-
 # Scraper
+
 ## Overview
 
 This script facilitates web scraping, data sanitization, and database operations. It is designed to scrape data, clean it, and upsert it into a database. The script also allows querying and describing the database index.
 
 ## Prerequisites
 
-Ensure Conda and other dependencies are installed. 
+Ensure Conda and other dependencies are installed.
 
 ## Setup
 

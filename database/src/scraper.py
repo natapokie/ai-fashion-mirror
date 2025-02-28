@@ -73,13 +73,16 @@ class Scraper:
                 total_products = data.get("total", 0)
                 print(f"Total products: {total_products}")
 
-                # Calculate products to fetch for this category
-                products_to_fetch = min(total_products, self.limit) if self.limit > 0 else total_products
+                # Apply limit to total_products if needed
+                if self.limit > 0 and self.limit < total_products:
+                    total_products = self.limit
+                    print(f"Limiting to {total_products} products")
 
-                # Loop through all pages based on total products
-                for i in range(
-                    total_products // batch_size + (1 if total_products % batch_size else 0)
-                ):
+                # Calculate number of pages needed
+                pages_needed = total_products // batch_size + (1 if total_products % batch_size else 0)
+                
+                # Loop through all needed pages
+                for i in range(pages_needed):
                     offset = i * batch_size + 1  # Calculate the offset for each page
                     params["offset"] = offset
                     print(f"Fetching products with offset {offset}")
@@ -103,13 +106,12 @@ class Scraper:
 
                         category_products.append(product)
 
-                        # Check category limit
-                        if self.limit and len(category_products) >= self.limit:
-                            print(f"Category limit of {self.limit} reached for {cgid}")
+                        # Check if we've reached our target number of products
+                        if len(category_products) >= total_products:
                             break
 
-                    # If we've reached the limit for this category, stop fetching more pages
-                    if self.limit and len(category_products) >= self.limit:
+                    # If we've collected enough products, stop fetching more pages
+                    if len(category_products) >= total_products:
                         break
 
                 # Add this category's products to the main list
