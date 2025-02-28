@@ -26,6 +26,7 @@ export class GptService {
   async gptExtractFeatures(base64Img: string): Promise<GptResponse> {
     const openai = new OpenAI();
     const base64Image = base64Img;
+
     const completion = await openai.beta.chat.completions.parse({
       model: 'gpt-4o-2024-08-06',
       messages: [
@@ -43,6 +44,16 @@ export class GptService {
 
     const full_response = completion;
     console.log(full_response);
+
+    // validate the response format to be json
+    try {
+      JSON.parse(JSON.stringify(full_response)); // Serialize and parse to ensure valid JSON
+    } catch (error) {
+      throw new Error('Invalid response format (not valid JSON)');
+
+    }
+
+    console.log('gpt response: ', full_response);
 
     // --------------------------------------
     // feb 2: attempt to embed the features from the response
