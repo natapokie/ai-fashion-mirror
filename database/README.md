@@ -68,6 +68,44 @@ conda env export > environment.yml
 
 ## Running the Scraper
 
+### Using the Shell Script
+
+The project includes a convenient shell script that handles environment activation and provides a simplified interface for all operations.
+
+To see all available commands and options:
+
+```bash
+./run_scraper.sh --help
+```
+
+This will display detailed information about all available flags, including:
+- Scraping data
+- Sanitizing data
+- Managing Pinecone indices
+- Querying the database
+- And more
+
+Example usage:
+
+```bash
+# Create a new index
+./run_scraper.sh --create-index my-index
+
+# Scrape data with a limit
+./run_scraper.sh --scrape --limit 50
+
+# Sanitize scraped data
+./run_scraper.sh --sanitize
+
+# Upload data to the index
+./run_scraper.sh --upsert my-index
+
+# Query the index
+./run_scraper.sh --query "red jacket" my-index
+```
+
+The shell script handles Conda environment activation and deactivation automatically.
+
 ### Running via Terminal
 
 ```bash
