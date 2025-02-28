@@ -181,7 +181,11 @@ class Sanitizer:
                 for color in color_data["values"]:
                     # Filter URLs for this specific color
                     color_urls = [url for url in all_urls if f"_{color['id']}_" in url]
+                    model_urls = [
+                        url for url in all_urls if f"_{color['id']}_fsph" in url
+                    ]
                     color_urls_str = " ".join(color_urls) if color_urls else None
+                    model_urls_str = " ".join(model_urls) if model_urls else None
 
                     # Create a new product for each color
                     fields = {
@@ -197,7 +201,7 @@ class Sanitizer:
                         "fsProductName": row.get("fsProductName"),
                         "gender": row.get("gender"),
                         "lengthDescription": row.get("lengthDescription"),
-                        "modelImageUrl": row.get("modelImageUrl"),
+                        "modelImageUrl": model_urls_str,
                         "variationAttributes": row.get("variationAttributes"),
                         "otherProductImageUrl": color_urls_str,
                         "embeddingTags": row.get("embeddingTags"),
