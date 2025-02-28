@@ -1,35 +1,123 @@
 import os
 import json
 import openai
-from pinecone import Pinecone
+from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
 
 
 class DatabaseHelper:
-    def __init__(self):
+    def __init__(self, index_name=None):
         # load .env file
         current_dir = os.path.dirname(os.path.abspath(__file__))
         env_path = os.path.join(current_dir, "..", "..", ".env")
         load_dotenv(env_path)
 
         # Configure APIs
-        pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+        self.pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
         openai.api_key = os.getenv("OPENAI_API_KEY")
 
-        # Setup index
-        index_name = os.getenv("PINECONE_INDEX_NAME")
-        if not pc.has_index(index_name):
-            print("Index not found")
-        self.index = pc.Index(os.getenv("PINECONE_INDEX_NAME"))
-        self.describe_index()
+        # Setup index - use provided index name or get from env
+        self.index_name = index_name or os.getenv("PINECONE_INDEX_NAME")
+        
+        if not self.pc.has_index(self.index_name):
+            print(f"Index '{self.index_name}' not found")
+        else:
+            self.index = self.pc.Index(self.index_name)
+            self.describe_index()
 
-        # Initialize items
-        with open("data/cleaned_output.json", "r", encoding="utf-8") as file:
-            self.data = json.load(file)
+        # Initialize items (only if we need to work with data)
+        self.data = None
         self.batch_size = 100
 
+    def load_data(self):
+        """Load data from the cleaned output file"""
+        try:
+            with open("data/cleaned_output.json", "r", encoding="utf-8") as file:
+                self.data = json.load(file)
+            print(f"Loaded {len(self.data)} items from data/cleaned_output.json")
+        except FileNotFoundError:
+            print("Warning: data/cleaned_output.json not found")
+            self.data = []
+
     def describe_index(self):
-        return self.index.describe_index_stats()
+        """Get statistics about the current index"""
+        if hasattr(self, 'index'):
+            return self.index.describe_index_stats()
+        else:
+            print(f"Index '{self.index_name}' is not available")
+            return None
+
+    def create_index(self, dimension=1536):
+        """Create a new Pinecone index with the given dimension"""
+        if self.pc.has_index(self.index_name):
+            print(f"Index '{self.index_name}' already exists")
+            return False
+        
+        self.pc.create_index(
+            name=self.index_name,
+            dimension=dimension,  # Default 1536 for OpenAI Ada-002
+            metric="cosine",
+            spec=ServerlessSpec(
+                cloud="aws",
+                region="us-east-1"
+            )
+        )
+        
+        print(f"Creating index '{self.index_name}'...")
+        
+        # Wait for index to be ready
+        import time
+        max_wait_time = 60  # seconds
+        start_time = time.time()
+        
+        while time.time() - start_time < max_wait_time:
+            try:
+                if self.pc.describe_index(self.index_name).status["ready"]:
+                    break
+                print("Waiting for index to be ready...")
+                time.sleep(5)
+            except Exception:
+                # Index might not be immediately available in describe call
+                time.sleep(5)
+        
+        print(f"Index '{self.index_name}' is ready")
+        
+        # Initialize the index object
+        self.index = self.pc.Index(self.index_name)
+        return True
+
+    def delete_all_vectors(self):
+        """Delete all vectors from the index"""
+        if not hasattr(self, 'index'):
+            print(f"Index '{self.index_name}' is not available")
+            return False
+            
+        try:
+            self.index.delete(delete_all=True, namespace="ns1")
+            print(f"All vectors deleted from index '{self.index_name}', namespace 'ns1'")
+            return True
+        except Exception as e:
+            print(f"Error deleting vectors: {e}")
+            return False
+
+    def delete_index(self):
+        """Delete the entire Pinecone index"""
+        if not self.pc.has_index(self.index_name):
+            print(f"Index '{self.index_name}' does not exist")
+            return False
+            
+        try:
+            self.pc.delete_index(self.index_name)
+            print(f"Index '{self.index_name}' deleted")
+            
+            # Remove the index attribute since it no longer exists
+            if hasattr(self, 'index'):
+                delattr(self, 'index')
+                
+            return True
+        except Exception as e:
+            print(f"Error deleting index: {e}")
+            return False
 
     # Embed data
     def embed(self, docs: list[str]) -> list[list[float]]:
@@ -39,6 +127,17 @@ class DatabaseHelper:
 
     # Upsert handler
     def upsert_handler(self):
+        if self.data is None:
+            self.load_data()
+            
+        if not self.data:
+            print("No data to upsert")
+            return
+            
+        if not hasattr(self, 'index'):
+            print(f"Index '{self.index_name}' is not available")
+            return
+        
         data = self.data
         # Split data into batches
         for i in range(0, len(data), self.batch_size):
@@ -51,7 +150,7 @@ class DatabaseHelper:
 
     # Upsert data to the index
     def upsert_index(self, data: list[dict]):
-        doc_embeds = self.embed([d.get("embeddingTags", "") for d in self.data])
+        doc_embeds = self.embed([d.get("embeddingTags", "") for d in data])
 
         vectors = []
         for d, e in zip(data, doc_embeds):
@@ -81,6 +180,10 @@ class DatabaseHelper:
 
     # Query the index
     def query_index(self, query: str):
+        if not hasattr(self, 'index'):
+            print(f"Index '{self.index_name}' is not available")
+            return None
+            
         x = self.embed([query])
 
         results = self.index.query(
@@ -91,10 +194,3 @@ class DatabaseHelper:
             include_metadata=True,
         )
         return results
-
-    # Debugging purposes only
-    def test(self):
-        db = DatabaseHelper()
-        print(db.describe_index())
-        db.upsert_handler()
-        print(db.query_index("Wyndham Parka"))
