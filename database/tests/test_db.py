@@ -53,5 +53,5 @@ def test_upsert():
         {"id": "vec2", "values": [3.0, -2.0], "metadata": {"genre": "documentary"}},
         {"id": "vec3", "values": [0.5, -1.5], "metadata": {"genre": "documentary"}},
     ]
-    result = database_helper.upsert_index(vectors, namespace)
+    result = database_helper.upsert_to_index(vectors, namespace)
     assert result is None
