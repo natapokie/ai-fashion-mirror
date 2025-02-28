@@ -51,12 +51,12 @@ class DatabaseHelper:
             print(f"Index '{self.index_name}' is not available")
             return None
 
-    def create_index(self, dimension=1536):
-        """Create a new Pinecone index with the given dimension"""
+    def create_index(self, dimension=1536, max_wait_time=15):
+        """Create a new Pinecone index with the given dimension."""
         if self.pc.has_index(self.index_name):
-            print(f"Index '{self.index_name}' already exists")
+            print(f"Index '{self.index_name}' already exists.")
             return False
-        
+
         self.pc.create_index(
             name=self.index_name,
             dimension=dimension,  # Default 1536 for OpenAI Ada-002
@@ -66,28 +66,28 @@ class DatabaseHelper:
                 region="us-east-1"
             )
         )
-        
+
         print(f"Creating index '{self.index_name}'...")
-        
-        # Wait for index to be ready
-        max_wait_time = 60  # seconds
+
+        # Start time tracking for timeout
         start_time = time.time()
-        
+
         while time.time() - start_time < max_wait_time:
             try:
-                if self.pc.describe_index(self.index_name).status["ready"]:
-                    break
+                status = self.pc.describe_index(self.index_name).status
+                if status.get("ready", False):
+                    print(f"Index '{self.index_name}' is ready.")
+                    self.index = self.pc.Index(self.index_name)  # Initialize the index object
+                    return True
                 print("Waiting for index to be ready...")
-                time.sleep(5)
-            except Exception:
-                # Index might not be immediately available in describe call
-                time.sleep(5)
-        
-        print(f"Index '{self.index_name}' is ready")
-        
-        # Initialize the index object
-        self.index = self.pc.Index(self.index_name)
-        return True
+            except Exception as e:
+                print(f"Error checking index status: {e}")
+
+            time.sleep(1)
+
+        # If we exit the loop, the index is not ready within max_wait_time
+        print(f"Error: Index '{self.index_name}' was not ready after {max_wait_time} seconds. Please try again later.")
+        return False
 
     def delete_all_vectors(self):
         """Delete all vectors from the index"""
