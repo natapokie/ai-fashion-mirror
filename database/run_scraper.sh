@@ -3,8 +3,46 @@
 # Exit on error, but print the error message
 set -e
 
+# Function to display help
+display_help() {
+    echo "Usage: ./run_scraper.sh [OPTIONS]"
+    echo
+    echo "Options:"
+    echo "  --help                      Display this help message"
+    echo "  --scrape                    Run the web scraper to collect data"
+    echo "  --sanitize                  Clean and prepare scraped data"
+    echo "  --remove-category CAT1 CAT2...     Exclude specific categories during scraping"
+    echo "  --limit N                          Limit the number of products to scrape"
+    echo "  --upsert [INDEX_NAME]       Upload data to Pinecone (optional: specify index name)"
+    echo "  --delete-all-vectors [INDEX_NAME]  Delete all vectors from a specific index"
+    echo "  --delete-index [INDEX_NAME]        Delete an entire index (WARNING: This will completely remove the index)"
+    echo "  --create-index [INDEX_NAME]        Create a new Pinecone index (optional: specify index name)"
+    echo "  --describe [INDEX_NAME]            Show statistics about a specific index"
+    echo "  --query \"QUERY\" [INDEX_NAME]      Search an index with the given query"
+
+    echo
+    echo "Available categories:"
+    echo "["shop-mens", "shop-womens", "shop-kids", "shop-shoes"]"
+
+    echo
+    echo "Examples:"
+    echo "  ./run_scraper.sh --scrape --limit 10                    # Scrape 10 products from each category"
+    echo "  ./run_scraper.sh --create-index my-index                # Create a new index named 'my-index'"
+    echo "  ./run_scraper.sh --upsert my-index                      # Upload data to 'my-index'"
+    echo "  ./run_scraper.sh --query \"red jacket\" my-index          # Search for 'red jacket' in 'my-index'"
+    echo "  ./run_scraper.sh --delete-all-vectors my-index          # Delete all vectors from 'my-index'"
+    echo "  ./run_scraper.sh --delete-index my-index                # Delete the entire 'my-index'"
+    echo
+    exit 0
+}
+
 # Get the directory where the script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Check if help is requested
+if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+    display_help
+fi
 
 # Check if conda is installed
 if ! command -v conda &> /dev/null; then
@@ -47,6 +85,9 @@ INDEX_NAME=""
 # Parse arguments
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        --help|-h)
+            display_help
+            ;;
         --scrape)
             SCRAPE=true
             shift
@@ -117,6 +158,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         *)
             echo "Unknown parameter: $1"
+            echo "Run './run_scraper.sh --help' for usage information."
             exit 1
             ;;
     esac
@@ -158,8 +200,15 @@ if [[ -n "$CREATE_INDEX" ]]; then
 fi
 
 if [[ "$DELETE_INDEX" = true ]]; then
-    echo "Deleting index${INDEX_NAME:+: $INDEX_NAME}"
-    python main.py --delete-index $INDEX_PARAM
+    echo "WARNING: This will PERMANENTLY DELETE the entire index${INDEX_NAME:+: $INDEX_NAME}"
+    read -p "Are you sure you want to continue? (y/n): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo "Proceeding with index deletion${INDEX_NAME:+: $INDEX_NAME}"
+        python main.py --delete-index $INDEX_PARAM
+    else
+        echo "Index deletion canceled."
+    fi
 fi
 
 if [[ "$DELETE_ALL_VECTORS" = true ]]; then
