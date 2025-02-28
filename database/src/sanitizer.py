@@ -211,20 +211,6 @@ class Sanitizer:
 
                     products.append(new_product)
 
-                # Read existing JSON if it exists
-                try:
-                    with open(self.output_json, "r") as f:
-                        existing_data = json.load(f)
-                except (FileNotFoundError, json.JSONDecodeError):
-                    existing_data = []
-
-                # Add new products
-                existing_data.extend(products)
-
-                # Write back to JSON file
-                with open(self.output_json, "w") as f:
-                    json.dump(existing_data, f, indent=2)
-
                 return products
 
         except Exception as e:
