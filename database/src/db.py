@@ -1,4 +1,5 @@
 import os
+import time
 import json
 import openai
 from pinecone import Pinecone, ServerlessSpec
@@ -19,16 +20,16 @@ class DatabaseHelper:
         # Setup index - use provided index name or get from env
         self.index_name = index_name or os.getenv("PINECONE_INDEX_NAME")
         
-        if not self.pc.has_index(self.index_name):
-            print(f"Index '{self.index_name}' not found")
-        else:
+        if self.pc.has_index(self.index_name):
             self.index = self.pc.Index(self.index_name)
             self.describe_index()
+        else:
+            print(f"Index '{self.index_name}' not found")
 
         # Initialize items (only if we need to work with data)
         self.data = None
         self.batch_size = 100
-
+    
     def load_data(self):
         """Load data from the cleaned output file"""
         try:
@@ -66,7 +67,6 @@ class DatabaseHelper:
         print(f"Creating index '{self.index_name}'...")
         
         # Wait for index to be ready
-        import time
         max_wait_time = 60  # seconds
         start_time = time.time()
         
@@ -88,8 +88,7 @@ class DatabaseHelper:
 
     def delete_all_vectors(self):
         """Delete all vectors from the index"""
-        if not hasattr(self, 'index'):
-            print(f"Index '{self.index_name}' is not available")
+        if not self.check_valid_index():
             return False
             
         try:
@@ -102,8 +101,7 @@ class DatabaseHelper:
 
     def delete_index(self):
         """Delete the entire Pinecone index"""
-        if not self.pc.has_index(self.index_name):
-            print(f"Index '{self.index_name}' does not exist")
+        if not self.check_valid_index():
             return False
             
         try:
@@ -134,8 +132,7 @@ class DatabaseHelper:
             print("No data to upsert")
             return
             
-        if not hasattr(self, 'index'):
-            print(f"Index '{self.index_name}' is not available")
+        if not self.check_valid_index():
             return
         
         data = self.data
@@ -180,8 +177,7 @@ class DatabaseHelper:
 
     # Query the index
     def query_index(self, query: str):
-        if not hasattr(self, 'index'):
-            print(f"Index '{self.index_name}' is not available")
+        if not self.check_valid_index():
             return None
             
         x = self.embed([query])
@@ -194,3 +190,11 @@ class DatabaseHelper:
             include_metadata=True,
         )
         return results
+    
+    def check_valid_index(self):
+        """Helper function to check if the index exists"""
+        if not self.pc.has_index(self.index_name):
+            print(f"Index '{self.index_name}' does not exist")
+            return False
+            
+        return True
