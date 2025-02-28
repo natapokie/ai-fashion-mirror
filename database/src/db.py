@@ -20,6 +20,9 @@ class DatabaseHelper:
         # Setup index - use provided index name or get from env
         self.index_name = index_name or os.getenv("PINECONE_INDEX_NAME")
         
+        # Initialize self.index explicitly
+        self.index = None
+        
         if self.pc.has_index(self.index_name):
             self.index = self.pc.Index(self.index_name)
             self.describe_index()
@@ -42,7 +45,7 @@ class DatabaseHelper:
 
     def describe_index(self):
         """Get statistics about the current index"""
-        if hasattr(self, 'index'):
+        if self.index is not None:
             return self.index.describe_index_stats()
         else:
             print(f"Index '{self.index_name}' is not available")
@@ -108,10 +111,8 @@ class DatabaseHelper:
             self.pc.delete_index(self.index_name)
             print(f"Index '{self.index_name}' deleted")
             
-            # Remove the index attribute since it no longer exists
-            if hasattr(self, 'index'):
-                delattr(self, 'index')
-                
+            # Set index to None since it no longer exists
+            self.index = None
             return True
         except Exception as e:
             print(f"Error deleting index: {e}")
