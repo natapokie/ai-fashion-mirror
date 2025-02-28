@@ -6,9 +6,8 @@ const router = express.Router();
 
 /**
  * @swagger
- * /gpt/ask:
+ * /gpt/process-request:
  *   post:
- *     deprecated: true
  *     tags:
  *       - gpt
  *     summary: Saves image to disk and queries OpenAI
@@ -30,6 +29,6 @@ const router = express.Router();
  *       "500":
  *         $ref: '#/components/responses/ServerError'
  */
-router.post('/ask', upload.single('image'), GptController.ask);
+router.post('/process-request', upload.single('image'), GptController.processRequest);
 
 export default router;

@@ -1,3 +1,91 @@
+import { QueriedProduct } from '../../../shared/types';
+
+export const generateRAGPrompt = (userFeatures: string, products: QueriedProduct[]) => {
+  return `The customer uploaded a photo showing **${userFeatures}**. Based on this, provide feedback and recommendations for **each product** listed below.
+
+Each product must include:
+1. **Name** (from metadata field fsProductName)
+2. **Image URL** (from metadata field modelImageUrl)
+3. **Feedback** (why this product is a good fit or not)
+
+---
+### **Customer Features:**
+${userFeatures}
+
+---
+### **Products to Evaluate:**
+${products
+  .map(
+    (product, index) =>
+      `${index + 1}. **${product.metadata?.fsProductName ?? 'Unknown Product'}**
+      - **Color:** ${product.metadata?.colorName ?? 'Unknown'}
+      - **Fit & Length:** ${product.metadata?.lengthDescription ?? 'Unknown'}
+      - **Gender:** ${product.metadata?.gender ?? 'Unspecified'}
+      - **Fabric Technology:** ${product.metadata?.fabricTechnology ?? 'N/A'}
+      - **Tags:** ${product.metadata?.embeddingTags ?? 'No tags available'}
+      - **Description:** "${product.metadata?.fsProductDescriptionShort ?? 'No description available'}"
+      - **Image:** ${product.metadata?.modelImageUrl ?? 'No image available'}`,
+  )
+  .join('\n')}
+
+---
+### **Expected JSON Response**
+[
+  {
+    "name": "Product A",
+    "image": "https://example.com/image.jpg",
+    "feedback": "This product complements the user's body type and color preferences..."
+  },
+  {
+    "name": "Product B",
+    "image": "https://example.com/image.jpg",
+    "feedback": "Although this product is not a perfect match, it has advantages such as..."
+  }
+]
+
+---
+### **Instructions for GPT**
+1. **Each product must have feedback.** Do not skip any.
+2. **If a product does not strongly match, provide a neutral or alternative suggestion.**
+3. **Ensure the response is in valid JSON format.**
+4. **Do not add explanations outside the JSON.**
+`;
+};
+
+export const featureExtractionContext = `You are a fashion expert. Your task is to extract and/or create clothing recommendations.
+You will be provided with a picture of a shopper. You need to first recognize the shopper's general appearance, such as skin tone, 
+height, build. Then, you need to provide features and attributes of the clothes that would complement the shopper's appearance. 
+
+For example, if the shopper has a light skin tone, you could recommend colors that would complement their skin tone;
+if the shopper is tall, you could recommend lengths that would flatter their height.
+
+Here are some appearance features you could extract from the shopper's photo:
+    - Skin tone: light, medium, dark
+    - Height: short, average, tall
+    - Build: slim, average, muscular
+    - Hair color: blonde, brown, black, red, other
+    - Hair length: short, medium, long
+    - Hair style: straight, wavy, curly
+    - Eye color: blue, brown, green, other
+    - Age: young, middle-aged, elderly
+    
+Here are some clothing features you could include in your response:
+    - Colors that would complement their skin tone, hair color, or eye color
+    - Lengths that would flatter their height, such as hip-length,high-hip, mid-thigh, waist-length, mid-calf
+    - Fit that would suit their build, such as slim-fit, regular-fit, loose-fit
+    - Patterns or styles that would suite their age
+
+Your final response should just be one array for the clothing features. It should only include the values.
+
+Omit any other sentences. 
+
+An example response woule be:
+{
+    "clothing": ["blue", "white", "mid-thigh", "waist-length", "slim-fit"]
+} 
+
+`;
+
 export const gptSystemContext =
   //   `Pretend you’re a fashion expert working for Canada Goose. Your task is to provide feedback on shoppers' outfit and recommend products from the Canada Goose website.
   //     You will be provided with a picture of a shopper. You need to provide constructive and positive feedback and provide Canada Goose products they may be interested in.

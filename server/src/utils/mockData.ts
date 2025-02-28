@@ -1,4 +1,4 @@
-import { PREAPIResponse } from '../../../shared/types';
+import { PREAPIResponse, QueriedProduct } from '../../../shared/types';
 
 export const mockData: PREAPIResponse = {
   '0': '@fabuloumiss: Maybe add a pop of color with a bright cushion or blanket.',
@@ -25,3 +25,40 @@ export const mockData: PREAPIResponse = {
   views: 443810,
   comments: 20,
 };
+
+export const mockQueriedProducts: QueriedProduct[] = [
+  {
+    id: 'Red Jacket',
+    metadata: {
+      colorName: 'Black',
+      embeddingTags: 'men, patch, quilt, packable, recycle, black, winter, puffy, reverse, hat',
+      fabricTechnology: 'Kind-Fleece Recycled-EnduraLuxe',
+      fsProductDescriptionShort:
+        'Designed for unpredictable weather, the Puffer Reversible Bucket Hat is fully reversible for two looks in one.',
+      fsProductName: 'Puffer Reversible Bucket Hat',
+      gender: 'male',
+      lengthDescription: 'None',
+      modelImageUrl: 'https://images.canadagoose.com/image/upload/product-image/6888U_61.jpg',
+      otherProductImageUrl:
+        'https://images.canadagoose.com/image/upload/product-image/6888U_61_p.png',
+    },
+  },
+  // {
+  //   id: 'Blue Parka',
+  //   metadata: {
+  //     modelImageUrl: 'https://images.canadagoose.com/image/upload/product-image/2054M_222.jpg',
+  //     color: 'blue',
+  //     fit: 'regular',
+  //     length: 'medium',
+  //   },
+  // },
+  // {
+  //   id: 'Black Hoodie',
+  //   metadata: {
+  //     modelImageUrl: 'https://images.canadagoose.com/image/upload/product-image/2079M_61.jpg',
+  //     color: 'black',
+  //     fit: 'loose',
+  //     length: 'long',
+  //   },
+  // },
+];
