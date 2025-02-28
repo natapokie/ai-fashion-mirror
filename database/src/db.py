@@ -87,7 +87,6 @@ class DatabaseHelper:
             raise ValueError(f"Index {self.index_name} not found")
 
         find_index = self.pc.Index(self.index_name)
-        self.index = find_index
         return find_index
 
     def load_data(self):
@@ -222,6 +221,18 @@ class DatabaseHelper:
 
     # converts data to vectors
     def batch_to_vectors(self, data: list[dict], namespace="ns1") -> list[dict]:
+        metadata_fields = [
+            "embeddingTags",
+            "colorName",
+            "fabricTechnology",
+            "fsProductDescriptionShort",
+            "fsProductName",
+            "gender",
+            "lengthDescription",
+            "modelImageUrl",
+            "otherProductImageUrl",
+        ]
+
         doc_embeds = self.embed([d.get("embeddingTags", "") for d in data])
 
         vectors = []
