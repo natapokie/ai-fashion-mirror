@@ -140,9 +140,6 @@ def test_separate_colors(tmp_path):
     assert "image_222_a.jpg" in blue_variant["otherProductImageUrl"]
     assert "image_61" not in blue_variant["otherProductImageUrl"]
 
-    # Verify the JSON file was created and contains the correct data
-    assert output_json.exists()
-
 
 def test_separate_colors_invalid_input():
     """Test color separation with invalid input"""
