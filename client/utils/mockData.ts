@@ -72,3 +72,33 @@ export const mockProductData: ProductData[] = [
       "This parka's slim fit and style make it perfect for anyone looking for a blend of fashion and function.",
   },
 ];
+
+// export const mockQueriedProducts: QueriedProduct[] = [
+//   {
+//     id: 'Red Jacket',
+//     metadata: {
+//       modelImageUrl: 'https://images.canadagoose.com/image/upload/product-image/2050M_28.jpg',
+//       color: 'red',
+//       fit: 'slim',
+//       length: 'short',
+//     },
+//   },
+//   {
+//     id: 'Blue Parka',
+//     metadata: {
+//       modelImageUrl: 'https://images.canadagoose.com/image/upload/product-image/2054M_222.jpg',
+//       color: 'blue',
+//       fit: 'regular',
+//       length: 'medium',
+//     },
+//   },
+//   {
+//     id: 'Black Hoodie',
+//     metadata: {
+//       modelImageUrl: 'https://images.canadagoose.com/image/upload/product-image/2079M_61.jpg',
+//       color: 'black',
+//       fit: 'loose',
+//       length: 'long',
+//     },
+//   },
+// ];

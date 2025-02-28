@@ -1,0 +1,18 @@
+name: scraper
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pandas
+  - requests
+  - black
+  - flake8
+  - python-dotenv
+  - flake8-bugbear
+  - pytest
+  - openai
+  - pip
+  - pip:
+      - pinecone
+      - pinecone[grpc]

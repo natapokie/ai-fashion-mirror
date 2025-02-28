@@ -50,3 +50,8 @@ __uploads/
 
 # SSL key and certificate
 /ssl/
+
+__pycache__
+*.csv
+
+.pytest_cache

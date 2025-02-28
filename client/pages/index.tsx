@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import CameraFeed from '@/components/cameraFeed/cameraFeed';
 import Carousel from '@/components/carousel/carousel';
-// import { mockProductData } from '@/utils/mockData';
 import Image from 'next/image';
 import { AnimatePresence } from 'framer-motion';
 import { motion } from 'framer-motion';
@@ -9,7 +8,7 @@ import { Countdown } from '@/components/countdown/countdown';
 import { Spinner } from '@/components/spinner/spinner';
 import { useCamera } from '@/context/cameraContext';
 import { ProductData } from '../../shared/types';
-import { sendImageToGpt } from '@/services/gptService';
+import { sendToGpt } from '@/services/gptService';
 import { ErrorPopup } from '@/components/errorPopup/errorPopup';
 
 const closeIcon = '/icons/xmark-solid.svg';
@@ -60,9 +59,11 @@ const Home = () => {
         console.log('Photo captured successfully.');
         console.log('FormData contains image:', formData.get('image'));
 
-        const content = await sendImageToGpt(formData);
+        // call one endpoint that does all processing
+        const recommendations = await sendToGpt(formData);
+        console.log('Final recommendations from backend: ', recommendations);
 
-        setProductInfo(content);
+        setProductInfo(recommendations);
         setPageState(pageStates.RESULTS);
         console.log('showing carousel');
 
@@ -85,7 +86,7 @@ const Home = () => {
           return invalidProducts;
         };
 
-        const invalidProducts = await validateImageUrls(content);
+        const invalidProducts = await validateImageUrls(productInfo);
 
         if (invalidProducts.length > 0) {
           setErrorMessage('Some product links are invalid. Please try again later.');
