@@ -54,7 +54,6 @@ class DatabaseHelper:
             raise ValueError(f"Index {self.index_name} not found")
 
         find_index = self.pc.Index(self.index_name)
-        self.index = find_index
         return find_index
 
     def describe_index(self):
@@ -97,29 +96,28 @@ class DatabaseHelper:
 
     # converts data to vectors
     def batch_to_vectors(self, data: list[dict]) -> list[dict]:
+        metadata_fields = [
+            "embeddingTags",
+            "colorName",
+            "fabricTechnology",
+            "fsProductDescriptionShort",
+            "fsProductName",
+            "gender",
+            "lengthDescription",
+            "modelImageUrl",
+            "otherProductImageUrl",
+        ]
+
         doc_embeds = self.embed([d.get("embeddingTags", "") for d in data])
 
         vectors = []
         for d, e in zip(data, doc_embeds):
+            metadata = {k: str(d.get(k, "")) for k in metadata_fields}
             vectors.append(
                 {
                     "id": str(d["id"]),
                     "values": e,  # Embedding vector
-                    "metadata": {
-                        "embeddingTags": str(
-                            d.get("embeddingTags", "")
-                        ),  # Store embeddingTags
-                        "colorName": str(d.get("colorName", "")),
-                        "fabricTechnology": str(d.get("fabricTechnology", "")),
-                        "fsProductDescriptionShort": str(
-                            d.get("fsProductDescriptionShort", "")
-                        ),
-                        "fsProductName": str(d.get("fsProductName", "")),
-                        "gender": str(d.get("gender", "")),
-                        "lengthDescription": str(d.get("lengthDescription", "")),
-                        "modelImageUrl": str(d.get("modelImageUrl", "")),
-                        "otherProductImageUrl": str(d.get("otherProductImageUrl", "")),
-                    },
+                    "metadata": metadata,
                 }
             )
 
