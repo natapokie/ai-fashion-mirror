@@ -171,44 +171,43 @@ class DatabaseHelper:
         # Split data into batches
         for i in range(0, len(data), self.batch_size):
             batch = data[i : i + self.batch_size]
-            vectors = self.embed_data(batch)
-            self.upsert_index(vectors)
+            vectors = self.batch_to_vectors(batch)
+            self.upsert_to_index(vectors)
             print(
                 f"Upserted batch {i//self.batch_size + 1}/{-(-len(data)//self.batch_size)} ({len(batch)} items)"
             )
         print(f"Upserted total of {len(data)} items")
 
-    # Upsert data to the index
-    def embed_data(self, data: list[dict], namespace="ns1"):
+    # converts data to vectors
+    def batch_to_vectors(self, data: list[dict]) -> list[dict]:
+        metadata_fields = [
+            "embeddingTags",
+            "colorName",
+            "fabricTechnology",
+            "fsProductDescriptionShort",
+            "fsProductName",
+            "gender",
+            "lengthDescription",
+            "modelImageUrl",
+            "otherProductImageUrl",
+        ]
+
         doc_embeds = self.embed([d.get("embeddingTags", "") for d in data])
 
         vectors = []
         for d, e in zip(data, doc_embeds):
+            metadata = {k: str(d.get(k, "")) for k in metadata_fields}
             vectors.append(
                 {
                     "id": str(d["id"]),
                     "values": e,  # Embedding vector
-                    "metadata": {
-                        "embeddingTags": str(
-                            d.get("embeddingTags", "")
-                        ),  # Store embeddingTags
-                        "colorName": str(d.get("colorName", "")),
-                        "fabricTechnology": str(d.get("fabricTechnology", "")),
-                        "fsProductDescriptionShort": str(
-                            d.get("fsProductDescriptionShort", "")
-                        ),
-                        "fsProductName": str(d.get("fsProductName", "")),
-                        "gender": str(d.get("gender", "")),
-                        "lengthDescription": str(d.get("lengthDescription", "")),
-                        "modelImageUrl": str(d.get("modelImageUrl", "")),
-                        "otherProductImageUrl": str(d.get("otherProductImageUrl", "")),
-                    },
+                    "metadata": metadata,
                 }
             )
 
         return vectors
 
-    def upsert_index(self, vectors: list[dict], namespace="ns1"):
+    def upsert_to_index(self, vectors: list[dict], namespace="ns1"):
         self.index.upsert(vectors=vectors, namespace=namespace)
 
     # Query the index
