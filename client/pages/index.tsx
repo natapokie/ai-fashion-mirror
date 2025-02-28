@@ -20,7 +20,6 @@ const pageStates = {
   SMILE: 'SMILE', // capture photo
   LOADING: 'LOADING', // loading
   RESULTS: 'RESULTS', // displays results
-  // API_ERROR: 'API_ERROR', // API error page
   ERROR: 'ERROR', // error state with popup
 };
 
@@ -100,11 +99,24 @@ const Home = () => {
     } catch (error) {
       console.error('Error in takePhotoHandler:', error);
 
-      // handle response json format error or other server-side errors
-      // if (error.response?.data?.error) {
-      //   setErrorMessage(`Server error: ${error.response.data.error}. Please try again later.`);
-      // } else {
-      setErrorMessage('Something went wrong with the server photo. Please try again.');
+      // Use type narrowing to safely check for response data
+      if (
+        error &&
+        typeof error === 'object' &&
+        'response' in error &&
+        error.response &&
+        typeof error.response === 'object' &&
+        'data' in error.response &&
+        error.response.data &&
+        typeof error.response.data === 'object' &&
+        'error' in error.response.data
+      ) {
+        setErrorMessage(
+          `Server error: ${String(error.response.data.error)}. Please try again later.`,
+        );
+      } else {
+        setErrorMessage('Something went wrong with the server photo. Please try again.');
+      }
       setPageState(pageStates.ERROR);
     }
   };

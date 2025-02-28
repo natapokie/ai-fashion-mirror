@@ -61,9 +61,3 @@ export interface ProductData {
   image: string;
   feedback: string;
 }
-
-export interface ErrorMessage {
-  success: boolean;
-  message: string;
-  error: string;
-}
