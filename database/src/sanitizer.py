@@ -108,16 +108,18 @@ class Sanitizer:
 
         return ", ".join(text_fields).lower()
 
-    def extract_colors(self, text):
-        # Split the text into individual dictionaries (handling concatenated JSON-like structures)
-        parts = text.split("} {")
-
-        # Add back the missing closing bracket
-        color_info = parts[0] + "}"
-
-        colors = {}
-
+    def extract_color_info(self, text):
         try:
+            if text is None:
+                print("No variationAttributes found")
+                return {}
+            # Split the text into individual dictionaries (handling concatenated JSON-like structures)
+            parts = text.split("} {")
+
+            # Add back the missing closing bracket
+            color_info = parts[0] + "}"
+
+            colors = {}
             # Parse the string into a Python dict
             data = ast.literal_eval(color_info)
 
@@ -130,12 +132,13 @@ class Sanitizer:
                         colors[color_id] = description
         except (SyntaxError, ValueError) as e:
             print(f"Error parsing data: {e}")
+            return {}
 
         return colors
 
     def separate_colors(self, row):
         try:
-            color_data = self.extract_colors(row["variationAttributes"])
+            color_data = self.extract_color_info(row["variationAttributes"])
             products = []
             if color_data:
                 # Split all image URLs once
