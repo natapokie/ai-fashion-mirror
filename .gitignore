@@ -55,3 +55,6 @@ __pycache__
 *.csv
 
 .pytest_cache
+
+# data folder in database directory
+database/src/data/
