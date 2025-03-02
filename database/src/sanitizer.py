@@ -108,69 +108,36 @@ class Sanitizer:
 
         return ", ".join(text_fields).lower()
 
-    def clean_json_string(self, json_str):
-        # Clean and format JSON string for parsing
-        if pd.isna(json_str):
-            return "[]"
+    def extract_colors(self, text):
+        # Split the text into individual dictionaries (handling concatenated JSON-like structures)
+        parts = text.split("} {")
+
+        # Add back the missing closing bracket
+        color_info = parts[0] + "}"
+
+        colors = {}
 
         try:
-            if isinstance(json_str, str):
-                # Remove any leading/trailing whitespace
-                cleaned = json_str.strip()
+            # Parse the string into a Python dict
+            data = ast.literal_eval(color_info)
 
-                # Replace single quotes with double quotes
-                cleaned = cleaned.replace("'", '"')
+            # Target the "Colour" section
+            if data.get("name") == "Colour":
+                for color_info in data.get("values", []):
+                    color_id = color_info.get("id")
+                    description = color_info.get("description")
+                    if color_id and description:
+                        colors[color_id] = description
+        except (SyntaxError, ValueError) as e:
+            print(f"Error parsing data: {e}")
 
-                # Replace boolean values
-                cleaned = cleaned.replace("True", "true").replace("False", "false")
-
-                # Handle multiple JSON objects separated by space
-                if "} {" in cleaned:
-                    parts = cleaned.split("} {")
-                    # Take only the first object (color attributes)
-                    cleaned = parts[0] + "}"
-
-                # Handle array-like strings
-                if cleaned.startswith("[{") and cleaned.endswith("}]"):
-                    # Already in correct format
-                    pass
-                elif cleaned.startswith("{") and cleaned.endswith("}"):
-                    # Single object, wrap in array
-                    cleaned = f"[{cleaned}]"
-                else:
-                    # Invalid format, return empty array
-                    return "[]"
-
-                # Validate JSON structure
-                json.loads(cleaned)  # This will raise JSONDecodeError if invalid
-                return cleaned
-            else:
-                # If input is not a string, convert it to JSON string
-                return json.dumps(
-                    [json_str] if not isinstance(json_str, list) else json_str
-                )
-        except json.JSONDecodeError as e:
-            print(f"Error cleaning JSON string: {e}")
-            print(f"Original string: {json_str}")
-            return "[]"
+        return colors
 
     def separate_colors(self, row):
         try:
-            # Parse variation attributes to get color options
-            variation_data = json.loads(
-                self.clean_json_string(row["variationAttributes"])
-            )
-            if not variation_data:
-                return []
-
-            color_data = next(
-                (item for item in variation_data if item["id"] == "Color"), None
-            )
-            if not color_data or "values" not in color_data:
-                return []
-
+            color_data = self.extract_colors(row["variationAttributes"])
             products = []
-            if color_data and "values" in color_data:
+            if color_data:
                 # Split all image URLs once
                 all_urls = (
                     row.get("otherProductImageUrl", "").split(" ")
@@ -178,20 +145,18 @@ class Sanitizer:
                     else []
                 )
 
-                for color in color_data["values"]:
+                for color_id, color_name in color_data.items():
                     # Filter URLs for this specific color
-                    color_urls = [url for url in all_urls if f"_{color['id']}_" in url]
-                    model_urls = [
-                        url for url in all_urls if f"_{color['id']}_fsph" in url
-                    ]
+                    color_urls = [url for url in all_urls if f"_{color_id}_" in url]
+                    model_urls = [url for url in all_urls if f"_{color_id}_fsph" in url]
                     color_urls_str = " ".join(color_urls) if color_urls else None
                     model_urls_str = " ".join(model_urls) if model_urls else None
 
                     # Create a new product for each color
                     fields = {
-                        "id": f"{row['id']}_{color['id']}",
+                        "id": f"{row['id']}_{color_id}",
                         "cimulateTags": row.get("cimulateTags"),
-                        "colorName": color["description"],
+                        "colorName": color_name,
                         "fabricTechnology": row.get("fabricTechnology"),
                         "fill": row.get("fill"),
                         "fit": row.get("fit"),
