@@ -15,16 +15,14 @@ class DatabaseHelper:
 
         # Get the Pinecone host environment variable
         pinecone_host = os.getenv("PINECONE_HOST")
-        
+
         # Configure Pinecone client
-        pinecone_config = {
-            "api_key": os.getenv("PINECONE_API_KEY")
-        }
-        
+        pinecone_config = {"api_key": os.getenv("PINECONE_API_KEY")}
+
         # Add host if available (for local testing)
         if pinecone_host:
             pinecone_config["host"] = pinecone_host
-            
+
         # set up configuration
         self.config = config or {
             "pc": Pinecone(**pinecone_config),
@@ -41,19 +39,15 @@ class DatabaseHelper:
 
         # Setup index
         self.index_name = index_name or self.config["index_name"]
-        self.index: Index | None = None
+        self.index: Index | None = self.config["index"]
 
-        if self.pc.has_index(self.index_name):
-            self.index = self.pc.Index(self.index_name)
-            self.describe_index()
-        else:
-            print(f"Index '{self.index_name}' not found")
-
+        if self.index is None:
+            self.init_index()
 
         # Initialize items (only if we need to work with data)
         self.data = None
         self.batch_size = self.config["batch_size"]
-    
+
     def load_data(self):
         """Load data from the cleaned output file"""
         try:
@@ -79,14 +73,15 @@ class DatabaseHelper:
             return False
 
         # Check if using local Pinecone by checking host
-        is_local = 'host' in self.config['pc'].__dict__ and 'localhost' in self.config['pc'].__dict__['host']
-        
+        is_local = (
+            "host" in self.config["pc"].__dict__
+            and "localhost" in self.config["pc"].__dict__["host"]
+        )
+
         # Skip ServerlessSpec for local instance
         if is_local:
             self.pc.create_index(
-                name=self.index_name,
-                dimension=dimension,
-                metric="cosine"
+                name=self.index_name, dimension=dimension, metric="cosine"
             )
         else:
             # Cloud Pinecone needs the ServerlessSpec
@@ -94,10 +89,7 @@ class DatabaseHelper:
                 name=self.index_name,
                 dimension=dimension,
                 metric="cosine",
-                spec=ServerlessSpec(
-                    cloud="aws",
-                    region="us-east-1"
-                )
+                spec=ServerlessSpec(cloud="aws", region="us-east-1"),
             )
 
         print(f"Creating index '{self.index_name}'...")
@@ -110,7 +102,9 @@ class DatabaseHelper:
                 status = self.pc.describe_index(self.index_name).status
                 if status.get("ready", False):
                     print(f"Index '{self.index_name}' is ready.")
-                    self.index = self.pc.Index(self.index_name)  # Initialize the index object
+                    self.index = self.pc.Index(
+                        self.index_name
+                    )  # Initialize the index object
                     return True
                 print("Waiting for index to be ready...")
             except Exception as e:
@@ -119,17 +113,21 @@ class DatabaseHelper:
             time.sleep(5)
 
         # If we exit the loop, the index is not ready within max_wait_time
-        print(f"Error: Index '{self.index_name}' was not ready after {max_wait_time} seconds. Please try again later.")
+        print(
+            f"Error: Index '{self.index_name}' was not ready after {max_wait_time} seconds. Please try again later."
+        )
         return False
 
     def delete_all_vectors(self):
         """Delete all vectors from the index"""
         if not self.check_valid_index():
             return False
-            
+
         try:
             self.index.delete(delete_all=True, namespace="ns1")
-            print(f"All vectors deleted from index '{self.index_name}', namespace 'ns1'")
+            print(
+                f"All vectors deleted from index '{self.index_name}', namespace 'ns1'"
+            )
             return True
         except Exception as e:
             print(f"Error deleting vectors: {e}")
@@ -139,11 +137,11 @@ class DatabaseHelper:
         """Delete the entire Pinecone index"""
         if not self.check_valid_index():
             return False
-            
+
         try:
             self.pc.delete_index(self.index_name)
             print(f"Index '{self.index_name}' deleted")
-            
+
             # Set index to None since it no longer exists
             self.index = None
             return True
@@ -161,26 +159,27 @@ class DatabaseHelper:
     def upsert_handler(self):
         if self.data is None:
             self.load_data()
-            
+
         if not self.data:
             print("No data to upsert")
             return
-            
+
         if not self.check_valid_index():
             return
-        
+
         data = self.data
         # Split data into batches
         for i in range(0, len(data), self.batch_size):
             batch = data[i : i + self.batch_size]
-            self.upsert_index(batch)
+            vectors = self.embed_data(batch)
+            self.upsert_index(vectors)
             print(
                 f"Upserted batch {i//self.batch_size + 1}/{-(-len(data)//self.batch_size)} ({len(batch)} items)"
             )
         print(f"Upserted total of {len(data)} items")
 
     # Upsert data to the index
-    def upsert_index(self, data: list[dict]):
+    def embed_data(self, data: list[dict], namespace="ns1"):
         doc_embeds = self.embed([d.get("embeddingTags", "") for d in data])
 
         vectors = []
@@ -207,13 +206,16 @@ class DatabaseHelper:
                 }
             )
 
-        self.index.upsert(vectors=vectors, namespace="ns1")
+        return vectors
+
+    def upsert_index(self, vectors: list[dict], namespace="ns1"):
+        self.index.upsert(vectors=vectors, namespace=namespace)
 
     # Query the index
     def query_index(self, query: str):
         if not self.check_valid_index():
             return None
-            
+
         x = self.embed([query])
 
         if self.index is None:
@@ -227,13 +229,13 @@ class DatabaseHelper:
             include_metadata=True,
         )
         return results
-    
+
     def check_valid_index(self):
         """Helper function to check if the index exists"""
         if not self.pc.has_index(self.index_name):
             print(f"Index '{self.index_name}' does not exist")
             return False
-            
+
         return True
 
     # Debugging purposes only
