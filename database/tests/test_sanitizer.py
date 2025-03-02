@@ -82,7 +82,7 @@ def test_clean_array_string(value, expected_result):
             {},
         ),
         # Test invalid JSON
-        ("invalid", {})
+        ("invalid", {}),
         # Test None input
         (None, {}),
     ],
