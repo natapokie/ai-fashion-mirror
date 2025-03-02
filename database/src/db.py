@@ -83,7 +83,7 @@ class DatabaseHelper:
             except Exception as e:
                 print(f"Error checking index status: {e}")
 
-            time.sleep(1)
+            time.sleep(5)
 
         # If we exit the loop, the index is not ready within max_wait_time
         print(f"Error: Index '{self.index_name}' was not ready after {max_wait_time} seconds. Please try again later.")
