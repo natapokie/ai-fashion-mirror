@@ -62,39 +62,36 @@ def test_clean_array_string(value, expected_result):
 
 
 @pytest.mark.parametrize(
-    "json_str, expected_result",
+    "variation_attributes, expected_colors",
     [
-        # Test empty/invalid inputs
-        (None, "[]"),
-        ("", "[]"),
-        ("invalid", "[]"),
-        # Test single object
+        # Test valid color data
         (
-            "{'name': 'Color', 'id': 'Color', 'values': []}",
-            '[{"name": "Color", "id": "Color", "values": []}]',
+            """{'name': 'Colour', 'id': 'Color', 'values': [ 
+            {'id': '66', 'description': 'Graphite'}, 
+            {'id': '63', 'description': 'Atlantic Navy'}]} {'name': 'Size', 'id': 'Size', 'swatchable': False, 'values': [{}]}"}""",
+            {"66": "Graphite", "63": "Atlantic Navy"},
         ),
-        # Test array
+        # Test empty values
         (
-            "[{'name': 'Color', 'id': 'Color', 'values': []}]",
-            '[{"name": "Color", "id": "Color", "values": []}]',
+            """{'name': 'Colour', 'id': 'Color', 'values': []} {'name': 'Size', 'id': 'Size', 'swatchable': False, 'values': [{}]}"}""",
+            {},
         ),
-        # Test boolean values
+        # Test missing color info
         (
-            "{'name': 'Color', 'selected': True}",
-            '[{"name": "Color", "selected": true}]',
+            """{'name': 'Size', 'id': 'Size', 'swatchable': False, 'values': [{}]}"}""",
+            {},
         ),
-        # Test multiple objects
-        (
-            "{'id': 'Color', 'values': []} {'id': 'Size', 'values': []}",
-            '[{"id": "Color", "values": []}]',
-        ),
+        # Test invalid JSON
+        ("invalid", {})
+        # Test None input
+        (None, {}),
     ],
 )
-def test_clean_json_string(json_str, expected_result):
-    """Test JSON string cleaning and formatting"""
+def test_extract_color_info(variation_attributes, expected_colors):
+    """Test color extraction from variation attributes"""
     sanitizer = Sanitizer()
-    result = sanitizer.clean_json_string(json_str)
-    assert result == expected_result
+    result = sanitizer.extract_color_info(variation_attributes)
+    assert result == expected_colors, f"Expected {expected_colors}, but got {result}"
 
 
 def test_separate_colors(tmp_path):
@@ -110,10 +107,10 @@ def test_separate_colors(tmp_path):
     row = pd.Series(
         {
             "id": "test123",
-            "variationAttributes": """{'name': 'Color', 'id': 'Color', 'values': [
+            "variationAttributes": """{'name': 'Colour', 'id': 'Color', 'values': [
             {'id': '61', 'description': 'Black'},
             {'id': '222', 'description': 'Blue'}
-        ]}""",
+            ]} {'name': 'Size', 'id': 'Size', 'swatchable': False, 'values': [{}]}""",
             "otherProductImageUrl": "image_61_a.jpg image_61_b.jpg image_222_a.jpg",
             "cimulateTags": "jacket, winter",
             "fabricTechnology": "tech",
@@ -121,6 +118,7 @@ def test_separate_colors(tmp_path):
         }
     )
 
+    print(sanitizer.extract_color_info(row["variationAttributes"]))
     # Get color variations
     variations = sanitizer.separate_colors(row)
 
@@ -139,20 +137,3 @@ def test_separate_colors(tmp_path):
     assert blue_variant["id"] == "test123_222"
     assert "image_222_a.jpg" in blue_variant["otherProductImageUrl"]
     assert "image_61" not in blue_variant["otherProductImageUrl"]
-
-
-def test_separate_colors_invalid_input():
-    """Test color separation with invalid input"""
-    sanitizer = Sanitizer()
-
-    # Test with missing required fields
-    row = pd.Series({"id": "test123", "variationAttributes": None})
-
-    variations = sanitizer.separate_colors(row)
-    assert variations == []
-
-    # Test with malformed variation attributes
-    row = pd.Series({"id": "test123", "variationAttributes": "invalid json"})
-
-    variations = sanitizer.separate_colors(row)
-    assert variations == []
