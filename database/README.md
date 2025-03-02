@@ -47,7 +47,6 @@ conda activate scraper
 conda deactivate
 ```
 
-
 ### Making Changes to the Conda Environment
 
 Updating the conda environment,
@@ -65,6 +64,44 @@ conda env export > environment.yml
 
 ## Running the Scraper
 
+### Using the Shell Script
+
+The project includes a convenient shell script that handles environment activation and provides a simplified interface for all operations.
+
+To see all available commands and options:
+
+```bash
+./run_scraper.sh --help
+```
+
+This will display detailed information about all available flags, including:
+- Scraping data
+- Sanitizing data
+- Managing Pinecone indices
+- Querying the database
+- And more
+
+Example usage:
+
+```bash
+# Create a new index
+./run_scraper.sh --create-index my-index
+
+# Scrape data with a limit
+./run_scraper.sh --scrape --limit 50
+
+# Sanitize scraped data
+./run_scraper.sh --sanitize
+
+# Upload data to the index
+./run_scraper.sh --upsert my-index
+
+# Query the index
+./run_scraper.sh --query "red jacket" my-index
+```
+
+The shell script handles Conda environment activation and deactivation automatically.
+
 ### Running via Terminal
 
 ```bash
@@ -75,20 +112,20 @@ python main.py
 ### Running via VSCode Run Button
 
 On VSCode make sure that your Python interpreter is set to the conda environment.
+
 - Open the Command Palette (Ctrl + Shift + P or Cmd + Shift + P on Mac).
 - Search for "Python: Select Interpreter" and select it.
 - Choose the path corresponding to your Conda environment. The name will include the environment name, e.g., Python 3.12.8 ('scraper').
 
-
-
 # Scraper
+
 ## Overview
 
 This script facilitates web scraping, data sanitization, and database operations. It is designed to scrape data, clean it, and upsert it into a database. The script also allows querying and describing the database index.
 
 ## Prerequisites
 
-Ensure Conda and other dependencies are installed. 
+Ensure Conda and other dependencies are installed.
 
 ## Setup
 
