@@ -167,7 +167,6 @@ class Sanitizer:
                         "gender": row.get("gender"),
                         "lengthDescription": row.get("lengthDescription"),
                         "modelImageUrl": model_urls_str,
-                        "variationAttributes": row.get("variationAttributes"),
                         "otherProductImageUrl": color_urls_str,
                         "embeddingTags": row.get("embeddingTags"),
                     }
