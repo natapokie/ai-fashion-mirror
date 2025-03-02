@@ -13,9 +13,21 @@ class DatabaseHelper:
         env_path = os.path.join(current_dir, "..", "..", ".env")
         load_dotenv(env_path)
 
+        # Get the Pinecone host environment variable
+        pinecone_host = os.getenv("PINECONE_HOST")
+        
+        # Configure Pinecone client
+        pinecone_config = {
+            "api_key": os.getenv("PINECONE_API_KEY")
+        }
+        
+        # Add host if available (for local testing)
+        if pinecone_host:
+            pinecone_config["host"] = pinecone_host
+            
         # set up configuration
         self.config = config or {
-            "pc": Pinecone(api_key=os.getenv("PINECONE_API_KEY")),
+            "pc": Pinecone(**pinecone_config),
             "openai_key": os.getenv("OPENAI_API_KEY"),
             "index_name": os.getenv("PINECONE_INDEX_NAME"),
             "index": None,
@@ -66,15 +78,27 @@ class DatabaseHelper:
             print(f"Index '{self.index_name}' already exists.")
             return False
 
-        self.pc.create_index(
-            name=self.index_name,
-            dimension=dimension,  # Default 1536 for OpenAI Ada-002
-            metric="cosine",
-            spec=ServerlessSpec(
-                cloud="aws",
-                region="us-east-1"
+        # Check if using local Pinecone by checking host
+        is_local = 'host' in self.config['pc'].__dict__ and 'localhost' in self.config['pc'].__dict__['host']
+        
+        # Skip ServerlessSpec for local instance
+        if is_local:
+            self.pc.create_index(
+                name=self.index_name,
+                dimension=dimension,
+                metric="cosine"
             )
-        )
+        else:
+            # Cloud Pinecone needs the ServerlessSpec
+            self.pc.create_index(
+                name=self.index_name,
+                dimension=dimension,
+                metric="cosine",
+                spec=ServerlessSpec(
+                    cloud="aws",
+                    region="us-east-1"
+                )
+            )
 
         print(f"Creating index '{self.index_name}'...")
 
