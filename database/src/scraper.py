@@ -10,25 +10,29 @@ import json
 
 
 class Scraper:
-    def __init__(self, cookie="TLvpzrbXSJUc-4pyLmy6QjjLD_-d7Pgzplsu8lfOpNA"):
+    def __init__(
+        self,
+        cookie="TLvpzrbXSJUc-4pyLmy6QjjLD_-d7Pgzplsu8lfOpNA",
+        limit=0,
+        remove_categories=None,
+    ):
         self.cookie = cookie
         self.base_url = "https://www.canadagoose.com"
         self.image_url = "https://images.canadagoose.com/image/upload"
-
         self.access_token = None
         self.expires_in = None
+        self.limit = limit  # Limit per category
+        self.remove_categories = remove_categories if remove_categories else []
 
     def run(self):
         self.refresh_tokens()
         df = self.call_api()
-
         self.save_df(df)
 
     def call_api(self):
         """Fetch products from the API and handle paging."""
-        limit = 20
-        offset = 1
-        total_products = float("inf")
+        batch_size = 20  # Default batch size
+        all_products = []
 
         catalogue_url = "/mobify/proxy/api/search/shopper-search/v1/organizations/f_ecom_aata_prd/product-search"
         headers = {
@@ -44,19 +48,24 @@ class Scraper:
             "locale": "en-CA",
             "expand": "availability,images,prices,represented_products,variations,promotions,custom_properties",
             "allVariationProperties": "true",
-            "offset": offset,
-            "limit": limit,
+            "offset": 1,
+            "limit": batch_size,
         }
 
         cgids = ["shop-mens", "shop-womens", "shop-kids", "shop-shoes"]
 
-        # Store all products
-        all_products = []
+        # Remove excluded categories
+        cgids = [
+            c
+            for c in cgids
+            if c.lower() not in {cat.lower() for cat in self.remove_categories}
+        ]
 
         for cgid in cgids:
             print(f"Scraping {cgid}")
             params["refine"] = f"cgid={cgid}"
             offset = 0  # Reset offset for each category
+            category_products = []  # Track products for this category
 
             # Initial API call to get total number of products
             response = self.make_request(catalogue_url, headers, params)
@@ -70,11 +79,19 @@ class Scraper:
                 total_products = data.get("total", 0)
                 print(f"Total products: {total_products}")
 
-                # Loop through all pages based on total products
-                for i in range(
-                    total_products // limit + (1 if total_products % limit else 0)
-                ):
-                    offset = i * limit + 1  # Calculate the offset for each page
+                # Apply limit to total_products if needed
+                if self.limit > 0 and self.limit < total_products:
+                    total_products = self.limit
+                    print(f"Limiting to {total_products} products")
+
+                # Calculate number of pages needed
+                pages_needed = total_products // batch_size + (
+                    1 if total_products % batch_size else 0
+                )
+
+                # Loop through all needed pages
+                for i in range(pages_needed):
+                    offset = i * batch_size + 1  # Calculate the offset for each page
                     params["offset"] = offset
                     print(f"Fetching products with offset {offset}")
 
@@ -95,9 +112,19 @@ class Scraper:
                         product["modelImageUrl"] = model_image
                         product["otherProductImageUrl"] = other_images
 
-                        # TODO: add any extra parsing here
+                        category_products.append(product)
 
-                        all_products.append(product)
+                        # Check if we've reached our target number of products
+                        if len(category_products) >= total_products:
+                            break
+
+                    # If we've collected enough products, stop fetching more pages
+                    if len(category_products) >= total_products:
+                        break
+
+                # Add this category's products to the main list
+                all_products.extend(category_products)
+                print(f"Added {len(category_products)} products from {cgid}")
 
             except Exception as e:
                 print(f"Error while processing category {cgid}: {e}")
