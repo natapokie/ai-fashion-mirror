@@ -22,24 +22,12 @@ def main():
         "--remove-category", nargs="+", default=[], help="Categories to exclude"
     )
     parser.add_argument("--upsert", action="store_true", help="Upsert data to database")
-    parser.add_argument(
-        "--describe", action="store_true", help="Describe the index statistics"
-    )
-    parser.add_argument(
-        "--delete-all-vectors",
-        action="store_true",
-        help="Delete all vectors from the index",
-    )
-    parser.add_argument(
-        "--delete-index", action="store_true", help="Delete the entire index"
-    )
-    parser.add_argument(
-        "--create-index", action="store_true", help="Create a new index"
-    )
+    parser.add_argument("--describe", action="store_true", help="Describe the index statistics")
+    parser.add_argument("--delete-all-vectors", action="store_true", help="Delete all vectors from the index")
+    parser.add_argument("--delete-index", action="store_true", help="Delete the entire index")
+    parser.add_argument("--create-index", action="store_true", help="Create a new index")
     parser.add_argument("--query", type=str, help="Query the index with the given text")
-    parser.add_argument(
-        "--index-name", type=str, help="Override the index name from .env"
-    )
+    parser.add_argument("--index-name", type=str, help="Override the index name from .env")
     args = parser.parse_args()
 
     # Initialize database helper

@@ -10,12 +10,7 @@ import json
 
 
 class Scraper:
-    def __init__(
-        self,
-        cookie="TLvpzrbXSJUc-4pyLmy6QjjLD_-d7Pgzplsu8lfOpNA",
-        limit=0,
-        remove_categories=None,
-    ):
+    def __init__(self, cookie="TLvpzrbXSJUc-4pyLmy6QjjLD_-d7Pgzplsu8lfOpNA", limit=0, remove_categories=None):
         self.cookie = cookie
         self.base_url = "https://www.canadagoose.com"
         self.image_url = "https://images.canadagoose.com/image/upload"
@@ -85,10 +80,8 @@ class Scraper:
                     print(f"Limiting to {total_products} products")
 
                 # Calculate number of pages needed
-                pages_needed = total_products // batch_size + (
-                    1 if total_products % batch_size else 0
-                )
-
+                pages_needed = total_products // batch_size + (1 if total_products % batch_size else 0)
+                
                 # Loop through all needed pages
                 for i in range(pages_needed):
                     offset = i * batch_size + 1  # Calculate the offset for each page
