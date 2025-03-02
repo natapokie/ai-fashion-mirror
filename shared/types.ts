@@ -39,8 +39,25 @@ export interface PhotoData {
   errorMsg?: string;
 }
 
+export interface ProductMetadata {
+  colorName?: string;
+  embeddingTags?: string;
+  fabricTechnology?: string;
+  fsProductDescriptionShort?: string;
+  fsProductName?: string;
+  gender?: string;
+  lengthDescription?: string;
+  modelImageUrl?: string;
+  otherProductImageUrl?: string;
+}
+
+export interface QueriedProduct {
+  id: string;
+  metadata?: ProductMetadata;
+}
+
 export interface ProductData {
-  image: string;
   name: string;
+  image: string;
   feedback: string;
 }

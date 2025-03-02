@@ -2,36 +2,45 @@ import os
 import time
 import json
 import openai
-from pinecone import Pinecone, ServerlessSpec
+from pinecone import Pinecone, Index, ServerlessSpec
 from dotenv import load_dotenv
 
 
 class DatabaseHelper:
-    def __init__(self, index_name=None):
+    def __init__(self, config=None, index_name=None):
         # load .env file
         current_dir = os.path.dirname(os.path.abspath(__file__))
         env_path = os.path.join(current_dir, "..", "..", ".env")
         load_dotenv(env_path)
 
-        # Configure APIs
-        self.pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-        openai.api_key = os.getenv("OPENAI_API_KEY")
+        # set up configuration
+        self.config = config or {
+            "pc": Pinecone(api_key=os.getenv("PINECONE_API_KEY")),
+            "openai_key": os.getenv("OPENAI_API_KEY"),
+            "index_name": os.getenv("PINECONE_INDEX_NAME"),
+            "index": None,
+            "data_path": "data/cleaned_output.json",
+            "batch_size": 100,
+        }
 
-        # Setup index - use provided index name or get from env
-        self.index_name = index_name or os.getenv("PINECONE_INDEX_NAME")
-        
-        # Initialize self.index explicitly
-        self.index = None
-        
+        # Configure APIs
+        self.pc: Pinecone = self.config["pc"]
+        openai.api_key = self.config["openai_key"]
+
+        # Setup index
+        self.index_name = index_name or self.config["index_name"]
+        self.index: Index | None = None
+
         if self.pc.has_index(self.index_name):
             self.index = self.pc.Index(self.index_name)
             self.describe_index()
         else:
             print(f"Index '{self.index_name}' not found")
 
+
         # Initialize items (only if we need to work with data)
         self.data = None
-        self.batch_size = 100
+        self.batch_size = self.config["batch_size"]
     
     def load_data(self):
         """Load data from the cleaned output file"""
@@ -183,6 +192,9 @@ class DatabaseHelper:
             
         x = self.embed([query])
 
+        if self.index is None:
+            self.init_index()
+
         results = self.index.query(
             namespace="ns1",
             vector=x[0],
@@ -199,3 +211,35 @@ class DatabaseHelper:
             return False
             
         return True
+
+    # Debugging purposes only
+    def test(self):
+        db = DatabaseHelper()
+        print(db.describe_index())
+        db.upsert_handler()
+        print(db.query_index("Wyndham Parka"))
+
+    def init_index(self, index: Index = None) -> Index:
+        """
+        Initialize the index. If the index is not found, raise an error.
+        """
+        if index:
+            self.index = index
+            return index
+
+        if not self.check_has_index(self.pc, self.index_name):
+            raise ValueError(f"Index {self.index_name} not found")
+
+        find_index = self.pc.Index(self.index_name)
+        self.index = find_index
+        return find_index
+
+    @staticmethod
+    def load_json_data(path: str) -> list[dict]:
+        with open(path, "r", encoding="utf-8") as file:
+            return json.load(file)
+
+    @staticmethod
+    def check_has_index(pc: Pinecone, index_name: str) -> bool:
+        indexes = pc.list_indexes()
+        return any(index.name == index_name for index in indexes)

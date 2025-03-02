@@ -1,29 +1,34 @@
 import axios from 'axios';
 import { ProductData } from '../../shared/types';
 
-export const sendImageToGpt = async (formData: FormData): Promise<ProductData[]> => {
+export const sendToGpt = async (formData: FormData): Promise<ProductData[]> => {
   try {
-    const response = await axios.post(`${process.env.SERVER_BASE_URL}/api/request`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    console.log('Sending image to GPT for full processing...');
 
-    if (response.status !== 200) {
+    const response = await axios.post(
+      `${process.env.SERVER_BASE_URL}/gpt/process-request`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    );
+
+    if (response.status !== 200 || !response.data.success) {
       throw new Error('Failed to process image');
     }
 
-    const fullResponse = response.data;
-    console.log('GPT Response:', fullResponse);
+    console.log('Final GPT response: ', response.data);
 
-    // nov 18 note:
-    // modified to use parsed.product_list instead of content due to changes in gptService.ts
-    const content: ProductData[] = fullResponse.data.choices[0].message.parsed.product_list;
-    console.log('Response Content:', content);
+    // ensure the data exists and is an array
+    if (!response.data || !Array.isArray(response.data.recommendations)) {
+      throw new Error('Invalid response format from GPT');
+    }
 
-    return content;
+    return response.data.recommendations; // final recommendations list
   } catch (error) {
-    console.error('Error in sendImageToGpt:', error);
-    throw error;
+    console.error('Error in sendToGpt: ', error);
+    return []; // return an ematy array if request fails
   }
 };

@@ -143,12 +143,13 @@ router.post('/query', async (req, res) => {
     }
 
     // convert query to embedding
-    const query = req.body.query as string;
-    const embedding = await PineconeService.createEmbeddings([query]);
+    // const query = req.body.query as string;
+    // const embedding = await PineconeService.createEmbeddings([query]);
+    const embedding = req.body.query;
     const topK = req.body?.topK; // optional parameter, defaults to 10
 
-    if (embedding && embedding.length > 0 && embedding[0].values) {
-      const result = await PineconeService.executeQuery(embedding[0].values, topK);
+    if (embedding && embedding.length > 0 && embedding) {
+      const result = await PineconeService.executeQuery(embedding, topK);
       console.debug('results', result);
       res.json(result);
     } else {

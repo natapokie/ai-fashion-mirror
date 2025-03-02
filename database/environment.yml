@@ -10,3 +10,9 @@ dependencies:
   - flake8
   - python-dotenv
   - flake8-bugbear
+  - pytest
+  - openai
+  - pip
+  - pip:
+      - pinecone
+      - pinecone[grpc]

@@ -53,3 +53,5 @@ __uploads/
 
 __pycache__
 *.csv
+
+.pytest_cache

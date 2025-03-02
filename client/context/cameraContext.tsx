@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 
-type CameraContextType = {
+export type CameraContextType = {
   videoRef: React.RefObject<HTMLVideoElement> | null;
   startCamera: () => Promise<void>;
   stopCamera: () => void;
   takePhoto: () => Promise<FormData | undefined> | undefined;
 };
 
-const CameraContext = createContext<CameraContextType | undefined>(undefined);
+export const CameraContext = createContext<CameraContextType | undefined>(undefined);
 
 export const CameraProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);

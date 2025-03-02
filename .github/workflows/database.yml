@@ -1,0 +1,56 @@
+name: Database
+on: 
+  push:
+    # trigger on pull requests
+    pull_request:
+      branches: 
+        - main
+      path:
+        - .github/workflows/database.yml
+        - database/**
+    # only trigger build for specific paths
+    paths:
+      - .github/workflows/database.yml
+      - database/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      pc-local:
+        image: ghcr.io/pinecone-io/pinecone-local:latest
+        env:
+          PORT: 5080
+        ports:
+          - "5080-6000:5080-6000"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Conda Environment
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: 'latest'
+          use-mamba: true
+          channels: conda-forge
+          channel-priority: true
+          auto-update-conda: false
+          auto-activate-base: false
+          activate-environment: scraper
+          environment-file: database/environment.yml
+
+      - name: Activate Conda Environment
+        shell: bash -l {0} 
+        run: |
+          conda info --envs
+          conda activate scraper
+          conda list
+        
+      - name: Run Tests
+        working-directory: ./database
+        shell: bash -l {0}
+        run: |
+          conda activate scraper
+          pytest
+
+
