@@ -1,7 +1,7 @@
 import https from 'https';
 import http from 'http';
 import fs from 'fs';
-import app from './app';
+import { app } from './app';
 import dotenv from 'dotenv';
 import path from 'path';
 import { Server } from 'socket.io';
