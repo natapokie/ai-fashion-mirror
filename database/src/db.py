@@ -42,7 +42,7 @@ class DatabaseHelper:
         self.index: Index | None = self.config["index"]
 
         if self.index is None:
-            self.init_index()
+            self.index = self.init_index()
 
         # Initialize items (only if we need to work with data)
         self.data = None
