@@ -25,8 +25,14 @@ export const GptController = {
       console.log('Feature Embeddings:', featureEmbeddings);
 
       // step 3: query pinecone for the top relevant (recommended) products
+      // TODO: create metadata filter based on user features
+      const gender = 'male';
+      const filter = {
+        gender: { $eq: gender },
+      };
+
       console.log('Querying Pinecone database...');
-      const queryResults = await PineconeService.executeQuery(featureEmbeddings, 10);
+      const queryResults = await PineconeService.executeQuery(featureEmbeddings, 10, filter);
       console.log('Pinecone Query Results:', queryResults);
 
       // step 4: extract metadata from pinecone results
