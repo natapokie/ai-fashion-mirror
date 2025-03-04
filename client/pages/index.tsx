@@ -10,6 +10,7 @@ import { useCamera } from '@/context/cameraContext';
 import { ProductData } from '../../shared/types';
 import { sendToGpt } from '@/services/gptService';
 import { ErrorPopup } from '@/components/errorPopup/errorPopup';
+import { DISCLAIMER_MSG } from '@/utils/constants';
 
 const closeIcon = '/icons/xmark-solid.svg';
 
@@ -147,6 +148,12 @@ const Home = () => {
 
   return (
     <div className="w-dvw h-dvh overflow-hidden bg-black relative">
+      {pageState === pageStates.MAIN ? (
+        <span className="absolute bottom-0 left-0 text-[12px] w-[40%] z-50">{DISCLAIMER_MSG}</span>
+      ) : (
+        <></>
+      )}
+
       <CameraFeed />
 
       {pageState === pageStates.MAIN ||
