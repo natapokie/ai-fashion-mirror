@@ -32,13 +32,14 @@ export class PineconeService {
     return stats;
   };
 
-  static executeQuery = async (embedding: number[], topK: number = 10) => {
+  static executeQuery = async (embedding: number[], topK: number = 10, filter: object = {}) => {
     // Query the ns1 namespace for the three vectors that are most similar to the query vector, i.e., the vectors that represent the most relevant answers to your question:
     const queryResponse = await pineconeIndex.namespace(this.namespace).query({
       topK: topK,
       vector: embedding,
       includeValues: false,
       includeMetadata: true,
+      filter: filter,
     });
 
     console.log('\nTopk relevant:');
