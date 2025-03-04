@@ -44,6 +44,27 @@ Currently, you will have the run with frontend and backend in two different term
 
 _Note: if you notice that there is 1 high vulnerability after installing dependencies on the the client side, it's because we needed to downgrade to Next v13 as Next v14 is not working on the raspberry pi_
 
+**Generating Certificates**
+
+1. Install mkcert
+    1. for MAC: run brew install mkcertand mkcert -install
+    2. for Windows: download latest release https://github.com/FiloSottile/mkcert/releases, and run mkcert -install
+2. At root of the repo, create an ```ssl``` folder by ```mkdir ssl``` and then ```cd ssl```            
+3. Generate certificate and key for a specific IP address:
+    1. mkcert -key-file <ip-address>-key.pem -cert-file <ip-address>.pem <ip-address>
+
+NOTE: If your local IP address changes, you’ll need to regenerate the SSL certificate and key files to match your new IP address!
+Using OpenSSL (alternative)
+
+**Configure ```.env``` for the SSL Paths**
+
+```shell
+SSL_KEY_PATH=./ssl/<ip-address>-key.pem
+SSL_CERT_PATH=./ssl/<ip-address>.pem
+```
+
+**Running client and server**
+
 ```shell
 # for prototype 2, run client with HTTPS
 # in one terminal start the client
