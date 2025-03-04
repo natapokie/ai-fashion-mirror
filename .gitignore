@@ -57,4 +57,4 @@ __pycache__
 .pytest_cache
 
 # data folder in database directory
-database/src/data/
+database/src/data/*.csv
