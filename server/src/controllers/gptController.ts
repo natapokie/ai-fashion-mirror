@@ -14,7 +14,12 @@ export const GptController = {
 
       // step 1: extract user features from image
       console.log('Extrarcting user features from image...');
-      const userFeatures = await gptService.gptExtractFeatures(req.file.buffer.toString('base64'));
+      // const userFeatures = await gptService.gptExtractFeatures(req.file.buffer.toString('base64'));
+
+      // mar 4: hardcoding eri's features for getting slides for demo
+      const userFeatures =
+        'Opt for jewel tones, pastels, and cool neutrals to complement your fair complexion and dark features, while balancing your pear-shaped body with structured or detailed tops, V-necklines, high-waisted bottoms, A-line skirts, wrap dresses, silver jewelry, statement earrings, waist belts, and pointed-toe or chunky-heeled shoes for a flattering and stylish look.';
+
       console.log('Extracted user features:', userFeatures);
 
       const userFeaturesStr = JSON.stringify(userFeatures);
@@ -26,7 +31,7 @@ export const GptController = {
 
       // step 3: query pinecone for the top relevant (recommended) products
       // TODO: create metadata filter based on user features
-      const gender = 'male';
+      const gender = 'female';
       const filter = {
         gender: { $eq: gender },
       };
