@@ -52,6 +52,7 @@ _Note: if you notice that there is 1 high vulnerability after installing depende
 2. At root of the repo, create an ```ssl``` folder by ```mkdir ssl``` and then ```cd ssl```            
 3. Generate certificate and key for a specific IP address:
     1. mkcert -key-file <ip-address>-key.pem -cert-file <ip-address>.pem <ip-address>
+
 NOTE: If your local IP address changes, you’ll need to regenerate the SSL certificate and key files to match your new IP address!
 Using OpenSSL (alternative)
 
