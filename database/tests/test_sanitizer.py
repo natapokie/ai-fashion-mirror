@@ -17,17 +17,18 @@ def test_run():
 @pytest.mark.parametrize(
     "row, expected_result",
     [
-        (pd.Series({"cimulateTags": "jacket, down, men"}), "jacket, down, men"),
+        (pd.Series({"cimulateTags": "jacket, down, men"}), None),
         (pd.Series({"colorName": "Black", "cimulateTags": None}), "black"),
         (
             pd.Series(
                 {
                     "colorName": "Navy",
                     "fabricTechnology": "Nylon-Tech-Shell",
-                    "cimulateTags": None,
+                    "fsProductDescriptionShort": "A navy jacket",
+                    "cimulateTags": "a tag",
                 }
             ),
-            "navy, nylon-tech-shell",
+            "navy, a navy jacket",
         ),
     ],
 )
