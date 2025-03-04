@@ -12,6 +12,7 @@ class Sanitizer:
         self.output_json = "data/cleaned_output.json"
 
         # List of columns to keep
+        # Note: the column names before "c_" are removed
         self.columns_to_keep = [
             "id",
             "c_cimulateTags",
@@ -28,11 +29,11 @@ class Sanitizer:
             "otherProductImageUrl",
         ]
 
-        self.exclude_from_embedding = {
-            "id",
-            "modelImageUrl",
-            "c_variationAttributions",
-            "otherProductImageUrl",
+        # Note: the column names after "c_" are removed
+        self.add_to_embedding = {
+            "fsProductName",
+            "fsProductDescriptionShort",
+            "colorName",
         }
 
     def run(self):
@@ -51,28 +52,26 @@ class Sanitizer:
                 inplace=True,
             )
 
-            # Clean array strings
-            df = df.map(self.clean_array_string)
-
-            # Generate embedding_tags column
-            df["embeddingTags"] = df.apply(self.generate_embedding_tags, axis=1)
-
-            # Create a list to store all products with their color variations
-            all_products = []
-
             # Process each row and create separate entries for each color
-            for _, row in df.iterrows():
+            all_products = []
+            for _, row in df.map(self.clean_array_string).iterrows():
                 color_variations = self.separate_colors(row)
                 all_products.extend(color_variations)
+            all_products = pd.DataFrame(all_products)
+
+            # Generate embedding_tags column
+            all_products["embeddingTags"] = all_products.apply(
+                self.generate_embedding_tags, axis=1
+            )
 
             # Save the cleaned CSV
-            df.to_csv(self.output_file, index=False)
-            print(f"Cleaned data saved to {self.output_file}. {len(df)} entries saved.")
+            all_products.to_csv(self.output_file, index=False)
+            print(
+                f"Cleaned data saved to {self.output_file}. {len(all_products)} entries saved."
+            )
 
             # Save as json
-            # df.to_json(self.output_json, orient="records", indent=4)
-            with open(self.output_json, "w") as f:
-                json.dump(all_products, f, indent=4)
+            all_products.to_json(self.output_json, orient="records", indent=4)
             print(f"Saved as json to {self.output_json}")
 
         except FileNotFoundError:
@@ -95,15 +94,11 @@ class Sanitizer:
         return value
 
     def generate_embedding_tags(self, row):
-        # Use cimulateTags if it's not NaN or empty
-        if pd.notna(row["cimulateTags"]) and row["cimulateTags"].strip():
-            return row["cimulateTags"]
-
-        # Otherwise, create one from other fields
+        # Use the specified columns to generate the embedding tags
         text_fields = [
             str(row[col]).strip()
             for col in row.index
-            if col not in self.exclude_from_embedding and pd.notna(row[col])
+            if col in self.add_to_embedding and pd.notna(row[col])
         ]
 
         return ", ".join(text_fields).lower()
