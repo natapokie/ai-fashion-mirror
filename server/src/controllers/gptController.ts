@@ -53,9 +53,13 @@ export const GptController = {
       // step 5: call gpt with rag for recommendation reasonings (feedback)
       console.log('Calling GPT with RAG for feedback...');
       const recommendations = await gptService.gptRAGFeedback(userFeaturesStr, queriedProducts);
+
+      // TODO: remove later, shuffle code for testing
+      const shuffle = [...recommendations].sort(() => Math.random() - 0.5);
+
       console.log('Recommendations with feedback:', recommendations);
 
-      res.status(200).json({ success: true, recommendations });
+      res.status(200).json({ success: true, recommendations: shuffle });
     } catch (err) {
       console.error('Error in processRequest:', err);
       res.status(500).json({
