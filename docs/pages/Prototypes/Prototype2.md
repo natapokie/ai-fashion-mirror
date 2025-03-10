@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Prototype 2 Interactive iPad Display
+title: Prototype 2 AI Shop Pal
 parent: Prototypes
 ---
 
@@ -8,23 +8,14 @@ parent: Prototypes
 
 The Interactive iPad Display prototype uses a camera to capture the user's image and provides personalized clothing recommendations based on the user's appearance, weather, and activities.
 
-## Repo Organization
+## Motivation
 
-- **client/**: Contains the React frontend that interacts with the iPad camera and displays clothing suggestions.
-- **server/**: Express server handling AI interactions and data processing.
-- **assets/**: Contains images and other resources for the app.
-- **docs/**: Documentation for the project.
+## Implementation and Build
 
-## Tech Stack
+1. Hardware Components:
+    - Interactive Interface: The system features an iPad where users can interact with the recommendations.
+    
+2. Software and AI Integration:
+    - Pinecone Vector Database: AI Shop Pal integrates with Pinecone, a vector database, to store and manage product embeddings and user interaction data, allowing for fast and accurate retrieval of personalized recommendations.
 
-- **Frontend**: React, Next.js for building the iPad user interface and managing user interactions.
-- **Backend**: Node.js with Express for API requests and managing backend processes.
-- **AI/ML**: OpenAI for generating clothing recommendations based on user data.
-- **Vector Database**: Pinecone for storing and retrieving clothing recommendations.
-- **Camera Service**: Captures images of the user for analysis.
-
-## Required Keys
-
-- **OpenAI API Key**: For generating clothing suggestions based on the user's image.
-- **Pinecone API Key**: For storing and retrieving clothing data.
-- **Camera Access**: Ensure that the iPad camera is properly configured and accessible by the app.
+## System Diagram

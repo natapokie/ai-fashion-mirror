@@ -1,31 +1,32 @@
 ---
 layout: default
-title: Prototype 1 DIY Smart Mirror
+title: Prototype 1 AI Fashion Mirror
 parent: Prototypes
 ---
 
-# Prototype 1: DIY Smart Mirror
+# Prototype 1: AI Fashion Mirror
 
 The DIY Smart Mirror prototype involves using a Raspberry Pi, a camera, and a monitor to create an interactive mirror. The mirror displays real-time information and interacts with the user based on image processing and AI feedback.
 
-## Repo Organization
+## Initial Prompt and Motivation
 
-- **client/**: Contains the frontend code for displaying the smart mirror interface.
-- **server/**: Contains the backend API that handles image processing and AI tasks.
-- **scripts/**: Helper scripts for setting up and managing the mirror hardware and software.
-- **docs/**: This documentation site.
+## Smart Mirror Implementation and Build
 
-## Tech Stack
+The AI Fashion Mirror combines several key technologies and components to function effectively:
 
-- **Frontend**: React for creating a dynamic user interface.
-- **Backend**: Node.js and Express for handling API requests and managing communication with the frontend.
-- **AI/ML**: OpenAI's models for processing images and generating feedback.
-- **Camera Service**: Captures the user's image for processing and display.
-- **Database**: No database required for this prototype.
+1. Hardware Components:
+    - Raspberry Pi: Serves as the central processing unit, running the software that controls the smart mirror.
 
-## Required Keys
+    - Camera: Captures the user's image, allowing the system to analyze the outfit in real-time.
 
-- **OpenAI API Key**: Required for calling OpenAI models for image processing and feedback.
-- **Camera Configuration**: Ensure the camera is properly set up and accessible by the Raspberry Pi.
+    - Monitor: Reflective surface where the user sees their own image overlaid with fashion feedback and outfit recommendations.
 
+2. Software and AI Integration:
+    - Next.js: Powers the frontend application running on the Raspberry Pi, which displays the mirror interface.
+    
+    - PRE API: This API is utilized to generate constructive feedback on the user's outfit. The feedback is modeled after social media engagement, where the user receives comments and likes, mimicking the feel of interacting with others online.
 
+3. User Interaction:
+    - A "social media" style interface allows users to see how many likes, and comments they receive for their outfit choices.
+
+## System Diagram
