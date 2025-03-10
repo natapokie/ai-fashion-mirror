@@ -50,7 +50,7 @@ export class GptService {
       JSON.parse(JSON.stringify(full_response)); // Serialize and parse to ensure valid JSON
     } catch (error) {
       throw new Error('Invalid response format (not valid JSON)');
-
+      console.error('Error parsing response:', error);
     }
 
     console.log('gpt response: ', full_response);
