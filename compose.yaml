@@ -1,27 +1,66 @@
 services:
-  client:
-    build:
-      context: .
-      dockerfile: ./client/Dockerfile
-    ports:
-      - 127.0.0.1:3000:3000
-    env_file:
-      - .env
-    networks:
-      - ai-fasion-mirror
+  # client:
+  #   build:
+  #     context: .
+  #     dockerfile: ./client/Dockerfile
+  #   ports:
+  #     - 127.0.0.1:3000:3000
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - ai-fasion-mirror
+  #   volumes:
+  #     - ./client:/app
+  #     - /app/node_modules
 
-  server:
+  # running client on localhost with https
+  # server:
+  #   build:
+  #     context: .
+  #     dockerfile: ./server/Dockerfile
+  #   ports:
+  #     - 127.0.0.1:8080:8080
+  #   # devices:
+  #   #   - /dev/video0:/dev/video0
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - ai-fasion-mirror
+
+  client-local:
     build:
       context: .
-      dockerfile: ./server/Dockerfile
+      dockerfile: ./client/Dockerfile.local
+    develop:
+      watch:
+        - action: sync
+          path: ./client/pages
+          target: /app/pages
+          ignore: node_modules/
+        - action
     ports:
-      - 127.0.0.1:8080:8080
-    # devices:
-    #   - /dev/video0:/dev/video0
+      - 3000:3000
     env_file:
       - .env
-    networks:
-      - ai-fasion-mirror
+    volumes:
+      - ./client/pages:/app/pages
+      - ./client/components:/app/components
+      - ./client/services:/app/services
+      - ./client/utils:/app/utils
+      - ./client/styles:/app/styles
+      - /app/node_modules
+      
+  server-local:
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile.local
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    volumes:
+      - ./server/src:/app/src
+      - /app/node_modules
 
 networks:
   ai-fasion-mirror:

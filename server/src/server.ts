@@ -14,14 +14,19 @@ dotenv.config({
 
 // load certificate and key from .env, if available
 let server;
+
+// resolve path for docker
+const baseDir = __dirname.includes('/app') ? '/app' : __dirname;
 const keyPath = process.env.SSL_KEY_PATH
-  ? path.resolve(__dirname, '../../', process.env.SSL_KEY_PATH)
+  ? path.resolve(baseDir, `../../${process.env.SSL_KEY_PATH}`)
   : null;
 const certPath = process.env.SSL_CERT_PATH
-  ? path.resolve(__dirname, '../../', process.env.SSL_CERT_PATH)
+  ? path.resolve(baseDir, `../../${process.env.SSL_CERT_PATH}`)
   : null;
 
+let httpsConnected = false;
 if (keyPath && certPath && fs.existsSync(keyPath) && fs.existsSync(certPath)) {
+  httpsConnected = true;
   const credentials = {
     key: fs.readFileSync(keyPath, 'utf8'),
     cert: fs.readFileSync(certPath, 'utf8'),
@@ -48,5 +53,5 @@ new SocketManager(io);
 
 const PORT = process.env.SERVER_PORT;
 server.listen(PORT, () => {
-  console.log(`Server started on ${keyPath && certPath ? 'HTTPS' : 'HTTP'} port: ${PORT}`);
+  console.log(`Server started on ${httpsConnected ? 'HTTPS' : 'HTTP'} port: ${PORT}`);
 });
