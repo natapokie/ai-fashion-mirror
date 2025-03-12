@@ -31,36 +31,47 @@ services:
     build:
       context: .
       dockerfile: ./client/Dockerfile.local
-    develop:
-      watch:
-        - action: sync
-          path: ./client/pages
-          target: /app/pages
-          ignore: node_modules/
-        - action
+    # develop:
+    #   watch:
+    #     # use sync so bundler updates the application without restarting
+    #     - action: sync
+    #       path: ./client/pages
+    #       target: /app/pages
+    #     - action: sync
+    #       path: ./client/components
+    #       target: /app/components
+    #     - action: rebuild
+    #       path: package.json
     ports:
       - 3000:3000
     env_file:
       - .env
+      - .env.local
     volumes:
       - ./client/pages:/app/pages
       - ./client/components:/app/components
       - ./client/services:/app/services
       - ./client/utils:/app/utils
       - ./client/styles:/app/styles
-      - /app/node_modules
+      # - /app/node_modules
       
   server-local:
     build:
       context: .
       dockerfile: ./server/Dockerfile.local
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./server/src
+    #       target: /app/src
     ports:
       - 8000:8000
     env_file:
       - .env
+      - .env.local
     volumes:
       - ./server/src:/app/src
-      - /app/node_modules
+      # - /app/node_modules
 
 networks:
   ai-fasion-mirror:
