@@ -11,7 +11,8 @@ COPY . .
 # Build the TypeScript application
 RUN npm run build
 
-EXPOSE 8080
+# for render??
+EXPOSE 10000
 
 # Run the built app
 CMD ["npm", "run", "start"]
