@@ -12,7 +12,7 @@ COPY . .
 RUN npm run build
 
 # for render??
-EXPOSE 10000
+EXPOSE 10000/tcp
 
 # Run the built app
 CMD ["npm", "run", "start"]
