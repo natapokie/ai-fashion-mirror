@@ -35,7 +35,7 @@ app.use('/gpt', gptRouter);
 app.use('/api', apiRouter);
 app.use('/pinecone', pineconeRouter);
 
-app.get('/', (req, res) => {
+app.get('/server', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
