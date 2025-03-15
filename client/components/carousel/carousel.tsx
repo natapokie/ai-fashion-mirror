@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { ProductData } from '../../../shared/types';
 import CarouselCard from './carouselCard';
 import styles from './style.module.css';
 import DOMPurify from 'dompurify';
+import { ProductData } from '@/utils/types';
 
 interface CarouselProps {
   products: ProductData[];

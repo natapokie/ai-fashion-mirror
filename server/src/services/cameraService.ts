@@ -6,7 +6,7 @@ import { sendToApi } from './apiService';
 
 import fs from 'fs';
 import path from 'path';
-import { PhotoData } from '../../../shared/types';
+import { PhotoData } from '../utils/types';
 
 const PHOTO_WIDTH = 450;
 const PHOTO_HEIGHT = 900;

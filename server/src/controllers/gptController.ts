@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { GptService } from '../services/gptService';
 import { PineconeService } from '../services/pineconeService';
-import { ProductMetadata } from '../../../shared/types';
+import { ProductMetadata } from '../utils/types';
 
 export const GptController = {
   async processRequest(req: Request, res: Response) {

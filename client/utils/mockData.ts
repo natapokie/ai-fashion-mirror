@@ -1,4 +1,4 @@
-import { ProductData } from '../../shared/types';
+import { ProductData } from './types';
 
 export const mockProductData: ProductData[] = [
   {

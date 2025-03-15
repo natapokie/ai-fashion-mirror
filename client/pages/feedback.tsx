@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { socket } from '../utils/socket';
 import { Likes } from '@/components/likes/likes';
 import CommentFeed from '@/components/comments/commentFeed';
-import { ResponseData } from '../../shared/types';
 import { LoadingOverlay } from '@/components/loadingOverlay/loadingOverlay';
 import { EndingOverlay } from '@/components/endingOverlay/endingOverlay';
 import { Photo } from '@/components/photo/photo';
+import { ResponseData } from '@/utils/types';
 
 const Feedback = () => {
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null); // test timer
@@ -124,11 +124,11 @@ const Feedback = () => {
       <div className="w-screen h-screen flex flex-col justify-start items-center">
         {display ? (
           <>
-          <div className='w-screen flex flex-row justify-between align-start'>
-          <Likes finalLikes={display.likes} onComplete={onLikesComplete}></Likes>
-          {img && !(likesComplete && commentsComplete) && <Photo img={img} />}
-          </div>
-            
+            <div className="w-screen flex flex-row justify-between align-start">
+              <Likes finalLikes={display.likes} onComplete={onLikesComplete}></Likes>
+              {img && !(likesComplete && commentsComplete) && <Photo img={img} />}
+            </div>
+
             <CommentFeed comments={display.comments} onComplete={onCommentsComplete}></CommentFeed>
           </>
         ) : (
@@ -142,7 +142,6 @@ const Feedback = () => {
             )}
           </>
         )}
-        
       </div>
     </>
   );

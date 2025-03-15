@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { zodResponseFormat } from 'openai/helpers/zod';
 
 import OpenAI from 'openai';
-import { GptResponse, ProductData, QueriedProduct } from '../../../shared/types';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -10,6 +9,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { featureExtractionContext, generateRAGPrompt } from '../utils/gptPrompts';
+import { GptResponse, ProductData, QueriedProduct } from '../utils/types';
 
 const ProductInfo = z.object({
   image: z.string(),
@@ -48,9 +48,8 @@ export class GptService {
     // validate the response format to be json
     try {
       JSON.parse(JSON.stringify(full_response)); // Serialize and parse to ensure valid JSON
-    } catch (error) {
+    } catch {
       throw new Error('Invalid response format (not valid JSON)');
-
     }
 
     console.log('gpt response: ', full_response);
