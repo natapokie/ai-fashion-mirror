@@ -57,6 +57,12 @@ const io = new Server(server, {
 new SocketManager(io);
 
 const PORT = (process.env.PORT as unknown as number) || 8000;
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server started on ${httpsConnected ? 'HTTPS' : 'HTTP'} port: ${PORT}`);
+server.listen(PORT, '127.0.0.1', () => {
+  const address = server.address();
+  const host = typeof address === 'string' ? address : address?.address;
+  const port = typeof address === 'string' ? PORT : address?.port;
+
+  console.log(
+    `Server started on ${httpsConnected ? 'HTTPS' : 'HTTP'} at ${httpsConnected ? 'https' : 'http'}://${host}:${port}`,
+  );
 });
