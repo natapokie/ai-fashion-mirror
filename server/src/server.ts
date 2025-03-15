@@ -14,30 +14,35 @@ dotenv.config({
 
 // load certificate and key from .env, if available
 let server;
-
-// resolve path for docker
-const baseDir = __dirname.includes('/app') ? '/app' : __dirname;
-const keyPath = process.env.SSL_KEY_PATH
-  ? path.resolve(baseDir, `../../${process.env.SSL_KEY_PATH}`)
-  : null;
-const certPath = process.env.SSL_CERT_PATH
-  ? path.resolve(baseDir, `../../${process.env.SSL_CERT_PATH}`)
-  : null;
-
 let httpsConnected = false;
-if (keyPath && certPath && fs.existsSync(keyPath) && fs.existsSync(certPath)) {
-  httpsConnected = true;
-  const credentials = {
-    key: fs.readFileSync(keyPath, 'utf8'),
-    cert: fs.readFileSync(certPath, 'utf8'),
-  };
 
-  server = https.createServer(credentials, app);
-  console.log('Starting server with HTTPS at: ', process.env.SERVER_BASE_URL);
+if (process.env.NODE_ENV === 'production') {
+  console.log('Starting server in production environment');
+  server = https.createServer(app);
 } else {
-  // fallback to HTTP if no SSL credentials are provided
-  server = http.createServer(app);
-  console.log('SSL credentials not found, starting server with HTTP');
+  // resolve path for docker
+  const baseDir = __dirname.includes('/app') ? '/app' : __dirname;
+  const keyPath = process.env.SSL_KEY_PATH
+    ? path.resolve(baseDir, `../../${process.env.SSL_KEY_PATH}`)
+    : null;
+  const certPath = process.env.SSL_CERT_PATH
+    ? path.resolve(baseDir, `../../${process.env.SSL_CERT_PATH}`)
+    : null;
+
+  if (keyPath && certPath && fs.existsSync(keyPath) && fs.existsSync(certPath)) {
+    httpsConnected = true;
+    const credentials = {
+      key: fs.readFileSync(keyPath, 'utf8'),
+      cert: fs.readFileSync(certPath, 'utf8'),
+    };
+
+    server = https.createServer(credentials, app);
+    console.log('Starting server with HTTPS at: ', process.env.SERVER_BASE_URL);
+  } else {
+    // fallback to HTTP if no SSL credentials are provided
+    server = http.createServer(app);
+    console.log('SSL credentials not found, starting server with HTTP');
+  }
 }
 
 const io = new Server(server, {
