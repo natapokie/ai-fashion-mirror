@@ -56,7 +56,7 @@ const io = new Server(server, {
 // create socket manager
 new SocketManager(io);
 
-const PORT = process.env.PORT;
-server.listen(PORT, () => {
+const PORT = process.env.PORT ? Number(process.env.PORT) : 8000;
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server started on ${httpsConnected ? 'HTTPS' : 'HTTP'} port: ${PORT}`);
 });
