@@ -14,7 +14,7 @@ RUN ls
 
 # Copy the rest of the application code and the shared directory
 COPY ./client ./
-COPY ./shared ../shared
+# COPY ./shared ../shared
 
 # Expose the port on which the application will run
 EXPOSE 3000

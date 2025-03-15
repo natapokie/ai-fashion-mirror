@@ -9,7 +9,7 @@ COPY package*.json ./
 
 # Copy the rest of the application code and the shared directory
 COPY ./client ./
-COPY ./shared ../shared
+# COPY ./shared ../shared
 
 # Install dependencies
 RUN npm ci
