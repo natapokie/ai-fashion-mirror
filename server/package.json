@@ -1,10 +1,10 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "/app/dist/src/server.js",
+  "main": "src/server.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/src/server.js",
+    "start": "node /dist/src/server.js",
     "dev": "nodemon -L src/server.ts",
     "test": "jest",
     "test:watch": "jest --watch"

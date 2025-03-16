@@ -15,9 +15,13 @@ RUN pwd
 RUN ls
 
 RUN npm -v
+RUN node -v
 
 # for render??
 EXPOSE 8081
 
+RUN test -f /dist/src/server.js && echo "File: /dist/src/server.js exists" || echo "File: /dist/src/server.js does not exist"
+RUN test -f dist/src/server.js && echo "File: dist/src/server.js exists" || echo "File: dist/src/server.js does not exist"
+
 # Run the built app
-CMD ["npm", "run", "start"]
+CMD ["node", "dist/src/server.js"]
