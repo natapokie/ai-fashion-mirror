@@ -17,7 +17,7 @@ const initUploadDir = (uploadDir: string = path.join(__dirname, '../__uploads'))
   }
 };
 
-initUploadDir();
+initUploadDir(process.env.NODE_ENV === 'production' ? path.join('/tmp', '__uploads') : undefined);
 
 const app = express();
 
