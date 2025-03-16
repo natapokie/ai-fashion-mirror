@@ -11,9 +11,14 @@ COPY . .
 # Build the TypeScript application
 RUN npm run build
 
+RUN pwd
+
+RUN ls
+
+RUN npm -v
+
 # for render??
 EXPOSE 8000
 
 # Run the built app
-CMD ["node", "dist/src/server.js"]
-# CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start"]
