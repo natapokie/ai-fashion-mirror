@@ -17,7 +17,7 @@ RUN ls
 RUN npm -v
 
 # for render??
-EXPOSE 8000
+EXPOSE 8081
 
 # Run the built app
 CMD ["npm", "run", "start"]
