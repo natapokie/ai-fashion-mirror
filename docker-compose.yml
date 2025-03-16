@@ -56,5 +56,17 @@ services:
     volumes:
       - ./server/src:/app/src
 
+  server-prod:
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile.local
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+      - .env.prod
+    volumes:
+      - ./server/src:/app/src
+
 networks:
   ai-fasion-mirror:

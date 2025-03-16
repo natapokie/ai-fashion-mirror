@@ -11,7 +11,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:client": "cd client && npm run test",
     "test:server": "cd server && npm run test",
-    "test:database": "cd database && docker compose up -d && pytest"
+    "test:database": "cd database && docker compose up -d && pytest",
+    "docker-build:server-prod": "docker build -t natapoke/capstone:server-prod -f server/Dockerfile.prod ./server",
+    "docker-build:client-prod": "docker build -t natapoke/capstone:client-prod -f client/Dockerfile.prod ./client",
+    "docker-push:server-prod": "docker push natapoke/capstone:server-prod",
+    "docker-push:client-prod": "docker push natapoke/capstone:client-prod"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix --max-warnings=0",

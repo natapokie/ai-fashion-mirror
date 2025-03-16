@@ -36,7 +36,7 @@ app.use('/api', apiRouter);
 app.use('/pinecone', pineconeRouter);
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.send('Welcome to the backend!');
 });
 
 export { app, initUploadDir };
