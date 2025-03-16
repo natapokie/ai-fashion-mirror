@@ -66,3 +66,5 @@ server.listen(PORT, '0.0.0.0', () => {
     `Server started on ${httpsConnected ? 'HTTPS' : 'HTTP'} at ${httpsConnected ? 'https' : 'http'}://${host}:${port}`,
   );
 });
+
+export default server;
