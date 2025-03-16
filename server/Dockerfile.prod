@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci
+RUN npm install
 
 COPY . .
 
@@ -15,4 +15,5 @@ RUN npm run build
 EXPOSE 8000
 
 # Run the built app
-CMD ["npm", "run", "start"]
+CMD ["node", "dist/src/server.js"]
+# CMD ["npm", "run", "start"]
