@@ -56,7 +56,7 @@ const io = new Server(server, {
 // create socket manager
 new SocketManager(io);
 
-const PORT = (process.env.PORT as unknown as number) || 8080;
+const PORT = (process.env.PORT as unknown as number) || 8081;
 server.listen(PORT, '0.0.0.0', () => {
   const address = server.address();
   const host = typeof address === 'string' ? address : address?.address;
