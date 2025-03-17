@@ -31,7 +31,7 @@ COPY ./server ./
 
 
 # Expose the port on which the application will run
-EXPOSE 8181
+EXPOSE 8000
 
 # Define the command to start the application
 CMD ["npm", "run", "dev"]

@@ -18,7 +18,7 @@ RUN npm -v
 RUN node -v
 
 # for render??
-EXPOSE 8181
+EXPOSE 8000
 
 RUN test -f /dist/src/server.js && echo "File: /dist/src/server.js exists" || echo "File: /dist/src/server.js does not exist"
 RUN test -f dist/src/server.js && echo "File: dist/src/server.js exists" || echo "File: dist/src/server.js does not exist"
