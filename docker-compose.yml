@@ -49,7 +49,7 @@ services:
       context: .
       dockerfile: ./server/Dockerfile.local
     ports:
-      - 8081:8081
+      - 8181:8181
     env_file:
       - .env
       - .env.local
@@ -61,7 +61,7 @@ services:
       context: .
       dockerfile: ./server/Dockerfile.local
     ports:
-      - 8081:8081
+      - 8181:8181
     env_file:
       - .env
       - .env.prod
