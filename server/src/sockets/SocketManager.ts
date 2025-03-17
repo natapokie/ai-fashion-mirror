@@ -18,7 +18,6 @@ export class SocketManager {
   }
 
   initSocketEvents() {
-    console.log('initSocketEvent');
     this.io.on('connection', (socket: Socket) => {
       console.log(`Socket ${socket.id} connected.`);
 

@@ -9,16 +9,11 @@
 
 name: Publish Docker image
 
+# only run on push to main branch
 on:
   push:
-    # trigger on pull requests
-    pull_request:
-      branches: 
-        - main
-      path:
-        - .github/workflows/publish-server.yml
-        - server/**
-    # only trigger build for specific paths
+    branches:
+      - main
     paths:
       - .github/workflows/publish-server.yml
       - server/**
