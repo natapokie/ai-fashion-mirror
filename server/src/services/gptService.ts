@@ -50,6 +50,7 @@ export class GptService {
       JSON.parse(JSON.stringify(full_response)); // Serialize and parse to ensure valid JSON
     } catch {
       throw new Error('Invalid response format (not valid JSON)');
+      console.error('Error parsing response:', error);
     }
 
     console.log('gpt response: ', full_response);
@@ -68,7 +69,7 @@ export class GptService {
 
     // DEBUG: save the response for debug purposes
     const dir = path.join(__dirname, '../../__uploads');
-    const filePath = path.join(dir, `${Date.now()}.json`);
+    const filePath = path.join(dir, `${Date.now()}_user_features.json`);
     // Write the JSON content to the file
     fs.writeFile(filePath, JSON.stringify(full_response, null, 2), (err) => {
       if (err) {
