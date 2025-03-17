@@ -17,7 +17,7 @@ const initUploadDir = (uploadDir: string = path.join(__dirname, '../__uploads'))
   }
 };
 
-initUploadDir();
+initUploadDir(process.env.NODE_ENV === 'production' ? path.join('/tmp', '__uploads') : undefined);
 
 const app = express();
 
@@ -36,7 +36,7 @@ app.use('/api', apiRouter);
 app.use('/pinecone', pineconeRouter);
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.send('Welcome to the backend!');
 });
 
 export { app, initUploadDir };

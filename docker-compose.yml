@@ -1,0 +1,86 @@
+services:
+  # client:
+  #   build:
+  #     context: .
+  #     dockerfile: ./client/Dockerfile
+  #   ports:
+  #     - 127.0.0.1:3000:3000
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - ai-fasion-mirror
+  #   volumes:
+  #     - ./client:/app
+  #     - /app/node_modules
+
+  # running client on localhost with https
+  # server:
+  #   build:
+  #     context: .
+  #     dockerfile: ./server/Dockerfile
+  #   ports:
+  #     - 127.0.0.1:8080:8080
+  #   # devices:
+  #   #   - /dev/video0:/dev/video0
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - ai-fasion-mirror
+
+  # note: no solution for hot reloading nextjs in docker
+  client-local:
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile.local
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+      - .env.local
+    volumes:
+      - ./client/pages:/app/pages
+      - ./client/components:/app/components
+      - ./client/services:/app/services
+      - ./client/utils:/app/utils
+      - ./client/styles:/app/styles
+
+  server-local:
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile.local
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+      - .env.local
+    volumes:
+      - ./server/src:/app/src
+
+  server-prod:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.prod
+    ports:
+      - 8081:8000
+    env_file:
+      - .env.production
+    volumes:
+      - ./server/src:/app/src
+
+  client-prod:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.prod
+    ports:
+      - 3001:3000
+    env_file:
+      - .env.production
+    environment:
+      - NEXT_PUBLIC_SERVER_BASE_URL=$NEXT_PUBLIC_SERVER_BASE_URL
+    volumes:
+      - ./client/pages:/app/pages
+      - ./client/components:/app/components
+      - ./client/services:/app/services
+
+networks:
+  ai-fasion-mirror:

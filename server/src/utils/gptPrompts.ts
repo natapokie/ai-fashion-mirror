@@ -1,4 +1,4 @@
-import { QueriedProduct } from '../../../shared/types';
+import { QueriedProduct } from './types';
 
 export const generateRAGPrompt = (userFeatures: string, products: QueriedProduct[]) => {
   return `The customer uploaded a photo showing **${userFeatures}**. Based on this, provide feedback and recommendations for **each product** listed below.

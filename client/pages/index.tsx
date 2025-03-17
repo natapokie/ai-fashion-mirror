@@ -7,9 +7,9 @@ import { motion } from 'framer-motion';
 import { Countdown } from '@/components/countdown/countdown';
 import { Spinner } from '@/components/spinner/spinner';
 import { useCamera } from '@/context/cameraContext';
-import { ProductData } from '../../shared/types';
 import { sendToGpt } from '@/services/gptService';
 import { ErrorPopup } from '@/components/errorPopup/errorPopup';
+import { ProductData } from '@/utils/types';
 import { DISCLAIMER_MSG } from '@/utils/constants';
 
 const closeIcon = '/icons/xmark-solid.svg';
@@ -124,6 +124,7 @@ const Home = () => {
 
   useEffect(() => {
     console.log('Current page state:', pageState);
+    console.log('testing environment variables', process.env.NEXT_PUBLIC_SERVER_BASE_URL);
 
     if (pageState === pageStates.SMILE) {
       console.log('Entering SMILE state, setting timeout for photo capture...');

@@ -7,17 +7,17 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
+# Copy the rest of the application code and the shared directory
+COPY ./client ./
+# COPY ./shared ../shared
+
 # Install dependencies
 RUN npm ci
 
 RUN ls
 
-# Copy the rest of the application code and the shared directory
-COPY ./client ./
-# COPY ./shared ../shared
-
 # Expose the port on which the application will run
 EXPOSE 3000
 
 # Define the command to start the application
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "dev:local"]

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Comment from '@/components/comments/comment';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CommentType } from '../../../shared/types';
+import { CommentType } from '@/utils/types';
 
 interface CommentFeedProps {
   comments: CommentType[];
@@ -53,9 +53,7 @@ const CommentFeed: React.FC<CommentFeedProps> = ({ comments, onComplete }) => {
   return (
     <div className="fixed top-[200px] w-full h-full p-4">
       <div className="relative h-full">
-        <motion.div
-          className="absolute top-0 w-full flex flex-col my-20"
-        >
+        <motion.div className="absolute top-0 w-full flex flex-col my-20">
           <AnimatePresence>
             {displayedComments.map((comment) => (
               <Comment key={'comment' + comment.user} comment={comment} />

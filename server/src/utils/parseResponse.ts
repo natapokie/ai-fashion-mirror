@@ -1,5 +1,5 @@
-import { PREAPIResponse, ResponseData } from '../../../shared/types';
 import { WORDS_PER_MS, MIN_DISPLAY_TIME } from './constants';
+import { PREAPIResponse, ResponseData } from './types';
 
 const calculateDisplayTime = (text: string): number => {
   // Ensure text is a string and not empty or undefined

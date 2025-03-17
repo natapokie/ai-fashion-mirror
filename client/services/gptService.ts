@@ -1,12 +1,12 @@
+import { ProductData } from '@/utils/types';
 import axios from 'axios';
-import { ProductData } from '../../shared/types';
 
 export const sendToGpt = async (formData: FormData): Promise<ProductData[]> => {
   try {
     console.log('Sending image to GPT for full processing...');
 
     const response = await axios.post(
-      `${process.env.SERVER_BASE_URL}/gpt/process-request`,
+      `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/gpt/process-request`,
       formData,
       {
         headers: {
@@ -29,6 +29,7 @@ export const sendToGpt = async (formData: FormData): Promise<ProductData[]> => {
     return response.data.recommendations; // final recommendations list
   } catch (error) {
     console.error('Error in sendToGpt: ', error);
+    throw new Error(`Error sending image to GPT ${error}`);
     return []; // return an ematy array if request fails
   }
 };
