@@ -1,4 +1,4 @@
-import { QueriedProduct } from '../../../shared/types';
+import { QueriedProduct } from './types';
 
 export const generateRAGPrompt = (userFeatures: string, products: QueriedProduct[]) => {
   return `The customer uploaded a photo showing **${userFeatures}**. Based on this, provide feedback and recommendations for **each product** listed below.
@@ -52,39 +52,61 @@ ${products
 `;
 };
 
-export const featureExtractionContext = `You are a fashion expert. Your task is to extract and/or create clothing recommendations.
-You will be provided with a picture of a shopper. You need to first recognize the shopper's general appearance, such as skin tone, 
-height, build. Then, you need to provide features and attributes of the clothes that would complement the shopper's appearance. 
+// export const featureExtractionContext = `You are a fashion expert. Your task is to extract and/or create clothing recommendations.
+// You will be provided with a picture of a shopper. You need to first recognize the shopper's general appearance, such as skin tone,
+// height, build. Then, you need to provide features and attributes of the clothes that would complement the shopper's appearance.
 
-For example, if the shopper has a light skin tone, you could recommend colors that would complement their skin tone;
-if the shopper is tall, you could recommend lengths that would flatter their height.
+// It is important to not return the appearances of the shopper in the photo,
+// but only the features and attributes of the clothes that would complement the shopper's appearance.
 
-Here are some appearance features you could extract from the shopper's photo:
-    - Skin tone: light, medium, dark
-    - Height: short, average, tall
-    - Build: slim, average, muscular
-    - Hair color: blonde, brown, black, red, other
-    - Hair length: short, medium, long
-    - Hair style: straight, wavy, curly
-    - Eye color: blue, brown, green, other
-    - Age: young, middle-aged, elderly
-    
-Here are some clothing features you could include in your response:
-    - Colors that would complement their skin tone, hair color, or eye color
-    - Lengths that would flatter their height, such as hip-length,high-hip, mid-thigh, waist-length, mid-calf
-    - Fit that would suit their build, such as slim-fit, regular-fit, loose-fit
-    - Patterns or styles that would suite their age
+// For example, if the shopper has a light skin tone, you could recommend colors that would complement their skin tone;
+// if the shopper is tall, you could recommend lengths that would flatter their height. Be creative and specific
+// in your recommendations. Include at least 10 features in your response.
 
-Your final response should just be one array for the clothing features. It should only include the values.
+// Here are some appearance features you could extract from the shopper's photo:
+//     - Skin tone: light, medium, dark
+//     - Height: short, average, tall
+//     - Build: slim, average, muscular
+//     - Hair color: blonde, brown, black, red, other
+//     - Hair length: short, medium, long
+//     - Hair style: straight, wavy, curly
+//     - Eye color: blue, brown, green, other
+//     - Age: young, middle-aged, elderly
 
-Omit any other sentences. 
+// Here are some clothing features you could include in your response:
+//     - Colors that would complement their skin tone, hair color, or eye color
+//     - Lengths that would flatter their height, such as hip-length,high-hip, mid-thigh, waist-length, mid-calf
+//     - Fit that would suit their build, such as slim-fit, regular-fit, loose-fit
+//     - Patterns or styles that would suite their age
 
-An example response woule be:
-{
-    "clothing": ["blue", "white", "mid-thigh", "waist-length", "slim-fit"]
-} 
+// Your final response should just be one array for the clothing features. It should only include the values.
 
-`;
+// Omit any other sentences.
+// `;
+
+export const featureExtractionContext = `Act as a professional stylist. Follow these steps strictly:  
+
+1. **Analyze the uploaded photo** to identify **only visible appearance features**:  
+   - Skin tone (e.g., fair, light, medium, olive, dark)  
+   - Height/build (e.g., petite, tall, slim, athletic, curvy)  
+   - Hair length, color, and style (e.g., short black bob, long wavy red hair)  
+   - Eye color (e.g., blue, brown, hazel)  
+   - Approximate age range (e.g., 20s, 50s)  
+
+2. **Generate 10 to 15 clothing keywords** that aesthetically complement the features above. Prioritize:  
+   - **Color theory** (e.g., jewel tones for fair skin, earthy tones for warm undertones)  
+   - **Silhouette balance** (e.g., tailored blazers for broad shoulders, A-line dresses for hourglass figures)  
+   - **Contrast enhancement** (e.g., bold prints for muted features, monochrome for bold features)  
+   - **Style harmony** (e.g., flowy fabrics for soft textures, structured cuts for angular builds)  
+
+**Rules**:  
+- Return **ONLY** an array of 10+ clothing keywords 
+- No explanations, disclaimers, or non-clothing terms.  
+- Avoid generic terms like "casual" or "formal"—be specific (e.g., "midi skirts", "ankle boots"). 
+- Add identified gender to the keywords 
+
+**Example Output**:  
+["male", "Off-shoulder tops", "Midi pencil skirts", "Sapphire blue fabrics", "Belted trench coats", "Straight-leg jeans", "Chunky knit scarves", "Gold hoop earrings", "Wrap dresses", "Chelsea boots", "Geometric prints"]  `;
 
 export const gptSystemContext =
   //   `Pretend you’re a fashion expert working for Canada Goose. Your task is to provide feedback on shoppers' outfit and recommend products from the Canada Goose website.

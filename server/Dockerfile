@@ -27,11 +27,11 @@ RUN ls
 
 COPY ./server ./
 # and we want to copy the shared folder,
-COPY ./shared ../shared
+# COPY ./shared ../shared
 
 
 # Expose the port on which the application will run
-EXPOSE 8080
+EXPOSE 8000
 
 # Define the command to start the application
 CMD ["npm", "run", "dev"]

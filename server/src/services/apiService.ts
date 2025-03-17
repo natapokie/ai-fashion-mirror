@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
-import { PREAPIResponse } from '../../../shared/types';
 import { mockData } from '../utils/mockData';
+import { PREAPIResponse } from '../utils/types';
 
 export const sendToApi = async (buffer: Buffer): Promise<PREAPIResponse> => {
   try {

@@ -14,25 +14,35 @@ dotenv.config({
 
 // load certificate and key from .env, if available
 let server;
-const keyPath = process.env.SSL_KEY_PATH
-  ? path.resolve(__dirname, '../../', process.env.SSL_KEY_PATH)
-  : null;
-const certPath = process.env.SSL_CERT_PATH
-  ? path.resolve(__dirname, '../../', process.env.SSL_CERT_PATH)
-  : null;
+let httpsConnected = false;
 
-if (keyPath && certPath && fs.existsSync(keyPath) && fs.existsSync(certPath)) {
-  const credentials = {
-    key: fs.readFileSync(keyPath, 'utf8'),
-    cert: fs.readFileSync(certPath, 'utf8'),
-  };
-
-  server = https.createServer(credentials, app);
-  console.log('Starting server with HTTPS at: ', process.env.SERVER_BASE_URL);
-} else {
-  // fallback to HTTP if no SSL credentials are provided
+if (process.env.NODE_ENV === 'production') {
+  console.log('Starting server in production environment');
   server = http.createServer(app);
-  console.log('SSL credentials not found, starting server with HTTP');
+} else {
+  // resolve path for docker
+  const baseDir = __dirname.includes('/app') ? '/app' : __dirname;
+  const keyPath = process.env.SSL_KEY_PATH
+    ? path.resolve(baseDir, `../../${process.env.SSL_KEY_PATH}`)
+    : null;
+  const certPath = process.env.SSL_CERT_PATH
+    ? path.resolve(baseDir, `../../${process.env.SSL_CERT_PATH}`)
+    : null;
+
+  if (keyPath && certPath && fs.existsSync(keyPath) && fs.existsSync(certPath)) {
+    httpsConnected = true;
+    const credentials = {
+      key: fs.readFileSync(keyPath, 'utf8'),
+      cert: fs.readFileSync(certPath, 'utf8'),
+    };
+
+    server = https.createServer(credentials, app);
+    console.log('Starting server with HTTPS at: ', process.env.NEXT_PUBLIC_SERVER_BASE_URL);
+  } else {
+    // fallback to HTTP if no SSL credentials are provided
+    server = http.createServer(app);
+    console.log('SSL credentials not found, starting server with HTTP');
+  }
 }
 
 const io = new Server(server, {
@@ -46,7 +56,15 @@ const io = new Server(server, {
 // create socket manager
 new SocketManager(io);
 
-const PORT = process.env.SERVER_PORT;
-server.listen(PORT, () => {
-  console.log(`Server started on ${keyPath && certPath ? 'HTTPS' : 'HTTP'} port: ${PORT}`);
+const PORT = (process.env.SERVER_PORT as unknown as number) || 8000;
+server.listen(PORT, '0.0.0.0', () => {
+  const address = server.address();
+  const host = typeof address === 'string' ? address : address?.address;
+  const port = typeof address === 'string' ? PORT : address?.port;
+
+  console.log(
+    `Server started on ${httpsConnected ? 'HTTPS' : 'HTTP'} at ${httpsConnected ? 'https' : 'http'}://${host}:${port}`,
+  );
 });
+
+export default server;

@@ -5,3 +5,7 @@ export const ANIMATION_DURATION_LOWER = 1000; // lower limit for animation runti
 export const ANIMATION_DURATION_UPPER = 2000; // upper limit for animation runtime
 export const PAUSE_DURATION_LOWER = 2000; // lower limit for pause duration
 export const PAUSE_DURATION_UPPER = 3000; // upper limit for pause duration
+
+export const DISCLAIMER_MSG = `*By using this website, you acknowledge and consent to the use of your device’s camera for
+          capturing images. These images are processed and sent to OpenAI’s API to generate
+          recommendations and responses.`;

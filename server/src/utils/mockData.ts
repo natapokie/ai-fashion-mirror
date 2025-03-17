@@ -1,4 +1,4 @@
-import { PREAPIResponse, QueriedProduct } from '../../../shared/types';
+import { PREAPIResponse, QueriedProduct } from './types';
 
 export const mockData: PREAPIResponse = {
   '0': '@fabuloumiss: Maybe add a pop of color with a bright cushion or blanket.',
