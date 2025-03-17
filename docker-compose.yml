@@ -58,15 +58,29 @@ services:
 
   server-prod:
     build:
-      context: .
-      dockerfile: ./server/Dockerfile.local
+      context: ./server
+      dockerfile: Dockerfile.prod
     ports:
-      - 8000:8000
+      - 8081:8000
     env_file:
-      - .env
-      - .env.prod
+      - .env.production
     volumes:
       - ./server/src:/app/src
+
+  client-prod:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.prod
+    ports:
+      - 3001:3000
+    env_file:
+      - .env.production
+    environment:
+      - NEXT_PUBLIC_SERVER_BASE_URL=$NEXT_PUBLIC_SERVER_BASE_URL
+    volumes:
+      - ./client/pages:/app/pages
+      - ./client/components:/app/components
+      - ./client/services:/app/services
 
 networks:
   ai-fasion-mirror:

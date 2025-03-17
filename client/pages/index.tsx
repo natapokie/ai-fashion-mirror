@@ -123,6 +123,7 @@ const Home = () => {
 
   useEffect(() => {
     console.log('Current page state:', pageState);
+    console.log('testing environment variables', process.env.NEXT_PUBLIC_SERVER_BASE_URL);
 
     if (pageState === pageStates.SMILE) {
       console.log('Entering SMILE state, setting timeout for photo capture...');
