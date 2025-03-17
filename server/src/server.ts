@@ -18,7 +18,7 @@ let httpsConnected = false;
 
 if (process.env.NODE_ENV === 'production') {
   console.log('Starting server in production environment');
-  server = https.createServer(app);
+  server = http.createServer(app);
 } else {
   // resolve path for docker
   const baseDir = __dirname.includes('/app') ? '/app' : __dirname;
