@@ -62,10 +62,3 @@ jobs:
           subject-name: index.docker.io/natapoke/capstone
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
-
-      - name: Deploy to Azure App Service
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'ai-fashion-mirror-server'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: 'natapoke/capstone:server-prod'
