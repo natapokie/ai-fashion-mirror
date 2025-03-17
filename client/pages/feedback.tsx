@@ -24,7 +24,9 @@ const Feedback = () => {
     console.log('Connecting Socket');
 
     const onConnect = () => {
-      console.log(`Connected with socket ${socket.id} on server ${process.env.SERVER_BASE_URL}`);
+      console.log(
+        `Connected with socket ${socket.id} on server ${process.env.NEXT_PUBLIC_SERVER_BASE_URL}`,
+      );
     };
 
     const onApiResonse = (data: ResponseData | string) => {

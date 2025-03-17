@@ -19,7 +19,7 @@ export const swaggerLoader = (app: Express) => {
       },
       servers: [
         {
-          url: `${process.env.SERVER_BASE_URL}`,
+          url: `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}`,
           description: 'Development Server',
         },
       ],

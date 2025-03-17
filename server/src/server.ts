@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === 'production') {
     };
 
     server = https.createServer(credentials, app);
-    console.log('Starting server with HTTPS at: ', process.env.SERVER_BASE_URL);
+    console.log('Starting server with HTTPS at: ', process.env.NEXT_PUBLIC_SERVER_BASE_URL);
   } else {
     // fallback to HTTP if no SSL credentials are provided
     server = http.createServer(app);
