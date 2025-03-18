@@ -64,7 +64,7 @@ export class GptService {
     // --------------------------------------
     // feb 2: attempt to embed the features from the response
     const features = full_response.choices[0].message.content;
-    console.log('Features:', features);
+    console.log('chatgpt response:', features);
     // const embedding = await openai.embeddings.create({
     //   model: 'text-embedding-ada-002',
     //   input: String(features),
