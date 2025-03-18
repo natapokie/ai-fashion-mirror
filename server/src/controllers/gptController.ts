@@ -28,19 +28,12 @@ export const GptController = {
       // step 2: generate embeddings for extracted user features
       // console.log('Generating embeddings for user features...');
       const featureEmbeddings = await gptService.createEmbeddings(userFeaturesStr);
-      // console.log('Feature Embeddings:', featureEmbeddings);
 
       // step 3: query pinecone for the top relevant (recommended) products
-      // TODO: create metadata filter based on user features
-      // const gender = 'female';
       let gender: string = 'male';
       try {
-        const parseGender: string[] = JSON.parse(
-          (userFeatures.choices[0].message.content as string) ?? '[]',
-        );
-        const genderIndex = parseGender.findIndex((val) => val === 'male' || val === 'female');
-        gender = parseGender[genderIndex];
-        console.log('gender', gender);
+        gender = JSON.parse(userFeatures).gender;
+        console.log('gender: ', gender);
       } catch (err) {
         console.error('Error parsing', err);
       }
