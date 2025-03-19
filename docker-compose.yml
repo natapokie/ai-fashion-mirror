@@ -36,7 +36,7 @@ services:
       - 3000:3000
     env_file:
       - .env
-      - .env.local
+      # - .env.local
     volumes:
       - ./client/pages:/app/pages
       - ./client/components:/app/components
@@ -52,7 +52,7 @@ services:
       - 8000:8000
     env_file:
       - .env
-      - .env.local
+      # - .env.local
     volumes:
       - ./server/src:/app/src
 

@@ -100,13 +100,20 @@ export const featureExtractionContext = `Act as a professional stylist. Follow t
    - **Style harmony** (e.g., flowy fabrics for soft textures, structured cuts for angular builds)  
 
 **Rules**:  
-- Return **ONLY** an array of 10+ clothing keywords 
+- Return **ONLY** a JSON object with two fields: first one is gender, second one is an array of clothing keywords.
+- **Do not** include any other text or characters in your response.
+- **Do not** include any appearance features in your response.
+- **Do not** include any explanations or disclaimers.
 - No explanations, disclaimers, or non-clothing terms.  
 - Avoid generic terms like "casual" or "formal"—be specific (e.g., "midi skirts", "ankle boots"). 
 - Add identified gender to the keywords 
 
 **Example Output**:  
-["male", "Off-shoulder tops", "Midi pencil skirts", "Sapphire blue fabrics", "Belted trench coats", "Straight-leg jeans", "Chunky knit scarves", "Gold hoop earrings", "Wrap dresses", "Chelsea boots", "Geometric prints"]  `;
+{
+  "gender": "male",
+  "features": ["Off-shoulder tops", "Midi pencil skirts", "Sapphire blue fabrics", "Belted trench coats", "Straight-leg jeans", "Chunky knit scarves", "Gold hoop earrings", "Wrap dresses", "Chelsea boots", "Geometric prints"]  
+}
+`;
 
 export const gptSystemContext =
   //   `Pretend you’re a fashion expert working for Canada Goose. Your task is to provide feedback on shoppers' outfit and recommend products from the Canada Goose website.

@@ -9,7 +9,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { featureExtractionContext, generateRAGPrompt } from '../utils/gptPrompts';
-import { GptResponse, ProductData, QueriedProduct } from '../utils/types';
+import { ProductData, QueriedProduct } from '../utils/types';
 
 const ProductInfo = z.object({
   image: z.string(),
@@ -21,9 +21,14 @@ const FullRecommendation = z.object({
   product_list: z.array(ProductInfo),
 });
 
+const extractedFeatures = z.object({
+  gender: z.string(),
+  features: z.array(z.string()),
+});
+
 export class GptService {
   // step 1: call gpt to extract user features from image
-  async gptExtractFeatures(base64Img: string): Promise<GptResponse> {
+  async gptExtractFeatures(base64Img: string): Promise<string> {
     const openai = new OpenAI();
     const base64Image = base64Img;
 
@@ -40,6 +45,7 @@ export class GptService {
         },
       ],
       // response_format: zodResponseFormat(FullRecommendation, 'full_response'), //feb 2: not used for feature extraction
+      response_format: zodResponseFormat(extractedFeatures, 'full_response'),
     });
 
     const full_response = completion;
@@ -58,7 +64,7 @@ export class GptService {
     // --------------------------------------
     // feb 2: attempt to embed the features from the response
     const features = full_response.choices[0].message.content;
-    console.log('Features:', features);
+    console.log('chatgpt response:', features);
     // const embedding = await openai.embeddings.create({
     //   model: 'text-embedding-ada-002',
     //   input: String(features),
@@ -79,7 +85,7 @@ export class GptService {
       }
     });
 
-    return full_response;
+    return features;
   }
 
   // step 2: call gpt to generate embeddings for querying
