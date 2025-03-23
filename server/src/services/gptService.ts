@@ -115,7 +115,6 @@ export class GptService {
 
     // Generate the RAG prompt using extracted features
     const ragPrompt = generateRAGPrompt(userFeatures, queriedProducts);
-    console.log('[eri][eri] new RAG Prompt generated');
 
     // Call OpenAI with RAG prompt
     const completion = await openai.beta.chat.completions.parse({
