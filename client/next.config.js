@@ -2,8 +2,6 @@
 const dotenv = require('dotenv');
 const path = require('path');
 
-console.log(process.env.NODE_ENV);
-
 if (process.env.NODE_ENV === 'development') {
   dotenv.config({
     path: path.resolve(__dirname, '../.env'), // Load the .env from root
