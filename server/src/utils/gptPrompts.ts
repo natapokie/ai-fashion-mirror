@@ -1,12 +1,12 @@
 import { QueriedProduct } from './types';
 
 export const generateRAGPrompt = (userFeatures: string, products: QueriedProduct[]) => {
-  return `The customer uploaded a photo showing **${userFeatures}**. Based on this, provide feedback and recommendations for **each product** listed below.
+  return `The customer uploaded a photo showing **${userFeatures}**. Based on this, provide **positive** feedback for **each product** listed below.
 
 Each product must include:
 1. **Name** (from metadata field fsProductName)
 2. **Image URL** (from metadata field modelImageUrl)
-3. **Feedback** (why this product is a good fit or not)
+3. **Feedback** (why this product is a good fit)
 
 ---
 ### **Customer Features:**
@@ -39,7 +39,12 @@ ${products
   {
     "name": "Product B",
     "image": "https://example.com/image.jpg",
-    "feedback": "Although this product is not a perfect match, it has advantages such as..."
+    "feedback": "Based on your look, we recommend this jacket because..."
+  },
+  {
+    "name": "Product C",
+    "image": "https://example.com/image.jpg",
+    "feedback": "This jacket goes perfectly with the jeans..."
   }
 ]
 
